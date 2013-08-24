@@ -19,10 +19,10 @@ public class Chunk {
     public int blocknum;
     private int ablocks;
     private Client c;
-	
-	public Chunk(Client c, int x, int z, int pbitmap, int abitmap, boolean lighting, boolean groundup) {
+    
+    public Chunk(Client c, int x, int z, int pbitmap, int abitmap, boolean lighting, boolean groundup) {
         // Create chunk sections.
-		this.c = c;
+        this.c = c;
         this.groundup = groundup;
         this.lighting = lighting;
         this.pbitmap = pbitmap;
@@ -52,13 +52,13 @@ public class Chunk {
         // Number of sections * blocks per section = blocks in this "Chunk"
         blocknum = blocknum * 4096;
     }
-	
-	public void fillChunk(){
-		int offset = 0;
-		int current = 0;
-		
-		for (int i = 0; i < 16; i++) {
-			if ((pbitmap & (1 << i)) != 0) {
+    
+    public void fillChunk(){
+        int offset = 0;
+        int current = 0;
+        
+        for (int i = 0; i < 16; i++) {
+            if ((pbitmap & (1 << i)) != 0) {
 
                 byte[] temp = new byte[4096];
 
@@ -70,17 +70,17 @@ public class Chunk {
                 current += 1;
             }
         }
-		
-	 }
-	
-	 public int getBlockId(int Bx, int By, int Bz) {
+        
+     }
+    
+     public int getBlockId(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz).getTypeId();
      }
 
      public Block getBlock(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);	
+        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
      public void updateBlock(int Bx, int By, int Bz, int id) {
@@ -92,8 +92,8 @@ public class Chunk {
         part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id);
 
      }
-	
-	 public byte[] getData(byte[] deCompressed) {
+    
+     public byte[] getData(byte[] deCompressed) {
         // Loading chunks, network handler hands off the decompressed bytes
         // This function takes its portion, and returns what's left.
 
@@ -118,16 +118,16 @@ public class Chunk {
 
         return temp;
      }
-	 
-	 public Integer getX(){
-		 return x;
-	 }
-	 
-	 public Integer getZ(){
-		 return z;
-	 }
-	
-	 private Part GetSectionByNumber(int blockY) {
+     
+     public Integer getX(){
+         return x;
+     }
+     
+     public Integer getZ(){
+         return z;
+     }
+    
+     private Part GetSectionByNumber(int blockY) {
          Part thisSection = null;
 
          for(Part y : parts) {
@@ -145,18 +145,18 @@ public class Chunk {
          return thisSection;
      }
 
-	 private int getXinSection(int BlockX) {
+     private int getXinSection(int BlockX) {
          return BlockX - (x * 16);
-     }	 
+     }     
 
      private int GetPositionInSection(int blockY) {
          return blockY & (16 - 1); // Credits: SirCmpwn Craft.net
      }
      
-	 private int getZinSection(int BlockZ) {
+     private int getZinSection(int BlockZ) {
          return BlockZ - (z * 16);
      }
-	
-	
+    
+    
 
 }

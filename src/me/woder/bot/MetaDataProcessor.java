@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MetaDataProcessor {
-	Client c;
-	
-	public MetaDataProcessor(Client c){
-	  this.c = c;	
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public List readWatchableObjects(DataInputStream in) throws IOException{
+    Client c;
+    
+    public MetaDataProcessor(Client c){
+      this.c = c;    
+    }
+    
+    @SuppressWarnings("rawtypes")
+    public List readWatchableObjects(DataInputStream in) throws IOException{
         ArrayList var1 = null;
         System.out.println("Now reading metadata...");
         while(true){
-        	int var2 = (in.readByte() & 0xff);
-        	System.out.println(var2);
-        	if(var2 == 127)break;
-        	
+            int var2 = (in.readByte() & 0xff);
+            System.out.println(var2);
+            if(var2 == 127)break;
+            
 
             int index = var2 & 0x1f;
             int type = var2 >> 5;
@@ -28,13 +28,13 @@ public class MetaDataProcessor {
 
             switch (type){
                 case 0:
-                	 byte me = in.readByte();
-                	 System.out.println("Reading byte: " + me + " at index: " + index);
+                     byte me = in.readByte();
+                     System.out.println("Reading byte: " + me + " at index: " + index);
                     break;
 
                 case 1:
-                	short mo = in.readShort();
-                	System.out.println("Reading short: " + mo + " at index: " + index);
+                    short mo = in.readShort();
+                    System.out.println("Reading short: " + mo + " at index: " + index);
                     break;
 
                 case 2:       
@@ -48,12 +48,12 @@ public class MetaDataProcessor {
                     break;
 
                 case 4:
-                	System.out.println(ChatHandler.getString(in, (int)in.readShort(), 64));
+                    System.out.println(ChatHandler.getString(in, (int)in.readShort(), 64));
                     break;
 
                 case 5:
-                	System.out.println("Reading slot");
-                	new Slot(c.in,0);
+                    System.out.println("Reading slot");
+                    new Slot(c.in,0);
                     break;
 
                 case 6:
