@@ -67,10 +67,9 @@ public class CommandHandler {
                     e.printStackTrace();
                 }
             }else if(command.contains("move")){
-                Location loc = new Location(c.whandle.getWorld(), 47, 63, 671);
-                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY(), c.location.getBlockZ()+1);            
-                //c.move.runPathing(l, loc, 50);
-                c.move.calcMovement(l);
+                Location loc = new Location(c.whandle.getWorld(), 42, 63, 696);
+                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-2, c.location.getBlockZ()+1);          
+                c.move.runPathing(l, loc, 50);
             }else if(command.contains("server")){
                 try {
                 c.chat.sendMessage("/server hub");

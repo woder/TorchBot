@@ -73,10 +73,10 @@ public class Client {
     @SuppressWarnings("unused")
     public void main(){
             prefix = "!";
-            String testServerName = "c.mcblocks.net";
+            String testServerName = "localhost";
             int client_version = 9999;
             int port = 25565;            
-            String password = "";//TODO add way to change this, config? make this private to stop plugins from acessing it sigh
+            String password = "";//TODO add way to change this, config? make this private to stop plugins from acessing it
             //Code for login in to mc.net:
             String code = sendPostRequest("user="+username+"&password="+password+"&version="+client_version, "https://login.minecraft.net/");
             System.out.println(code);

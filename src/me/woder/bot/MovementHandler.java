@@ -31,10 +31,15 @@ public class MovementHandler {
             case SUCCESS : 
                 //Path was successfull. Do something here.
                 moveAlong(start, route);
+                c.chat.sendMessage("Path was found! :D");
                 break;
             case NO_PATH :
                 //No path found, throw error.
                 System.out.println("No path found!");
+                c.chat.sendMessage("No path was found :(");
+                break;
+             default:
+                c.chat.sendMessage("Well... appearently we didn't find a path and we did... at the same time");
                 break;
             }
         } catch (InvalidPathException e) {
@@ -45,12 +50,21 @@ public class MovementHandler {
             if(e.isStartNotSolid()){
                 System.out.println("Start block is not walkable");
             }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
      
     private void moveAlong(Location start, ArrayList<Tile> tiles){
         for(Tile t : tiles){
-            calcMovement(t.getLocation(start));
+            Location loc = t.getLocation(start);
+            calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));
+            try {
+                c.chat.sendMessage("Current block pos: " + t.getLocation(start).getBlockX() + ", " + t.getLocation(start).getBlockY() + ", " + t.getLocation(start).getBlockZ());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     
@@ -74,9 +88,9 @@ public class MovementHandler {
     public boolean calcMovement(Location l){
         boolean canGo = false;
         //checks that the place we are going to is safe
-        if(canBlockBeWalkedThrough(l.getBlock().getTypeId())){//start by checking if we can go there
+        if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 1, 0).getTypeId())){//start by checking if we can go there
             //now check if the head is safe
-            if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, -1, 0).getTypeId())){
+            if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
                 sendMovement(l);
                 canGo = true;
@@ -92,6 +106,11 @@ public class MovementHandler {
     
     public void sendMovement(Location l){
         c.location = l;
+        try {
+            c.chat.sendMessage("Attempting to move to location: " + l.getX() + "," + l.getY() + "," + l.getZ());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         try {  
             c.out.writeByte(0x0B);
             c.out.writeDouble(l.getX());
