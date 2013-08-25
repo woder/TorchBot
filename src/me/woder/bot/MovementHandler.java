@@ -2,6 +2,9 @@ package me.woder.bot;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.woder.world.Location;
 
@@ -53,12 +56,21 @@ public class MovementHandler {
         }
     }
      
-    private void moveAlong(Location start, ArrayList<Tile> tiles){
-        for(Tile t : tiles){
-            Location loc = t.getLocation(start);
-            calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));
-            c.chat.sendMessage("Current block pos: " + t.getLocation(start).getBlockX() + ", " + t.getLocation(start).getBlockY() + ", " + t.getLocation(start).getBlockZ());
-        }
+    private void moveAlong(final Location start, ArrayList<Tile> tiles){
+        Timer timer = new Timer();
+        final Iterator<Tile> itr = tiles.iterator();
+        TimerTask task = new TimerTask() {
+            public void run() {
+             if(itr.hasNext()){
+              Tile t = itr.next();
+              Location loc = t.getLocation(start);
+              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));
+             }else{
+              this.cancel();
+             }
+            }
+        };
+        timer.scheduleAtFixedRate(task, 0, 1000);
     }
     
     public void applyGravity(){

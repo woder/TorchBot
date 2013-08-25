@@ -43,13 +43,13 @@ public class Client {
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
+    public static byte gamemode;
     String leveltype;
     Location location;
     World world;
     boolean chunksloaded;
     boolean connectedirc;
     int entityID;
-    byte gamemode;
     byte dimension;
     byte difficulty;
     byte maxplayer;
@@ -76,7 +76,7 @@ public class Client {
             String testServerName = "localhost";
             int client_version = 9999;
             int port = 25565;            
-            String password = "";//TODO add way to change this, config? make this private to stop plugins from acessing it
+            String password = "bananasarepro";//TODO add way to change this, config? make this private to stop plugins from acessing it
             //Code for login in to mc.net:
             String code = sendPostRequest("user="+username+"&password="+password+"&version="+client_version, "https://login.minecraft.net/");
             System.out.println(code);
@@ -90,7 +90,6 @@ public class Client {
             out = new DataOutputStream(clientSocket.getOutputStream());
             in = new DataInputStream(clientSocket.getInputStream());
             //our hand shake
-           // String username2 = username1 + ";" + testServerName + ":" + port;
             int str = username.length();
             out.writeByte(0x02);
             out.writeByte(74);//74 = 1.6.2
@@ -101,18 +100,18 @@ public class Client {
             out.writeInt(port);
             out.flush();    
                   
-             Random random = new Random();
-             boolean working = true;
-             boolean already = true;           
+            Random random = new Random();
+            boolean working = true;
+            boolean already = true;           
              
-             chat = new ChatHandler(this);
-             proc = new MetaDataProcessor(this);
-             chandle = new CommandHandler(this);
-             whandle = new WorldHandler(this);
-             net = new NetworkHandler(this,in,out);          
-             world = whandle.getWorld();
-             move = new MovementHandler(this);
-             irc = new IRCBridge(this);
+            chat = new ChatHandler(this);
+            proc = new MetaDataProcessor(this);
+            chandle = new CommandHandler(this);
+            whandle = new WorldHandler(this);
+            net = new NetworkHandler(this,in,out);          
+            world = whandle.getWorld();
+            move = new MovementHandler(this);
+            irc = new IRCBridge(this);
              
              while(true){
                 //mainloop

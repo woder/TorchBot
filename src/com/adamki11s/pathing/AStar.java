@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import me.woder.bot.Client;
 import me.woder.world.Block;
 import me.woder.world.Location;
 import me.woder.world.World;
@@ -256,7 +257,8 @@ public class AStar {
 
         // lava, fire, wheat and ladders cannot be walked on, and of course air
         // 85, 107 and 113 stops npcs climbing fences and fence gates
-        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i)) {
+        int d = 0;
+        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != d && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i)) {
             // make sure the blocks above are air
 
             /*if (b.getRelative(0, 1, 0).getTypeId() == 107) {
@@ -274,9 +276,8 @@ public class AStar {
     private boolean isLocationWalkable(Location l) {
         Block b = l.getBlock();
         int i = b.getTypeId();
-        System.out.println("Block id is:" + i);
-
-        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i)) {
+        int d = 0;
+        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != d && !canBlockBeWalkedThrough(i)) {
             // make sure the blocks above are air or can be walked through
             return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
         } else {
@@ -285,7 +286,8 @@ public class AStar {
     }
 
     private boolean canBlockBeWalkedThrough(int id) {
-        return (id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
+        int d = 0;
+        return (id == d || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
                 || id == 76 || id == 78);
     }
 
