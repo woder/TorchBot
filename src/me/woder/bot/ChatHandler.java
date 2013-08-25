@@ -13,16 +13,26 @@ public class ChatHandler {
         this.c = c;
     }
     
-    public void sendMessage(String message) throws IOException{
+    public void sendMessage(String message){
+       try{
         c.out.writeByte(0x03);
         c.out.writeShort(message.length());
         c.out.writeChars(message);
         c.out.flush();
+       } catch(IOException e){
+           e.printStackTrace();
+       }
     }
     
-    public String readMessage() throws IOException{
-        short len = c.in.readShort();
-        String messages = getString(c.in, len, 1500);
+    public String readMessage(){
+        short len;
+        String messages = null;
+        try {
+            len = c.in.readShort();
+            messages = getString(c.in, len, 1500);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(messages.contains("!")){
             c.chandle.processCommand(formatMessage(messages));
             System.out.println(formatMessage(messages));

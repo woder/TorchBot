@@ -50,9 +50,6 @@ public class MovementHandler {
             if(e.isStartNotSolid()){
                 System.out.println("Start block is not walkable");
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
      
@@ -60,11 +57,7 @@ public class MovementHandler {
         for(Tile t : tiles){
             Location loc = t.getLocation(start);
             calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));
-            try {
-                c.chat.sendMessage("Current block pos: " + t.getLocation(start).getBlockX() + ", " + t.getLocation(start).getBlockY() + ", " + t.getLocation(start).getBlockZ());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            c.chat.sendMessage("Current block pos: " + t.getLocation(start).getBlockX() + ", " + t.getLocation(start).getBlockY() + ", " + t.getLocation(start).getBlockZ());
         }
     }
     
@@ -106,11 +99,7 @@ public class MovementHandler {
     
     public void sendMovement(Location l){
         c.location = l;
-        try {
-            c.chat.sendMessage("Attempting to move to location: " + l.getX() + "," + l.getY() + "," + l.getZ());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        c.chat.sendMessage("Attempting to move to location: " + l.getX() + "," + l.getY() + "," + l.getZ());
         try {  
             c.out.writeByte(0x0B);
             c.out.writeDouble(l.getX());
@@ -122,7 +111,6 @@ public class MovementHandler {
             c.out.writeBoolean(true);
             c.out.flush();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
