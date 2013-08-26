@@ -13,6 +13,7 @@ public class CommandHandler {
     }
     
     public void processCommand(String message){
+        //TODO fix this mess of a command handler
         if(message.contains(c.prefix)){
             String command = message.substring(message.indexOf(c.prefix));
             if(command.contains("echo")){
@@ -58,9 +59,18 @@ public class CommandHandler {
                 } else {
                     c.chat.sendMessage("Failed :(");
                 }
-            }else if(command.contains("move")){
-                Location loc = new Location(c.whandle.getWorld(), 42, 63, 696);
-                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-2, c.location.getBlockZ()+1);          
+            }else if(command.contains("move")){            
+                Player p = c.findPlayer("woder22");
+                Location loc = null;
+                if(p != null){
+                    c.chat.sendMessage("loc" + p.x + "," + (p.y-1) + "," + p.z);
+                    loc = p.getLocationUnder();
+                    c.chat.sendMessage("block is " + loc.getBlock().getTypeId());
+                }
+                //Location loc = new Location(c.whandle.getWorld(), 42, 63, 696);
+                c.chat.sendMessage("loc" + c.location.getBlockX() + "," + (c.location.getBlockY()-1) + "," + c.location.getBlockZ());
+                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-1, c.location.getBlockZ());          
+                c.chat.sendMessage("block isd " + l.getBlock().getTypeId());
                 c.move.runPathing(l, loc, 50);
             }else if(command.contains("server")){
                 c.chat.sendMessage("/server hub");

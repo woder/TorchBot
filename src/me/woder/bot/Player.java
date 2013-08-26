@@ -3,18 +3,24 @@ package me.woder.bot;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class Player {
-    public int playerid;
+import me.woder.world.Location;
+
+public class Player extends Entity{
+    public int entityid;
     public String playername = "";
-    public int x;
-    public int y;
-    public int z;
+    public int xi;
+    public int yi;
+    public int zi;
+    public double x;
+    public double y;
+    public double z;
     public byte yaw;
     public byte pitch;
     public short currentitem;
     Client c;
     
     public Player(Client c){
+        super(c);
         this.c = c;
         try {
             parsePacket();
@@ -23,18 +29,66 @@ public class Player {
         }
     }
     
+    public Player(Client c, String name, int x, int y, int z){
+        super(c);
+        //TODO make this work
+    }
+    
     public void parsePacket() throws IOException{
-        playerid = c.in.readInt();
+        entityid = c.in.readInt();
         short len = c.in.readShort();
-        playername = getString(c.in, len, 17);
-        x = c.in.readInt();
-        y = c.in.readInt();
-        z = c.in.readInt();
+        playername = ChatColor.stripColor(getString(c.in, len, 17));
+        c.chat.sendMessage("Player " + ChatColor.stripColor(playername) + " spawned next to me");
+        xi = c.in.readInt();
+        yi = c.in.readInt();
+        zi = c.in.readInt();
+        x = xi / 32;
+        y = yi / 32;
+        z = zi / 32;
+        c.chat.sendMessage(x + "," + y + "," + z);
         yaw = c.in.readByte();
         pitch = c.in.readByte();
         currentitem = c.in.readShort();
-        System.out.println("Player " + playername + " spawned next to me :D and is holding: " + currentitem);
         c.proc.readWatchableObjects(c.in);
+    }
+    
+    @Override
+    public int getEntityId(){
+        return entityid;
+    }
+    
+    @Override
+    public Entity getEntity(){
+        return this;    
+    }
+    
+    @Override
+    public void updateLocation(Location l){
+        this.xi = l.getBlockX();
+        this.yi = l.getBlockY();
+        this.zi = l.getBlockZ();
+        this.x = xi/32;
+        this.y = yi/32;
+        this.z = zi/32;
+        c.chat.sendMessage("Y is: " + y + " and " + yi);
+    }
+    
+    @Override
+    public void setLocation(Location l){
+        this.x = l.getX();
+        this.y = l.getY();
+        this.z = l.getZ();
+    }
+    
+    @Override
+    public void setALocation(Location l){
+        this.xi = l.getBlockX();
+        this.yi = l.getBlockY();
+        this.zi = l.getBlockZ();
+        this.x = xi/32;
+        this.y = yi/32;
+        this.z = zi/32;
+        c.chat.sendMessage("Z is: " + z + " and " + zi);
     }
     
     public static String getString(DataInputStream datainputstream, int length,
@@ -54,6 +108,24 @@ public class Player {
         }
 
         return stringbuilder.toString();
+    }
+    
+    public String getName(){
+        return playername;
+    }
+    
+    @Override
+    public Location getLocation(){
+        return new Location(c.whandle.getWorld(), x, y, z);
+    }
+    
+    @Override
+    public Location getALocation(){
+        return new Location(c.whandle.getWorld(), xi, yi, zi);
+    }
+    
+    public Location getLocationUnder(){
+        return new Location(c.whandle.getWorld(), x, y-1, z);
     }
 
 }

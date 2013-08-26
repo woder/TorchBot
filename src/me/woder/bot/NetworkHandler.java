@@ -31,18 +31,17 @@ public class NetworkHandler {
                 System.out.println("Keep alive: " + randomint);
                  break;
               case 1:
-                c.entityID = in.readInt();
-                short sl = in.readShort();
+                 c.entityID = in.readInt();
+                 short sl = in.readShort();
                  c.leveltype = getString(in, sl, 30);
                  System.out.println("Level type: " + c.leveltype);
-                 c.gamemode = in.readByte();
-                 System.out.println("Gamemode: " + c.gamemode);
+                 Client.gamemode = in.readByte();
+                 System.out.println("Gamemode: " + Client.gamemode);
                  c.dimension = in.readByte();
                  System.out.println("Dimension: " + c.dimension);
                  c.difficulty = in.readByte();
-                short height = (short) (in.readByte() & 0xff);
-               short maxplayer = (short) (in.readByte() & 0xff);
-               c.chat.sendMessage("Sir, Bot reporting for duty.");
+                 short height = (short) (in.readByte() & 0xff);
+                 short maxplayer = (short) (in.readByte() & 0xff);
                 break;
               case 2:
                   byte b = in.readByte();
@@ -127,26 +126,14 @@ public class NetworkHandler {
                   in.readInt();
                   break;
               case 20:
-                  new Player(c);
+                  c.entities.add(new Player(c));
                   break;
               case 22:
                   int pickup = in.readInt();
                   int pickup1 = in.readInt();
                   break;
               case 23:
-                  in.readInt();
-                  in.readByte();
-                  in.readInt();
-                  in.readInt();
-                  in.readInt();
-                  in.readByte();
-                  in.readByte();
-                  int valuee = in.readInt();
-                  if (valuee != 0){
-                   in.readShort();
-                   in.readShort();
-                   in.readShort();
-                  }
+                  c.entities.add(new EntityVehicle(c));
                   break;
               case 24:
                   new SpawnEntity(in, c);
@@ -190,18 +177,29 @@ public class NetworkHandler {
                  in.readByte();
               break;
               case 33:
-                 in.readInt();
+                 Entity e = c.findEntityId(in.readInt());
+                if(e != null){
+                   Location ls = e.getALocation(); 
+                   double lx, ly, lz; 
+                   lx = ls.getX();
+                   ly = ls.getY();
+                   lz = ls.getZ();              
+                   e.updateLocation(new Location(c.whandle.getWorld(), lx += in.readByte(), ly += in.readByte(), lz += in.readByte()));
+                }else{
                  in.readByte();
                  in.readByte();
                  in.readByte();
+                }
                  in.readByte();
                  in.readByte();
                  break;
               case 34:
+                 Entity es = c.findEntityId(in.readInt());
+                if(es != null){es.updateLocation(new Location(c.whandle.getWorld(), in.readInt(), in.readInt(), in.readInt()));}else{
                  in.readInt();
                  in.readInt();
                  in.readInt();
-                 in.readInt();
+                }
                  in.readByte();
                  in.readByte();
                  break;

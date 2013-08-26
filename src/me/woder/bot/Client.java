@@ -68,6 +68,8 @@ public class Client {
     String username = "Unreal34";//TODO add way to change this
     String sessionId;
     List<Slot> inventory = new ArrayList<Slot>();
+    //List<Player> players = new ArrayList<Player>();//Is exclusive to players
+    List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
     
     @SuppressWarnings("unused")
@@ -115,18 +117,43 @@ public class Client {
              
              while(true){
                 //mainloop
-                net.readData();//Read data
+               net.readData();//Read data
                if(chunksloaded){
                 //move.applyGravity();//Apply gravity
                }
                if(connectedirc){
-                   irc.read();//Read text from irc, if there is some
+                 irc.read();//Read text from irc, if there is some
                }
              }
              
           }catch (Exception e){
               e.printStackTrace();
           }
+    }
+    
+    public Player findPlayer(String name){
+        Player p = null;
+        for(Entity s : entities){
+           if(s.getEntity() instanceof Player){
+            Player a = (Player)s;
+            if(a.getName().equals(name)){
+                p = a;
+                break;
+            }
+           }
+        }
+        return p;
+    }
+    
+    public Entity findEntityId(int id){
+        Entity e = null;
+        for(Entity s : entities){
+            if(s.getEntityId() == id){
+                e = s;
+                break;
+            }
+        }
+        return e;
     }
     
     public void activateEncryption(){

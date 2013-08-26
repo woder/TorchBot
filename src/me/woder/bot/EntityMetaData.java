@@ -23,7 +23,6 @@ public class EntityMetaData {
         }
     }
     
-    @SuppressWarnings("unused")
     public void parseData(DataInputStream in) throws IOException{
       
     }

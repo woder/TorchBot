@@ -16,7 +16,6 @@ public class SpawnEntity {
         }
     }
     
-    @SuppressWarnings("unused")
     public void parseData(DataInputStream in) throws IOException{
           int eids = in.readInt();
           System.out.println("Entity id: "+eids);
@@ -30,6 +29,7 @@ public class SpawnEntity {
           short volocityx = in.readShort();
           short volocityy = in.readShort();
           short volocityz = in.readShort();
+          c.entities.add(new Entity(c, eids, c.whandle.getWorld(), exs, eys, ezs, typed, pitch, hp, yaw, volocityx, volocityy, volocityz));
           c.proc.readWatchableObjects(in);//read that metadata
     }
     

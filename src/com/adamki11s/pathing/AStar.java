@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import me.woder.bot.Client;
 import me.woder.world.Block;
 import me.woder.world.Location;
 import me.woder.world.World;
