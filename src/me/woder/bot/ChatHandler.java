@@ -24,6 +24,19 @@ public class ChatHandler {
        }
     }
     
+    public String readString(){
+        short len;
+        String messages = null;
+        try {
+            len = c.in.readShort();
+            messages = getString(c.in, len, 1500);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(messages);
+        return messages;
+    }
+    
     public String readMessage(){
         short len;
         String messages = null;
@@ -37,6 +50,7 @@ public class ChatHandler {
             c.chandle.processCommand(formatMessage(messages));
             System.out.println(formatMessage(messages));
         }
+        c.gui.addText(formatMessage(messages));
         System.out.println(messages);
         return messages;
     }
@@ -46,7 +60,7 @@ public class ChatHandler {
         JSONObject json = (JSONObject) JSONSerializer.toJSON(message);     
         //JSONArray text = rec.;
         mess = json.getString("text");
-        return mess.replace("§", "&");
+        return mess;
     }
     
     public static String getString(DataInputStream datainputstream, int length,

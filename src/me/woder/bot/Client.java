@@ -4,6 +4,9 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,10 +19,11 @@ import java.net.URLEncoder;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Properties;
 
 import javax.crypto.SecretKey;
 
+import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
 import me.woder.world.Location;
 import me.woder.world.World;
@@ -27,6 +31,7 @@ import me.woder.world.WorldHandler;
 
 
 public class Client {
+    public TorchGUI gui;
     public ChatHandler chat;
     public MetaDataProcessor proc;
     public CommandHandler chandle;
@@ -65,20 +70,45 @@ public class Client {
     short level;
     short lvlto;
     double stance;
-    String username = "Unreal34";//TODO add way to change this
+    String username = "";//TODO add way to change this
     String sessionId;
+    private String password;
     List<Slot> inventory = new ArrayList<Slot>();
     //List<Player> players = new ArrayList<Player>();//Is exclusive to players
     List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
     
-    @SuppressWarnings("unused")
+    public Client(TorchGUI gui){
+        this.gui = gui;
+    }
+    
     public void main(){
+            File f = new File("config.properties");
+            if(f.exists()){
+                Properties prop = new Properties();                
+                try {
+                    prop.load(new FileInputStream("config.properties"));
+                    username = prop.getProperty("username");
+                    password = prop.getProperty("password");
+         
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }else{
+                Properties prop = new Properties();             
+                try {
+                    prop.setProperty("username", "unreal34");
+                    prop.setProperty("password", "1234");
+                    prop.store(new FileOutputStream("config.properties"), null);
+         
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
             prefix = "!";
-            String testServerName = "localhost";
+            String testServerName = "c.mcblocks.net";
             int client_version = 9999;
             int port = 25565;            
-            String password = "bananasarepro";//TODO add way to change this, config? make this private to stop plugins from acessing it
             //Code for login in to mc.net:
             String code = sendPostRequest("user="+username+"&password="+password+"&version="+client_version, "https://login.minecraft.net/");
             System.out.println(code);
@@ -100,11 +130,7 @@ public class Client {
             out.writeShort(testServerName.length());
             out.writeChars(testServerName);
             out.writeInt(port);
-            out.flush();    
-                  
-            Random random = new Random();
-            boolean working = true;
-            boolean already = true;           
+            out.flush();                             
              
             chat = new ChatHandler(this);
             proc = new MetaDataProcessor(this);

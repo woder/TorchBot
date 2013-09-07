@@ -77,7 +77,7 @@ public class NetworkHandler {
                   in.readByte();
                   in.readByte();
                   in.readShort();
-                  c.chat.readMessage();
+                  c.chat.readString();
                   break;
               case 13:
                   //receive the data
@@ -140,7 +140,7 @@ public class NetworkHandler {
                   break;
               case 25:
                   in.readInt();
-                  c.chat.readMessage();
+                  c.chat.readString();
                   in.readInt();
                   in.readInt();
                   in.readInt();
@@ -313,7 +313,7 @@ public class NetworkHandler {
                   boolean volume = in.readBoolean();
                   break;    
               case 62:
-                  String soundname = c.chat.readMessage();
+                  String soundname = c.chat.readString();
                   in.readInt();
                   in.readInt();
                   in.readInt();

@@ -17,7 +17,8 @@ public class CommandHandler {
         if(message.contains(c.prefix)){
             String command = message.substring(message.indexOf(c.prefix));
             if(command.contains("echo")){
-                String username = message.substring(message.indexOf("&"), message.indexOf(":"));
+                String username = message.substring(0, message.indexOf(" "));
+                username = username.replace("[<>:\\[\\]]", "");
                 if(message.contains("/")){
                      if(username.contains("woder22")){
                          c.chat.sendMessage(command.replace("!echo", "")); 
@@ -68,8 +69,8 @@ public class CommandHandler {
                     c.chat.sendMessage("block is " + loc.getBlock().getTypeId());
                 }
                 //Location loc = new Location(c.whandle.getWorld(), 42, 63, 696);
-                c.chat.sendMessage("loc" + c.location.getBlockX() + "," + (c.location.getBlockY()-1) + "," + c.location.getBlockZ());
-                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-1, c.location.getBlockZ());          
+                c.chat.sendMessage("loc" + c.location.getBlockX() + "," + (c.location.getBlockY()-2) + "," + c.location.getBlockZ());
+                Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-2, c.location.getBlockZ());          
                 c.chat.sendMessage("block isd " + l.getBlock().getTypeId());
                 c.move.runPathing(l, loc, 50);
             }else if(command.contains("server")){
@@ -79,30 +80,13 @@ public class CommandHandler {
         }
     }
     
-    public int hex2decimal(String s) {
-        String digits = "0123456789ABCDEF";
-        s = s.toUpperCase();
-        int val = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int d = digits.indexOf(c);
-            val = 16*val + d;
+    public void processConsoleCommand(String message){
+        if(message.startsWith("/")){
+            //TODO do stuff with commands
+        }else{
+            c.chat.sendMessage(message);
         }
-        return val;
     }
 
-
-    // precondition:  d is a nonnegative integer
-    public String decimal2hex(int d) {
-        String digits = "0123456789ABCDEF";
-        if (d == 0) return "0";
-        String hex = "";
-        while (d > 0) {
-            int digit = d % 16;                // rightmost digit
-            hex = digits.charAt(digit) + hex;  // string concatenation
-            d = d / 16;
-        }
-        return hex;
-    }
 
 }
