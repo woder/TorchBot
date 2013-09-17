@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import me.woder.network.TeamPacket209;
 import me.woder.world.Location;
 
 public class NetworkHandler {
@@ -91,7 +92,7 @@ public class NetworkHandler {
                   byte onGround = in.readByte();
                   System.out.println("Location is: " + X + "," + Y + "," + Z + " stance is" + Stance);
                   c.location = new Location(c.whandle.getWorld(), X, Y, Z);
-                  c.chat.sendMessage("Location updated to: " + X + "," + Y + "," + Z);
+                  //c.chat.sendMessage("Location updated to: " + X + "," + Y + "," + Z);
                   //send it back
                   out.writeByte(0x0D);
                   out.writeDouble(X);
@@ -419,6 +420,15 @@ public class NetworkHandler {
                  c.flyspeed = in.readFloat();
                  c.walkspeed = in.readFloat();
                  break;
+              case 206:
+                 c.chat.readString();
+                 c.chat.readString();
+                 c.chat.readString();
+                 in.readByte();
+                 break;
+              case 209:
+                 new TeamPacket209().read(c);
+                 break;
               case 250: //Plugin message
                  short l = in.readShort();
                  String channel = getString(in, l, 300);
@@ -438,24 +448,24 @@ public class NetworkHandler {
                   break;
               case 253:
                  short howlong = in.readShort();
-              String serverid = getString(in, (int)howlong, 300);//read the server id
-              System.out.println("Reading server id: " + serverid);
-              c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(in));//read the public key**taken from the original minecraft code**
-              byte[] verifytoken = c.readBytesFromStream(in);//read the verify token        
-              c.secretkey = CryptManager.createNewSharedKey();//generate a secret key
-              c.sharedkey = c.secretkey;
-              System.out.println("Secret key is: " + c.secretkey);
-              String var5 = (new BigInteger(CryptManager.getServerIdHash(serverid.trim(), c.publickey, c.secretkey))).toString(16);
-              String var6 = c.sendSessionRequest(c.username, c.sessionId, var5);
-              System.out.println(var6);
-              byte[] sharedSecret = new byte[0];
-              byte[] verifyToken = new byte[0];
-              out.writeByte(0xFC);//send an encryption response
-              sharedSecret = CryptManager.encryptData(c.publickey, c.secretkey.getEncoded());
-              verifyToken = CryptManager.encryptData(c.publickey, verifytoken);
-              c.writeByteArray(out, sharedSecret);//send 
-              c.writeByteArray(out, verifyToken);
-              out.flush();
+                 String serverid = getString(in, (int)howlong, 300);//read the server id
+                 System.out.println("Reading server id: " + serverid);
+                 c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(in));//read the public key**taken from the original minecraft code**
+                 byte[] verifytoken = c.readBytesFromStream(in);//read the verify token        
+                 c.secretkey = CryptManager.createNewSharedKey();//generate a secret key
+                 c.sharedkey = c.secretkey;
+                 System.out.println("Secret key is: " + c.secretkey);
+                 String var5 = (new BigInteger(CryptManager.getServerIdHash(serverid.trim(), c.publickey, c.secretkey))).toString(16);
+                 String var6 = c.sendSessionRequest(c.username, "token:" + c.accesstoken + ":" + c.profile, var5);
+                 System.out.println(var6);
+                 byte[] sharedSecret = new byte[0];
+                 byte[] verifyToken = new byte[0];
+                 out.writeByte(0xFC);//send an encryption response
+                 sharedSecret = CryptManager.encryptData(c.publickey, c.secretkey.getEncoded());
+                 verifyToken = CryptManager.encryptData(c.publickey, verifytoken);
+                 c.writeByteArray(out, sharedSecret);//send 
+                 c.writeByteArray(out, verifyToken);
+                 out.flush();
                  break;
               case 255:
                 System.out.println("Something is triggering some strange shiz isn't it");

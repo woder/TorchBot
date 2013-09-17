@@ -38,7 +38,7 @@ public class Player extends Entity{
         entityid = c.in.readInt();
         short len = c.in.readShort();
         playername = ChatColor.stripColor(getString(c.in, len, 17));
-        c.chat.sendMessage("Player " + ChatColor.stripColor(playername) + " spawned next to me");
+        //c.chat.sendMessage("Player " + ChatColor.stripColor(playername) + " spawned next to me");
         xi = c.in.readInt();
         yi = c.in.readInt();
         zi = c.in.readInt();
@@ -70,7 +70,7 @@ public class Player extends Entity{
         this.x = xi/32;
         this.y = yi/32;
         this.z = zi/32;
-        c.chat.sendMessage("Y is: " + y + " and " + yi);
+        //c.chat.sendMessage("Y is: " + y + " and " + yi);
     }
     
     @Override
@@ -88,7 +88,7 @@ public class Player extends Entity{
         this.x = xi/32;
         this.y = yi/32;
         this.z = zi/32;
-        c.chat.sendMessage("Z is: " + z + " and " + zi);
+        //c.chat.sendMessage("Z is: " + z + " and " + zi);
     }
     
     public static String getString(DataInputStream datainputstream, int length,

@@ -33,7 +33,7 @@ public class ChatHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(messages);
+        System.out.println(messages.trim());
         return messages;
     }
     
@@ -50,7 +50,7 @@ public class ChatHandler {
             c.chandle.processCommand(formatMessage(messages));
             System.out.println(formatMessage(messages));
         }
-        c.gui.addText(formatMessage(messages));
+        c.gui.addText(formatMessage(messages)+ "\n");
         System.out.println(messages);
         return messages;
     }
