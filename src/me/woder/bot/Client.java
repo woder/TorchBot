@@ -91,39 +91,38 @@ public class Client {
     List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
     
-    public Client(TorchGUI gui){
-        this.gui = gui;
+    public Client(){
     }
     
-    public void main(){
+    public void main(TorchGUI window){
+        this.gui = window;
         String server = "";
-            File f = new File("config.properties");
-            if(f.exists()){
-                Properties prop = new Properties();                
-                try {
-                    prop.load(new FileInputStream("config.properties"));
-                    username = prop.getProperty("username");
-                    password = prop.getProperty("password");
-                    server = prop.getProperty("server");
+        File f = new File("config.properties");
+        if(f.exists()){
+            Properties prop = new Properties();                
+            try {
+                prop.load(new FileInputStream("config.properties"));
+                username = prop.getProperty("username");
+                password = prop.getProperty("password");
+                server = prop.getProperty("server");
          
-                } catch (IOException ex) {
+            } catch (IOException ex) {
                     ex.printStackTrace();
-                }
-            }else{
-                Properties prop = new Properties();             
-                try {
-                    prop.setProperty("username", "unreal34");
-                    prop.setProperty("password", "1234");
-                    prop.setProperty("server", "smp.mcsteamed.net");
-                    prop.store(new FileOutputStream("config.properties"), null);
-         
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
             }
-            prefix = "!";
-            String testServerName = "localhost";
-            int port = 25564;            
+        }else{
+            Properties prop = new Properties();             
+            try {
+                prop.setProperty("username", "unreal34");
+                prop.setProperty("password", "1234");
+                prop.setProperty("server", "smp.mcsteamed.net");
+                prop.store(new FileOutputStream("config.properties"), null);
+         
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
+        }
+            prefix = "!";  
+            int port = 25565;            
             //Code for login in to mc.net:
             //String code = sendPostRequest("user="+username+"&password="+password+"&version="+client_version, "https://login.minecraft.net/");
             authPlayer(username,password);
@@ -143,8 +142,8 @@ public class Client {
             out.writeByte(74);//74 = 1.6.2
             out.writeShort(str);
             out.writeChars(username);
-            out.writeShort(testServerName.length());
-            out.writeChars(testServerName);
+            out.writeShort(server.length());
+            out.writeChars(server);
             out.writeInt(port);
             out.flush();                             
              
@@ -160,6 +159,7 @@ public class Client {
              while(true){
                 //mainloop
                net.readData();//Read data
+               gui.pradar.repaint();
                if(chunksloaded){
                 //move.applyGravity();//Apply gravity
                }

@@ -2,6 +2,9 @@ package me.woder.bot;
 
 import java.io.IOException;
 
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+
 import me.woder.world.Block;
 import me.woder.world.Location;
 
@@ -83,8 +86,14 @@ public class CommandHandler {
     public void processConsoleCommand(String message){
         if(message.startsWith("/")){
             //TODO do stuff with commands
+            AttributeSet attribute = c.gui.attributes.get(0);
+            try {
+                c.gui.doc.insertString(c.gui.doc.getLength(), message, attribute);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         }else{
-            c.chat.sendMessage(message);
+            c.chat.sendMessage(message);         
         }
     }
 

@@ -2,11 +2,7 @@ package me.woder.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Label;
-import java.awt.Point;
 
 import javax.swing.JFrame;
 
@@ -27,17 +23,20 @@ import me.woder.bot.Client;
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class TorchGUI extends JPanel{
     private static final long serialVersionUID = 1L;
     public DefaultStyledDocument doc = new DefaultStyledDocument();;
     public JFrame frame;
-    HashMap<String, AttributeSet> attributes;
+    public PRadar pradar;
+    public HashMap<String, AttributeSet> attributes;
     private JTextField textField;
     Client c;
     JTextPane chat;
@@ -68,30 +67,6 @@ public class TorchGUI extends JPanel{
     final AttributeSet reset = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.black);
     
     final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.black);
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-       super.paintComponent(g);
-       Graphics2D g2 = (Graphics2D) g.create();
-       g2.setPaint(new GradientPaint(new Point(0, 0), Color.WHITE, new Point(0,
-             getHeight()), Color.PINK.darker()));
-       g2.fillRoundRect(300, 50, getWidth(), getHeight(), 30, 30);
-       g2.setPaint(Color.BLACK);
-       g2.drawString("sex, oh yeah", 30, 12);
-       g2.dispose();
-
-       // super.paintComponent(g);
-    }
-    
-    /** launch it up
-     * 
-     *//*public static void main(String[] args){
-         TorchGUI window;
-         window = new TorchGUI();
-         window.frame.setVisible(true);
-         window.addText("§0this should be black §1this should be blue");
-      }*/
-    
 
     /**
      * Create the application.
@@ -131,12 +106,19 @@ public class TorchGUI extends JPanel{
         JScrollPane scrollPane = new JScrollPane();
         
         chat = new JTextPane(doc);
+        DefaultCaret caret = (DefaultCaret)chat.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         scrollPane.setViewportView(chat);
         chat.setEditable(false);
         
         
         textField = new JTextField();
         textField.setColumns(10);
+        textField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                processCommand(textField.getText());
+            }
+        });
         
         status = new JTextArea();
         status.setEditable(false);
@@ -144,8 +126,7 @@ public class TorchGUI extends JPanel{
         JButton btnNewButton = new JButton("Send");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                c.chandle.processConsoleCommand(arg0.getActionCommand());
-                textField.setText("");
+                processCommand(textField.getText());
             }
         });
         
@@ -167,6 +148,8 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_8 = new JButton("Place holder");
         
+        pradar = new PRadar();
+        
         GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
         groupLayout.setHorizontalGroup(
             groupLayout.createParallelGroup(Alignment.LEADING)
@@ -175,9 +158,14 @@ public class TorchGUI extends JPanel{
                     .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 520, GroupLayout.PREFERRED_SIZE)
-                            .addGap(10)
-                            .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
-                            .addGap(10)
+                            .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                                .addGroup(groupLayout.createSequentialGroup()
+                                    .addGap(10)
+                                    .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(groupLayout.createSequentialGroup()
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 266, GroupLayout.PREFERRED_SIZE)))
+                            .addPreferredGap(ComponentPlacement.UNRELATED)
                             .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                                 .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnNewButton_2, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
@@ -201,7 +189,8 @@ public class TorchGUI extends JPanel{
                     .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                         .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 454, GroupLayout.PREFERRED_SIZE)
                         .addGroup(groupLayout.createSequentialGroup()
-                            .addGap(239)
+                            .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(ComponentPlacement.RELATED)
                             .addComponent(status, GroupLayout.PREFERRED_SIZE, 215, GroupLayout.PREFERRED_SIZE))
                         .addGroup(groupLayout.createSequentialGroup()
                             .addGap(2)
@@ -230,6 +219,11 @@ public class TorchGUI extends JPanel{
         frame.pack();
         this.repaint();
         scrollTheText();
+    }
+    
+    public void processCommand(String text){
+        c.chandle.processConsoleCommand(text);
+        textField.setText("");
     }
     
     public void scrollTheText(){  
@@ -261,5 +255,4 @@ public class TorchGUI extends JPanel{
             }
         }
     }
-       
 }
