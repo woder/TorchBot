@@ -5,6 +5,7 @@ public class Block {
     private int x;
     private int y;
     private int z;
+    private byte metadata;
     private World world;
     
     public Block(World world, int x, int y, int z, int id){
@@ -13,6 +14,19 @@ public class Block {
         this.y = y;
         this.z = z;
         this.world = world;
+    }
+    
+    public Block(World world, int x, int y, int z, int id, byte metadata){
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.world = world;
+        this.metadata = metadata;
+    }
+    
+    public byte getMetaData(){
+        return metadata;
     }
     
     public Integer getTypeId(){

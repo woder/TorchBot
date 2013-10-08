@@ -6,6 +6,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 
 import me.woder.world.Block;
+import me.woder.world.Import;
 import me.woder.world.Location;
 
 public class CommandHandler {
@@ -59,10 +60,35 @@ public class CommandHandler {
                 //String[] args = command.split(" ");
                 Block b = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
                 if (b != null) {
-                    c.chat.sendMessage("Block is: " + b.getTypeId());
+                    c.chat.sendMessage("Block is: " + b.getTypeId() + " and its meta data is: " + b.getMetaData());
                 } else {
                     c.chat.sendMessage("Failed :(");
                 }
+            }else if(command.contains("place")){
+                try {
+                    c.out.writeByte(0x0f);
+                    c.out.writeInt(c.location.getBlockX()+1);
+                    c.out.writeByte(c.location.getBlockY());
+                    c.out.writeInt(c.location.getBlockZ());
+                    c.out.writeByte(0);
+                    c.out.writeShort(5);
+                    c.out.writeShort(1);
+                    c.out.writeShort(0);
+                    c.out.writeShort(-1);
+                    c.out.writeByte(8);
+                    c.out.writeByte(8);
+                    c.out.writeByte(8);
+                    c.out.flush();
+                    
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
+            }else if(command.contains("version")){
+                c.chat.sendMessage(c.versioninfo);
+            }else if(command.contains("import")){
+                Import im = new Import();
+                im.importb(c, -470, 69, 485, -475, 72, 475);
             }else if(command.contains("move")){            
                 Player p = c.findPlayer("woder22");
                 Location loc = null;

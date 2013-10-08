@@ -15,6 +15,7 @@ public class Chunk {
     private int x;
     private int z;
     private byte[] blocks;
+    private byte[] blockmeta;
     public List<Part> parts;
     public int blocknum;
     private int ablocks;
@@ -33,13 +34,13 @@ public class Chunk {
 
         blocknum = 0;
         ablocks = 0;
-        System.out.println(Integer.toBinaryString(pbitmap));
+        //System.out.println(Integer.toBinaryString(pbitmap));
         for (int i = 0; i < 16; i++) {
             //System.out.println("Bit map = " + (pbitmap & (1 << i)));
             if ((pbitmap & (1 << i)) != 0) {
                 blocknum++; // "parts of the chunk"
                 parts.add(new Part((byte)i, c));
-                System.out.println("Added new part: " + i);
+                //System.out.println("Added new part: " + i);
             }
         }
 
@@ -55,23 +56,44 @@ public class Chunk {
     
     public void fillChunk(){
         int offset = 0;
+        int metaoff = 0;
         int current = 0;
         
         for (int i = 0; i < 16; i++) {
             if ((pbitmap & (1 << i)) != 0) {
 
                 byte[] temp = new byte[4096];
+                byte[] temp2 = new byte[2048];
 
                 System.arraycopy(blocks, offset, temp, 0, 4096);
+                System.arraycopy(blockmeta, metaoff, temp2, 0, 2048);
+                short[] metablock = getShortArray(temp, temp2);
                 Part mySection = parts.get(current);
-                System.out.println("Part is: " + mySection.y);
-                mySection.blocks = temp;
+                //System.out.println("Part is: " + mySection.y);
+                mySection.blocks = metablock;
                 offset += 4096;
+                metaoff += 2048;
                 current += 1;
             }
         }
         
      }
+    
+    public short[] getShortArray(byte[] a, byte[] b){
+        short[] finals = new short[a.length];
+        int mi = 0;
+        for(int i = 0; i < a.length; i+=2){
+            short c = (short) (a[i] & 0xff);
+            c = (short) (c + ((b[mi] & 0xf0) << 4));
+            finals[i] = c;
+            c = (short) (a[i+1] & 0xff); 
+            c = (short) ((short) c + ((b[mi] & 0xf) << 8));
+            finals[i+1] = c;
+            mi++;
+        }
+        
+        return finals;
+    }
     
      public int getBlockId(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
@@ -83,13 +105,13 @@ public class Chunk {
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
-     public void updateBlock(int Bx, int By, int Bz, int id) {
+     public void updateBlock(int Bx, int By, int Bz, int id, byte meta) {
         // Updates the block in this chunk.
         // TODO: Ensure that the block being updated is in this chunk.
         // Even though chances of that exception throwing are tiny.
 
         Part part = GetSectionByNumber(By);
-        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id);
+        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, meta);
 
      }
     
@@ -99,6 +121,7 @@ public class Chunk {
 
         blocks = new byte[blocknum];
         byte[] temp;
+        blockmeta = new byte[blocknum/2];
         int removeable = blocknum;
 
         if (lighting == true)
@@ -108,8 +131,9 @@ public class Chunk {
             removeable += 256;
 
         System.arraycopy(deCompressed, 0, blocks, 0, blocknum);
-        System.out.println(deCompressed.length);
-        System.out.println("Blocknum" + (blocknum + removeable));
+        System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);
+        //System.out.println(deCompressed.length);
+        //System.out.println("Blocknum" + (blocknum + removeable));
         temp = new byte[deCompressed.length - (blocknum + removeable)];
 
         System.arraycopy(deCompressed, (blocknum + removeable), temp, 0, temp.length);

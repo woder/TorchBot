@@ -62,7 +62,7 @@ public class World {
         return thisblock;
     }
     
-    public void setBlock(int x, int y, int z, int id){
+    public void setBlock(int x, int y, int z, int id, byte meta){
         double ChunkX = x/16;
         double ChunkZ = z/16;
 
@@ -77,7 +77,7 @@ public class World {
             }
         }
       if(thisChunk != null){        
-        thisChunk.updateBlock(x, y, z, id);
+        thisChunk.updateBlock(x, y, z, id, meta);
       }
     }
     

@@ -19,16 +19,22 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.logging.Log;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -81,22 +87,27 @@ public class Client {
     short lvlto;
     double stance;
     String username = "";//TODO add way to change this
+    int port;
+    String servername;
     String sessionId;
+    public boolean running = true;
     private String password;
     public String accesstoken;
     public String clienttoken;
     public String profile;
+    public String versioninfo = "TorchBot version 0.2 by woder";
+    public String version = "0.2";
     List<Slot> inventory = new ArrayList<Slot>();
     //List<Player> players = new ArrayList<Player>();//Is exclusive to players
     List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
+    Logger netlog = Logger.getLogger("me.woder.network");
+    Logger chatlog = Logger.getLogger("me.woder.chat");
+    Logger errlog = Logger.getLogger("me.woder.network");
     
-    public Client(){
-    }
     
     public void main(TorchGUI window){
         this.gui = window;
-        String server = "";
         File f = new File("config.properties");
         if(f.exists()){
             Properties prop = new Properties();                
@@ -104,7 +115,9 @@ public class Client {
                 prop.load(new FileInputStream("config.properties"));
                 username = prop.getProperty("username");
                 password = prop.getProperty("password");
-                server = prop.getProperty("server");
+                servername = prop.getProperty("servername");
+                System.out.println(servername);
+                port = Integer.parseInt(prop.getProperty("port"));
          
             } catch (IOException ex) {
                     ex.printStackTrace();
@@ -114,63 +127,146 @@ public class Client {
             try {
                 prop.setProperty("username", "unreal34");
                 prop.setProperty("password", "1234");
-                prop.setProperty("server", "smp.mcsteamed.net");
+                prop.setProperty("servername", "c.mcblocks.net");
+                prop.setProperty("port", "25565");
                 prop.store(new FileOutputStream("config.properties"), null);
          
             } catch (IOException ex) {
                     ex.printStackTrace();
             }
         }
-            prefix = "!";  
-            int port = 25565;            
-            //Code for login in to mc.net:
-            //String code = sendPostRequest("user="+username+"&password="+password+"&version="+client_version, "https://login.minecraft.net/");
-            authPlayer(username,password);
-            //System.out.println(code);
-            //String[] values = code.split(":");
-            //sessionId = values[3];
-            chunksloaded = false;
-            connectedirc = false;
-            try{
-              // open a socket
+        Handler fh = null, fn = null;
+        new File("logs").mkdir();
+        try {
+            fh = new FileHandler("logs/network.log");
+            fn = new FileHandler("logs/chat.log");
+        } catch (SecurityException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        Logger.getLogger("me.woder.network").addHandler(fh);
+        Logger.getLogger("me.woder.chat").addHandler(fn);
+        Logger.getLogger("me.woder.network").setLevel(Level.FINEST);
+        Logger.getLogger("me.woder.chat").setLevel(Level.FINEST);
+        prefix = "!";
+        gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
+        gui.addText("§3 or press the change server button to login to a new server.");   
+        pingServer(servername, port);      
+        authPlayer(username, password);
+    }
+    
+    public void startBot(String server, String port){
+       this.servername = server;
+       try{
+         this.port = Integer.parseInt(port);
+       }catch(NumberFormatException e){
+         netlog.log(Level.SEVERE, "§4Port was not an integer!");
+         gui.addText("§4Port was not an integer!");
+       }
+       startBot();
+    }
+    
+    public void startBot(){
+        chunksloaded = false;
+        connectedirc = false;
+        try{
+          // open a socket
+        System.out.println("Attempting to connect to: " + servername + " on " + port);
+        clientSocket = new Socket(servername, port);
+        out = new DataOutputStream(clientSocket.getOutputStream());
+        in = new DataInputStream(clientSocket.getInputStream());
+        //our hand shake
+        int str = username.length();
+        out.writeByte(0x02);
+        out.writeByte(78);//74 = 1.6.2
+        out.writeShort(str);
+        out.writeChars(username);
+        out.writeShort(servername.length());
+        out.writeChars(servername);
+        out.writeInt(port);
+        out.flush();                             
+         
+        chat = new ChatHandler(this);
+        proc = new MetaDataProcessor(this);
+        chandle = new CommandHandler(this);
+        whandle = new WorldHandler(this);
+        net = new NetworkHandler(this,in,out);          
+        world = whandle.getWorld();
+        move = new MovementHandler(this);
+        irc = new IRCBridge(this);
+         
+         while(true){
+            //mainloop
+           net.readData();//Read data
+           gui.tick();
+           if(chunksloaded){
+            //move.applyGravity();//Apply gravity
+           }
+           if(connectedirc){
+             irc.read();//Read text from irc, if there is some
+           }
+         }
+         
+      }catch (Exception e){
+          e.printStackTrace();
+      }
+    }
+    
+    public void stopBot(String reason){
+        try {
+            out.writeByte(0xFF);
+            out.writeShort(reason.length());
+            out.writeChars(reason);
+            out.close();
+            in.close();
+            clientSocket.close();
+        } catch (IOException e) {
+            gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
+            netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
+        }        
+    }
+    
+    public void pingServer(String server, int port){
+        try {
             clientSocket = new Socket(server, port);
             out = new DataOutputStream(clientSocket.getOutputStream());
             in = new DataInputStream(clientSocket.getInputStream());
-            //our hand shake
-            int str = username.length();
-            out.writeByte(0x02);
-            out.writeByte(74);//74 = 1.6.2
-            out.writeShort(str);
-            out.writeChars(username);
+            out.writeByte(0xFE);
+            out.writeByte(1);
+            out.flush();
+            out.writeByte(0xFA);
+            out.writeShort(11);
+            out.writeChars("MC|PingHost");
+            out.writeShort(7+(2*server.length()));
+            out.writeByte(75);
             out.writeShort(server.length());
             out.writeChars(server);
             out.writeInt(port);
-            out.flush();                             
-             
-            chat = new ChatHandler(this);
-            proc = new MetaDataProcessor(this);
-            chandle = new CommandHandler(this);
-            whandle = new WorldHandler(this);
-            net = new NetworkHandler(this,in,out);          
-            world = whandle.getWorld();
-            move = new MovementHandler(this);
-            irc = new IRCBridge(this);
-             
-             while(true){
-                //mainloop
-               net.readData();//Read data
-               gui.pradar.repaint();
-               if(chunksloaded){
-                //move.applyGravity();//Apply gravity
-               }
-               if(connectedirc){
-                 irc.read();//Read text from irc, if there is some
-               }
-             }
-             
-          }catch (Exception e){
-              e.printStackTrace();
+            out.flush();
+          byte id = in.readByte();
+          if(id==-1){
+              short lend = in.readShort();
+              String[] data = getString(in, lend, 400).split("\0");
+              String gamev = data[2];
+              String motd = data[3];
+              String online = data[4];
+              String maxp = data[5];
+              gui.addText("§5Game version: " + gamev + " " + motd + " " + online + "/" + maxp);
           }
+          out.close();
+          in.close();
+          clientSocket.close();
+            
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            netlog.log(Level.SEVERE, "CONNECTION ERROR: " + e.getMessage());
+            gui.addText("§4CONNECTION ERROR: " + e.getMessage());
+            gui.addText("§4Check server info: " + server + " on " + port);
+            
+        }
     }
     
     public Player findPlayer(String name){

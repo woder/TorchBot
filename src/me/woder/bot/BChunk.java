@@ -25,9 +25,9 @@ public class BChunk {
     public void parseChunk(){
         try {
             x = in.readInt();
-             z = in.readInt();
-             boolean isGroundUp = in.readBoolean();
-             short a = in.readShort();
+            z = in.readInt();
+            boolean isGroundUp = in.readBoolean();
+            short a = in.readShort();
             int bitmask = a & 0xffff;
             short as = in.readShort();
             int addmask = as & 0xffff;

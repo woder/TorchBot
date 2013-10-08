@@ -69,6 +69,7 @@ public class PChunk {
           //step 4, actually add the new chunks
           for(int i = 0; i < len; i++){
               chunk = chunks[i].getData(chunk);//takes what it needs and leaves the rest
+              //System.out.println("Adding the chunks... ");
               c.whandle.getWorld().chunklist.add(chunks[i]);//add it to the world :D
           }
           

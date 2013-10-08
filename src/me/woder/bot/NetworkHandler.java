@@ -4,16 +4,21 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import me.woder.network.TeamPacket209;
+import me.woder.network.UpdateScore207;
 import me.woder.world.Location;
 
 public class NetworkHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private Client c;
+    private Logger log;
     
     public NetworkHandler(Client c, DataInputStream in, DataOutputStream out){
+        log = Logger.getLogger("me.woder.network");
         this.in = in;
         this.out = out;
         this.c = c;
@@ -22,24 +27,24 @@ public class NetworkHandler {
     @SuppressWarnings("unused")
     public void readData() throws IOException{
              int idd = (in.readByte() & 0xff);
-             System.out.println("Reading packet: " + idd);
+             log.log(Level.FINE, "Reading packet: " + idd);
              switch(idd){
               case 0:
                  int randomint = in.readInt();
                  out.writeByte(0);
                  out.writeInt(randomint);
                  out.flush();
-                System.out.println("Keep alive: " + randomint);
+                log.log(Level.FINEST,"Keep alive: " + randomint);
                  break;
               case 1:
                  c.entityID = in.readInt();
                  short sl = in.readShort();
                  c.leveltype = getString(in, sl, 30);
-                 System.out.println("Level type: " + c.leveltype);
+                 log.log(Level.FINEST,"Level type: " + c.leveltype);
                  Client.gamemode = in.readByte();
-                 System.out.println("Gamemode: " + Client.gamemode);
+                 log.log(Level.FINEST,"Gamemode: " + Client.gamemode);
                  c.dimension = in.readByte();
-                 System.out.println("Dimension: " + c.dimension);
+                 log.log(Level.FINEST,"Dimension: " + c.dimension);
                  c.difficulty = in.readByte();
                  short height = (short) (in.readByte() & 0xff);
                  short maxplayer = (short) (in.readByte() & 0xff);
@@ -90,7 +95,7 @@ public class NetworkHandler {
                   float Yaw = in.readFloat();
                   float Pitch = in.readFloat();
                   byte onGround = in.readByte();
-                  System.out.println("Location is: " + X + "," + Y + "," + Z + " stance is" + Stance);
+                  log.log(Level.FINEST,"Location is: " + X + "," + Y + "," + Z + " stance is" + Stance);
                   c.location = new Location(c.whandle.getWorld(), X, Y, Z);
                   //c.chat.sendMessage("Location updated to: " + X + "," + Y + "," + Z);
                   //send it back
@@ -255,7 +260,7 @@ public class NetworkHandler {
                   for(int i = 0; i<pcount;i++){
                       short strs = in.readShort();
                       key[i] = getString(in, strs, 300);
-                      System.out.println(key[i]);
+                      log.log(Level.FINEST,key[i]);
                       double value = in.readDouble();
                       short listLength = in.readShort();    
                      for (int z = 0; z < listLength; z++) {
@@ -276,15 +281,16 @@ public class NetworkHandler {
                   in.readShort();
                   int var4 = in.readInt();
                   byte[] vas = new byte[var4];
-               in.readFully(vas);
+                  in.readFully(vas);
                   break;
               case 53:
                   int bx = in.readInt();
                   byte by =in.readByte();
                   int bz = in.readInt();
                   short id = in.readShort();
-                  in.readByte();
-                  c.whandle.getWorld().setBlock(bx, by, bz, id);
+                  byte meta = in.readByte();
+                  c.chat.sendMessage("Meta data is: " + meta + " bid " + id);
+                  c.whandle.getWorld().setBlock(bx, by, bz, id, meta);
                   break;
               case 54:
                   in.readInt();
@@ -336,7 +342,7 @@ public class NetworkHandler {
                   byte wid = in.readByte();
                   in.readByte();
                   short val = in.readShort();
-                  System.out.println(getString(in, val, 100));
+                  log.log(Level.FINEST,getString(in, val, 100));
                   in.readByte();
                   in.readBoolean();
                   if(wid == 11)in.readInt();
@@ -344,7 +350,7 @@ public class NetworkHandler {
               case 103:
                   byte winde = in.readByte();
                   short slo = in.readShort();
-                  System.out.println("Slot id is: " + slo);
+                  log.log(Level.FINEST,"Slot id is: " + slo);
                  if(slo != -1){
                   if(c.inventory.size() >= slo){
                    //inventory.remove(slo);
@@ -386,7 +392,7 @@ public class NetworkHandler {
                 String text3 = getString(in, le, 16);
                 le = in.readShort();
                  String text4 = getString(in, le, 16);
-                 System.out.println("Sign at " + sx + "," + sy + "," + sz + " now says: " + text1 + ";" + text2 + ";" + text3 + ";" + text4);
+                 log.log(Level.FINEST,"Sign at " + sx + "," + sy + "," + sz + " now says: " + text1 + ";" + text2 + ";" + text3 + ";" + text4);
                  break;
               case 131:
                   short itype = in.readShort();
@@ -413,7 +419,7 @@ public class NetworkHandler {
                  String user = getString(in, (int)str2, 16);
                  byte bool = in.readByte();
                  short ping = in.readShort();
-                 System.out.println("User: " + user);
+                 log.log(Level.FINEST,"User: " + user);
                  break;
               case 202://PlayerAbilities
                  c.flags = in.readByte();
@@ -423,8 +429,14 @@ public class NetworkHandler {
               case 206:
                  c.chat.readString();
                  c.chat.readString();
-                 c.chat.readString();
                  in.readByte();
+                 break;
+              case 207:
+                 new UpdateScore207().read(c);
+                 break;
+              case 208:
+                 in.readByte();
+                 c.chat.readString();
                  break;
               case 209:
                  new TeamPacket209().read(c);
@@ -432,7 +444,7 @@ public class NetworkHandler {
               case 250: //Plugin message
                  short l = in.readShort();
                  String channel = getString(in, l, 300);
-                 System.out.println("Plugin message: " + channel);
+                 log.log(Level.FINEST,"Plugin message: " + channel);
                  byte[] info = c.readBytesFromStream(in);
                  break;
               case 252:
@@ -449,15 +461,15 @@ public class NetworkHandler {
               case 253:
                  short howlong = in.readShort();
                  String serverid = getString(in, (int)howlong, 300);//read the server id
-                 System.out.println("Reading server id: " + serverid);
+                 log.log(Level.FINEST,"Reading server id: " + serverid);
                  c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(in));//read the public key**taken from the original minecraft code**
                  byte[] verifytoken = c.readBytesFromStream(in);//read the verify token        
                  c.secretkey = CryptManager.createNewSharedKey();//generate a secret key
                  c.sharedkey = c.secretkey;
-                 System.out.println("Secret key is: " + c.secretkey);
+                 log.log(Level.FINEST,"Secret key is: " + c.secretkey);
                  String var5 = (new BigInteger(CryptManager.getServerIdHash(serverid.trim(), c.publickey, c.secretkey))).toString(16);
                  String var6 = c.sendSessionRequest(c.username, "token:" + c.accesstoken + ":" + c.profile, var5);
-                 System.out.println(var6);
+                 log.log(Level.FINEST,var6);
                  byte[] sharedSecret = new byte[0];
                  byte[] verifyToken = new byte[0];
                  out.writeByte(0xFC);//send an encryption response
@@ -468,18 +480,18 @@ public class NetworkHandler {
                  out.flush();
                  break;
               case 255:
-                System.out.println("Something is triggering some strange shiz isn't it");
                 short length = in.readShort();
                 if(length > 0){
                 String reasons = getString(in, (int) length, 300);
-                System.out.println("You were kicked: " + reasons);
+                log.log(Level.WARNING,"You were kicked: " + reasons);
                 }
                 out.close();
                 in.close();
+                c.running = false;
                 c.clientSocket.close();
                 break;
               default:
-                System.out.println("We received unhandled packet: " + idd);  
+                log.log(Level.SEVERE,"We received unhandled packet: " + idd);  
                 throw new IOException("Unhandled packet!");
               }                 
     }

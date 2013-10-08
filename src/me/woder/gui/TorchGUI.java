@@ -6,6 +6,7 @@ import java.awt.Label;
 
 import javax.swing.JFrame;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -20,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import me.woder.bot.Client;
+import me.woder.bot.ThreadMainLoop;
+
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -35,6 +38,7 @@ public class TorchGUI extends JPanel{
     private static final long serialVersionUID = 1L;
     public DefaultStyledDocument doc = new DefaultStyledDocument();;
     public JFrame frame;
+    public TorchGUI torchs = this;
     public PRadar pradar;
     public HashMap<String, AttributeSet> attributes;
     private JTextField textField;
@@ -98,7 +102,7 @@ public class TorchGUI extends JPanel{
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JFrame("TorchBot 2.1");
+        frame = new JFrame("TorchBot " + c.version);
         //frame.setBounds(100, 100, 944, 555);
         frame.setPreferredSize(new Dimension(944, 555));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,9 +136,25 @@ public class TorchGUI extends JPanel{
         
         news = new JLabel(text, Label.RIGHT);
         
-        JButton btnNewButton_1 = new JButton("Login");
+        JButton btnNewButton_1 = new JButton("Connect");
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                String s = JOptionPane.showInputDialog(null,"Enter server name and port, seperated by a ';' (Leave blank for server in config)", "Connect to a server", JOptionPane.PLAIN_MESSAGE);
+                if ((s != null) && (s.length() > 0)) {
+                    String[] bo = s.split(";");
+                    startB(bo[0], bo[1]);
+                }else{
+                    startB();
+                }
+            }
+        });
         
-        JButton btnNewButton_2 = new JButton("Follow");
+        JButton btnNewButton_2 = new JButton("Disconnect");
+        btnNewButton_2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                stopB();
+            }
+        });
         
         JButton btnNewButton_3 = new JButton("Place holder");
         
@@ -158,14 +178,14 @@ public class TorchGUI extends JPanel{
                     .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 520, GroupLayout.PREFERRED_SIZE)
-                            .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                            .addGap(10)
+                            .addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
                                 .addGroup(groupLayout.createSequentialGroup()
-                                    .addGap(10)
-                                    .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE))
-                                .addGroup(groupLayout.createSequentialGroup()
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 266, GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(ComponentPlacement.UNRELATED)
+                                    .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(ComponentPlacement.UNRELATED))
+                                .addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+                                    .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(ComponentPlacement.UNRELATED)))
                             .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                                 .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnNewButton_2, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
@@ -221,6 +241,24 @@ public class TorchGUI extends JPanel{
         scrollTheText();
     }
     
+    public void tick(){
+        pradar.repaint();
+    }
+    
+    public void startB(String server, String port){
+        Thread loop = new Thread(new ThreadMainLoop(c,server, port),"T1");
+        loop.start();
+    }
+    
+    public void startB(){
+        Thread loop = new Thread(new ThreadMainLoop(c),"T1");
+        loop.start();
+    }
+    
+    public void stopB(){
+        c.stopBot("Leaving");
+    }
+    
     public void processCommand(String text){
         c.chandle.processConsoleCommand(text);
         textField.setText("");
@@ -239,6 +277,7 @@ public class TorchGUI extends JPanel{
     }  
     
     public void addText(String text){
+        text = text + "\n";
         String[] lines = text.split("§");
 
         for (int i = 1; i < lines.length; i++){
