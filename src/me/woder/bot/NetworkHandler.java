@@ -483,6 +483,7 @@ public class NetworkHandler {
                 short length = in.readShort();
                 if(length > 0){
                 String reasons = getString(in, (int) length, 300);
+                c.gui.addText("§4You were kicked: " + reasons);
                 log.log(Level.WARNING,"You were kicked: " + reasons);
                 }
                 out.close();

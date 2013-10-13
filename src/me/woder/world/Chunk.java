@@ -1,5 +1,10 @@
 package me.woder.world;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +74,24 @@ public class Chunk {
                 System.arraycopy(blockmeta, metaoff, temp2, 0, 2048);
                 short[] metablock = getShortArray(temp, temp2);
                 Part mySection = parts.get(current);
-                //System.out.println("Part is: " + mySection.y);
+                System.out.println("Part is: " + mySection.y);
                 mySection.blocks = metablock;
+                FileWriter writer;
+                try {
+                    writer = new FileWriter("filename",true);;
+                    int slow = 0;
+                    for(int s = 0; s < metablock.length; s+=2){
+                        writer.write("shortarr:" + metablock[s] + " firstid: " + temp[s] + " firstmeta: " + temp2[slow] + " index: " + s + " chunk x, chunk z" + x + " " + z + "\n");
+                        writer.write("shortarr:" + metablock[s+1] + " firstid: " + temp[s+1] + " firstmeta: " + temp2[slow] + " index: " + (s+1) + "\n");
+                        slow++;
+                    }
+                    writer.write("Block length: " + blocks.length + " meta: " + metablock.length + "\n");
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 offset += 4096;
                 metaoff += 2048;
                 current += 1;
@@ -83,12 +104,12 @@ public class Chunk {
         short[] finals = new short[a.length];
         int mi = 0;
         for(int i = 0; i < a.length; i+=2){
-            short c = (short) (a[i] & 0xff);
-            c = (short) (c + ((b[mi] & 0xf0) << 4));
+            short c = (short) (((short) a[i] & 0xff) | (((short) b[mi] & 0xf) << 8));
+            //System.out.println("Data before: " + a[i] + " meta:" + ((b[mi] & 0xf0) >> 4));           
             finals[i] = c;
-            c = (short) (a[i+1] & 0xff); 
-            c = (short) ((short) c + ((b[mi] & 0xf) << 8));
-            finals[i+1] = c;
+            short e = (short) (((short) a[i+1] & 0xff) | (((short) b[mi] & 0xf0) << 4));
+            //System.out.println("Data before: " + a[i+1] + " meta:" + ((b[mi] & 0xf)));
+            finals[i+1] = e;
             mi++;
         }
         
@@ -132,10 +153,12 @@ public class Chunk {
 
         System.arraycopy(deCompressed, 0, blocks, 0, blocknum);
         System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);
+        /*for(int i = 0; i < blocks.length; i++){
+            System.out.println("id: " + blocks[i]);
+        }*/
         //System.out.println(deCompressed.length);
-        //System.out.println("Blocknum" + (blocknum + removeable));
-        temp = new byte[deCompressed.length - (blocknum + removeable)];
-
+        //System.out.println("Blocknum" + blocknum + " block num AND removeable: " + (blocknum + removeable));
+        temp = new byte[deCompressed.length - (blocknum + removeable)];     
         System.arraycopy(deCompressed, (blocknum + removeable), temp, 0, temp.length);
 
         fillChunk(); // Populate all of our sections with the bytes we just aquired.

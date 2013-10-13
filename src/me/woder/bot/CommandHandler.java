@@ -20,7 +20,7 @@ public class CommandHandler {
         //TODO fix this mess of a command handler
         if(message.contains(c.prefix)){
             String command = message.substring(message.indexOf(c.prefix));
-            if(command.contains("echo")){
+            if(command.contains("echos")){
                 String username = message.substring(0, message.indexOf(" "));
                 username = username.replace("[<>:\\[\\]]", "");
                 if(message.contains("/")){

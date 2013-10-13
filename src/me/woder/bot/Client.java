@@ -135,11 +135,12 @@ public class Client {
                     ex.printStackTrace();
             }
         }
-        Handler fh = null, fn = null;
+        Handler fh = null, fn = null, fe = null;
         new File("logs").mkdir();
         try {
             fh = new FileHandler("logs/network.log");
             fn = new FileHandler("logs/chat.log");
+            fe = new FileHandler("logs/err.log");
         } catch (SecurityException e1) {
             e1.printStackTrace();
         } catch (IOException e1) {
@@ -147,8 +148,10 @@ public class Client {
         }
         Logger.getLogger("me.woder.network").addHandler(fh);
         Logger.getLogger("me.woder.chat").addHandler(fn);
+        Logger.getLogger("me.woder.error").addHandler(fe);
         Logger.getLogger("me.woder.network").setLevel(Level.FINEST);
         Logger.getLogger("me.woder.chat").setLevel(Level.FINEST);
+        Logger.getLogger("me.woder.error").setLevel(Level.FINEST);
         prefix = "!";
         gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
         gui.addText("§3 or press the change server button to login to a new server.");   
