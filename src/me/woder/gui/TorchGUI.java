@@ -16,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -277,6 +280,7 @@ public class TorchGUI extends JPanel{
     }  
     
     public void addText(String text){
+        Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = text + "\n";
         String[] lines = text.split("§");
 

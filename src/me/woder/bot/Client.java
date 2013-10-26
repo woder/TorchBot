@@ -34,7 +34,6 @@ import javax.crypto.SecretKey;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.logging.Log;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -97,6 +96,9 @@ public class Client {
     public String profile;
     public String versioninfo = "TorchBot version 0.2 by woder";
     public String version = "0.2";
+    public File[] plugins = null;
+    public String[] cmds = null;
+    public String[] descriptions = null;
     List<Slot> inventory = new ArrayList<Slot>();
     //List<Player> players = new ArrayList<Player>();//Is exclusive to players
     List<Entity> entities = new ArrayList<Entity>();//Includes players

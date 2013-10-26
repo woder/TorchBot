@@ -13,15 +13,16 @@ public class Import {
         d1 = 1;
         d2 = 1;
         d3 = 1;
-        if(x < x2){
+        if(x > x2){
             d1 = -1;
         }
-        if(y < y2){
+        if(y > y2){
             d2 = -1;
         }
-        if(z < z2){
+        if(z > z2){
             d3 = -1;
         }        
+        System.out.println("We got here");
         for(int ix = x; ix == x2; ix = ix + d1){
           for(int iy = y; iy == y2; iy = iy + d2){
              for(int iz = z; iz == z2; iz = iz + d3){
