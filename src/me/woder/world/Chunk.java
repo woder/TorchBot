@@ -201,6 +201,7 @@ public class Chunk {
      }
      
      private int getZinSection(int BlockZ) {
+         System.out.println("Bz" + BlockZ + " Cz" + z);
          return BlockZ - (z * 16);
      }
     

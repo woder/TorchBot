@@ -25,7 +25,7 @@ public class Import {
         for(int ix = x; ix == x2; ix = ix + d1){
           for(int iy = y; iy == y2; iy = iy + d2){
              for(int iz = z; iz == z2; iz = iz + d3){
-                 System.out.println("Attempting to add block at " + ix + " " + iy + " " + iz);
+                 System.out.println("Attempting to get block at: " + ix + " " + iy + " " + iz);
                  blocks.add(c.whandle.getWorld().getBlock(ix, iy, iz));
              }
           }

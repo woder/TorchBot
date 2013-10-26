@@ -88,7 +88,7 @@ public class CommandHandler {
                 c.chat.sendMessage(c.versioninfo);
             }else if(command.contains("import")){
                 Import im = new Import();
-                im.importb(c, -470, 69, 485, -475, 72, 475);
+                im.importb(c, 1102, 20, -3025, 1110, 25, -3034);
             }else if(command.contains("move")){            
                 Player p = c.findPlayer("woder22");
                 Location loc = null;

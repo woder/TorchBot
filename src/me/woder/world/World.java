@@ -1,5 +1,6 @@
 package me.woder.world;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,15 @@ public class World {
     }
     
     public Block getBlock(Location l){
-        double ChunkX = l.getBlockX()/16;
-        double ChunkZ = l.getBlockZ()/16;
-
-        ChunkX = Math.ceil(ChunkX);
-        ChunkZ = Math.ceil(ChunkZ);
+        BigDecimal ChunkX = BigDecimal.valueOf(l.getX());
+        BigDecimal ChunkZ = BigDecimal.valueOf(l.getY());
+        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
         Chunk thisChunk = null;
         Block thisblock = null;
 
         for(Chunk b : chunklist) {
-            if (b.getX() == ChunkX & b.getZ() == ChunkZ) {
+            if (b.getX() == ChunkX.intValue() & b.getZ() == ChunkZ.intValue()) {  
                 thisChunk = b;
                 break;
             }
@@ -42,16 +42,16 @@ public class World {
     }
     
     public Block getBlock(int x, int y, int z){
-        double ChunkX = x/16;
-        double ChunkZ = z/16;
-
-        ChunkX = Math.ceil(ChunkX);
-        ChunkZ = Math.ceil(ChunkZ);     
+        BigDecimal ChunkX = BigDecimal.valueOf(x);
+        BigDecimal ChunkZ = BigDecimal.valueOf(z);
+        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        
         Chunk thisChunk = null;
         Block thisblock = null;
 
         for(Chunk b : chunklist) {
-            if (b.getX() == ChunkX & b.getZ() == ChunkZ) {          
+            if (b.getX() == ChunkX.intValue() & b.getZ() == ChunkZ.intValue()) {          
                 thisChunk = b;
                 break;
             }
