@@ -20,9 +20,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -35,11 +37,16 @@ import javax.crypto.SecretKey;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
+import me.woder.network.NetworkHandler;
+import me.woder.network.Packet;
 import me.woder.world.Location;
 import me.woder.world.World;
 import me.woder.world.WorldHandler;
@@ -56,9 +63,9 @@ public class Client {
     public IRCBridge irc;
     public DataOutputStream out;
     public DataInputStream in;
-    PublicKey publickey;
-    SecretKey secretkey;
-    SecretKey sharedkey;
+    public PublicKey publickey;
+    public SecretKey secretkey;
+    public SecretKey sharedkey;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -85,10 +92,12 @@ public class Client {
     short level;
     short lvlto;
     double stance;
-    String username = "";//TODO add way to change this
+    public String username = "";//TODO add way to change this
     int port;
     String servername;
     String sessionId;
+    public int protocol;
+    public int state = 2;
     public boolean running = true;
     private String password;
     public String accesstoken;
@@ -182,14 +191,28 @@ public class Client {
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
         //our hand shake
-        int str = username.length();
-        out.writeByte(0x02);
-        out.writeByte(78);//74 = 1.6.2
-        out.writeShort(str);
-        out.writeChars(username);
-        out.writeShort(servername.length());
-        out.writeChars(servername);
-        out.writeInt(port);
+
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        Packet.writeVarInt(buf, 0);
+        Packet.writeVarInt(buf, 4);
+        Packet.writeString(buf, servername);
+        buf.writeShort(port);
+        Packet.writeVarInt(buf, 2);
+
+        ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
+        Packet.writeVarInt(send1, buf.toByteArray().length);
+        send1.write(buf.toByteArray());
+        out.write(send1.toByteArray());
+        
+        buf = ByteStreams.newDataOutput();
+        Packet.writeVarInt(buf, 0);
+        Packet.writeString(buf, username);
+
+        send1 = ByteStreams.newDataOutput();
+        Packet.writeVarInt(send1, buf.toByteArray().length);
+        send1.write(buf.toByteArray());
+
+        out.write(send1.toByteArray());
         out.flush();                             
          
         chat = new ChatHandler(this);

@@ -1,16 +1,22 @@
 package me.woder.network;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.woder.bot.Client;
 
-public class TeamPacket209 {
-    List<String> players = new ArrayList<String>();
+public class TeamPacket209 extends Packet{
     
-    @SuppressWarnings("unused")
-    public void read(Client c){
+    public TeamPacket209(Client c, DataInputStream in, DataOutputStream out) {
+        super(c, in, out);
+    }
+
+    List<String> players = new ArrayList<String>();
+    @Override
+    public void read(Client c, int len){
       String teamname = c.chat.readString();
       System.out.println("TEAM NAME: " + teamname);
       try {
