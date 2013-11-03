@@ -20,11 +20,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -198,21 +196,16 @@ public class Client {
         Packet.writeString(buf, servername);
         buf.writeShort(port);
         Packet.writeVarInt(buf, 2);
-
-        ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
-        Packet.writeVarInt(send1, buf.toByteArray().length);
-        send1.write(buf.toByteArray());
-        out.write(send1.toByteArray());
+        
+        Packet.sendPacket(buf, out);
         
         buf = ByteStreams.newDataOutput();
+        
         Packet.writeVarInt(buf, 0);
         Packet.writeString(buf, username);
 
-        send1 = ByteStreams.newDataOutput();
-        Packet.writeVarInt(send1, buf.toByteArray().length);
-        send1.write(buf.toByteArray());
-
-        out.write(send1.toByteArray());
+        Packet.sendPacket(buf, out);
+        
         out.flush();                             
          
         chat = new ChatHandler(this);

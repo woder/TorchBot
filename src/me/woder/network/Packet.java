@@ -3,9 +3,9 @@ package me.woder.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import me.woder.bot.Client;
 
@@ -23,6 +23,7 @@ public class Packet {
     
     public String getString(DataInputStream in) throws IOException {
         int length = readVarInt(in);
+        System.out.println("len is " + length);
         if (length > 3000)
             throw new IOException(
                    "Received string length longer than maximum allowed ("
@@ -31,13 +32,23 @@ public class Packet {
            throw new IOException(
                    "Received string length is less than zero! Weird string!");
         } 
-        StringBuilder stringbuilder = new StringBuilder();
-
-        for (int j = 0; j < length; j++) {
-           stringbuilder.append(in.readChar());
+        
+        if(length == 0){
+            return "";
         }
-
-       return stringbuilder.toString();
+        byte[] b = new byte[length];
+        in.readFully(b, 0, length);
+        String s = new String(b, "UTF-8");
+        
+       return s;
+    }
+    
+    public static void sendPacket(ByteArrayDataOutput buf, DataOutputStream out) throws IOException{
+        ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
+        writeVarInt(send1, buf.toByteArray().length);
+        send1.write(buf.toByteArray());
+        out.write(send1.toByteArray());
+        out.flush();
     }
     
     public static void writeString(DataOutputStream out, String s) throws IOException{
@@ -55,6 +66,7 @@ public class Packet {
       int j = 0;
       while (true){
         int k = ins.readByte();
+        System.out.println("Byte is: " + k);
    
         i |= (k & 0x7F) << j++ * 7;
    

@@ -14,23 +14,20 @@ import me.woder.bot.Client;
 import me.woder.bot.CryptManager;
 
 public class EncryptionRequest253 extends Packet{
-    DataInputStream in;
-    DataOutputStream out;
     Client c;
     Logger log = Logger.getLogger("me.woder.network");
     public EncryptionRequest253(Client c, DataInputStream in, DataOutputStream out) {
         super(c, in, out);
-        this.in = in;
-        this.out = out;
         this.c = c;
     }
     
     @Override
     public void read(Client c, int len) throws IOException{
-        String serverid = getString(in);
+        String serverid = getString(c.in);
         log.log(Level.FINEST,"Reading server id: " + serverid);
-        c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(in));//read the public key**taken from the original minecraft code**
-        byte[] verifytoken = c.readBytesFromStream(in);//read the verify token        
+        System.out.println("Server id is !" + serverid + "!");
+        c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(c.in));//read the public key**taken from the original minecraft code**
+        byte[] verifytoken = c.readBytesFromStream(c.in);//read the verify token        
         c.secretkey = CryptManager.createNewSharedKey();//generate a secret key
         c.sharedkey = c.secretkey;
         log.log(Level.FINEST,"Secret key is: " + c.secretkey);
@@ -40,18 +37,16 @@ public class EncryptionRequest253 extends Packet{
         byte[] sharedSecret = new byte[0];
         byte[] verifyToken = new byte[0];
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-        Packet.writeVarInt(buf, 0xFC);//send an encryption response
+        Packet.writeVarInt(buf, 0x01);//send an encryption response
         sharedSecret = CryptManager.encryptData(c.publickey, c.secretkey.getEncoded());
         verifyToken = CryptManager.encryptData(c.publickey, verifytoken);
         buf.writeShort(sharedSecret.length);
         buf.write(sharedSecret);
         buf.writeShort(verifyToken.length);
         buf.write(verifyToken);
-        ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
-        Packet.writeVarInt(send1, buf.toByteArray().length);
-        send1.write(buf.toByteArray());
-        out.write(send1.toByteArray());
-        out.flush();
+        sendPacket(buf, c.out);
+        c.activateEncryption();
+        c.decryptInputStream();
     }
 
 }

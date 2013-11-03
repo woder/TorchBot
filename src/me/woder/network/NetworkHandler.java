@@ -3,23 +3,13 @@ package me.woder.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.woder.bot.Client;
-import me.woder.bot.CryptManager;
-import me.woder.bot.Entity;
-import me.woder.bot.EntityVehicle;
-import me.woder.bot.Player;
-import me.woder.bot.Slot;
-import me.woder.bot.SpawnEntity;
-import me.woder.world.Location;
 
 public class NetworkHandler {
-    private DataInputStream in;
-    private DataOutputStream out;
     private Client c;
     private Logger log;
     byte[] trash = new byte[1000000];
@@ -29,31 +19,31 @@ public class NetworkHandler {
     
     public NetworkHandler(Client c, DataInputStream in, DataOutputStream out){
         log = Logger.getLogger("me.woder.network");
-        this.in = in;
-        this.out = out;
         this.c = c;
         
         login.put(1, new EncryptionRequest253(c, in, out));
+        login.put(2, new LoginSuccess02(c, in, out));
+        
     }
     
     public void readData() throws IOException{
-        int len = Packet.readVarInt(in);
-        int type = Packet.readVarInt(in);
-        log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state);
-        System.out.println("Reading packet id: " + type + " current state is: " + c.state);
+        int len = Packet.readVarInt(c.in);
+        int type = Packet.readVarInt(c.in);
+        log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
+        System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){
             Packet p = status.get(type);
-            if(p==null){in.read(trash, 0, len);}else{
-              p.read(c, len);         
+            if(p==null){c.in.read(trash, 0, len);System.out.println("NOTICE: we just threw out a packet");}else{
+                p.read(c, len);         
             }
         }else if(c.state == 2){
             Packet p = login.get(type);
-            if(p==null){in.read(trash, 0, len);System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){c.in.read(trash, 0, len);System.out.println("NOTICE: we just threw out a packet");}else{
                 p.read(c, len);         
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){in.read(trash, 0, len);}else{
+            if(p==null){c.in.read(trash, 0, len);System.out.println("NOTICE: we just threw out a packet");}else{
                 p.read(c, len);         
             }
         }else{
