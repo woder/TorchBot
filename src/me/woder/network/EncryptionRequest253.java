@@ -1,7 +1,5 @@
 package me.woder.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -16,8 +14,8 @@ import me.woder.bot.CryptManager;
 public class EncryptionRequest253 extends Packet{
     Client c;
     Logger log = Logger.getLogger("me.woder.network");
-    public EncryptionRequest253(Client c, DataInputStream in, DataOutputStream out) {
-        super(c, in, out);
+    public EncryptionRequest253(Client c) {
+        super(c);
         this.c = c;
     }
     

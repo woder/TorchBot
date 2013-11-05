@@ -3,6 +3,8 @@ package me.woder.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -12,17 +14,26 @@ import me.woder.bot.Client;
 public class Packet {
     Client c;
     int state;
+    Logger log;
     
-    public Packet(Client c, DataInputStream in, DataOutputStream out){
+    public Packet(Client c){
         this.c = c;
+        log = Logger.getLogger("me.woder.network");
     }
     
     public void read(Client c, int len) throws IOException{
         //allow child to override
     }
     
-    public String getString(DataInputStream in) throws IOException {
-        int length = readVarInt(in);
+    public void log(Level lvl, String s){
+        log.log(lvl, s);
+    }
+    
+    public static String getString(DataInputStream in) {
+        int length;
+        String s = "";
+       try {
+            length = readVarInt(in);       
         System.out.println("len is " + length);
         if (length > 3000)
             throw new IOException(
@@ -38,8 +49,11 @@ public class Packet {
         }
         byte[] b = new byte[length];
         in.readFully(b, 0, length);
-        String s = new String(b, "UTF-8");
-        
+        s = new String(b, "UTF-8");
+       } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+       }
        return s;
     }
     
@@ -51,11 +65,6 @@ public class Packet {
         out.flush();
     }
     
-    public static void writeString(DataOutputStream out, String s) throws IOException{
-        writeVarInt(out, s.length());
-        out.writeChars(s);
-    }
-    
     public static void writeString(ByteArrayDataOutput out, String s) throws IOException{
         writeVarInt(out, s.length());
         out.write(s.getBytes("UTF-8"));
@@ -65,8 +74,7 @@ public class Packet {
       int i = 0;
       int j = 0;
       while (true){
-        int k = ins.readByte();
-        System.out.println("Byte is: " + k);
+        int k = ins.read();
    
         i |= (k & 0x7F) << j++ * 7;
    
@@ -76,18 +84,6 @@ public class Packet {
       }
    
       return i;
-    }
-   
-    public static void writeVarInt(DataOutputStream outs, int paramInt) throws IOException{
-      while (true) {
-        if ((paramInt & 0xFFFFFF80) == 0) {
-          outs.writeByte(paramInt);
-          return;
-        }
-   
-        outs.writeByte(paramInt & 0x7F | 0x80);
-        paramInt >>>= 7;
-      }
     }
      
     public static void writeVarInt(ByteArrayDataOutput outs, int paramInt) throws IOException{

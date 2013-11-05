@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.woder.network.Packet;
+
 public class MetaDataProcessor {
     Client c;
     
@@ -48,7 +50,7 @@ public class MetaDataProcessor {
                     break;
 
                 case 4:
-                    System.out.println(ChatHandler.getString(in, (int)in.readShort(), 64));
+                    System.out.println(Packet.getString(c.in));
                     break;
 
                 case 5:

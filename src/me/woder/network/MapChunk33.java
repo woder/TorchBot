@@ -1,7 +1,5 @@
 package me.woder.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -16,27 +14,25 @@ public class MapChunk33 extends Packet{
     short len;
     int x;
     int z;
-    DataInputStream in;
     
-    public MapChunk33(Client c, DataInputStream in, DataOutputStream out){
-        super(c, in, out);
-        this.in = in;
+    public MapChunk33(Client c){
+        super(c);
         this.c = c;
     }
     
     @Override
     public void read(Client c, int len){
         try {
-            x = in.readInt();
-            z = in.readInt();
-            boolean isGroundUp = in.readBoolean();
-            short a = in.readShort();
+            x = c.in.readInt();
+            z = c.in.readInt();
+            boolean isGroundUp = c.in.readBoolean();
+            short a = c.in.readShort();
             int bitmask = a & 0xffff;
-            short as = in.readShort();
+            short as = c.in.readShort();
             int addmask = as & 0xffff;
-            datalength = in.readInt();
+            datalength = c.in.readInt();
             data = new byte[datalength];
-            in.readFully(data);
+            c.in.readFully(data);
             Chunk chunke = new Chunk(c, x, z, bitmask, addmask, true, isGroundUp); 
             int extra = chunke.blocknum;
             

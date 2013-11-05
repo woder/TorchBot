@@ -9,17 +9,17 @@ import me.woder.bot.Client;
 public class UpdateScore207 extends Packet{ 
     
      public UpdateScore207(Client c, DataInputStream in, DataOutputStream out) {
-        super(c, in, out);
+        super(c);
     }
 
     @Override
      public void read(Client c, int len){
-          c.chat.readString();
+          getString(c.in);
           try {
             byte mode = c.in.readByte();
             System.out.println("Mode: " + mode);
             if(mode == 0){
-                c.chat.readString();           
+                getString(c.in);           
                 c.in.readInt();
             }
           } catch (IOException e) {

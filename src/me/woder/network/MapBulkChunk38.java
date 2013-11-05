@@ -1,7 +1,5 @@
 package me.woder.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -17,32 +15,30 @@ public class MapBulkChunk38 extends Packet{
     short len;
     int x;
     int z;
-    DataInputStream in;
     
-    public MapBulkChunk38(Client c, DataInputStream in, DataOutputStream out){
-        super(c,in, out);
-        this.in = in;
+    public MapBulkChunk38(Client c){
+        super(c);
         this.c = c;
     }
     
     @Override
     public void read(Client c, int lens){
         try {
-          len = in.readShort();
-          datalength = in.readInt();
+          len = c.in.readShort();
+          datalength = c.in.readInt();
           Chunk[] chunks = new Chunk[len];
-          skylight = in.readBoolean();
+          skylight = c.in.readBoolean();
           data = new byte[datalength];
-          in.readFully(data);
+          c.in.readFully(data);
           Inflater inflater = new Inflater();
           inflater.setInput(data);            
           
           //step one, pull all data from the stream
           for(int i = 0; i < len; i++){
-            x = in.readInt();
-            z = in.readInt();
-            int pmap = (in.readShort() & 0xffff);
-            int amap = (in.readShort() & 0xffff);
+            x = c.in.readInt();
+            z = c.in.readInt();
+            int pmap = (c.in.readShort() & 0xffff);
+            int amap = (c.in.readShort() & 0xffff);
             chunks[i] = new Chunk(c, x, z, pmap, amap, skylight, true);         
             //save all the chunks
           }

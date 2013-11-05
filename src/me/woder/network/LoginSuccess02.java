@@ -1,24 +1,18 @@
 package me.woder.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import me.woder.bot.Client;
 
 public class LoginSuccess02 extends Packet{
-    DataInputStream in;
-    DataOutputStream out;
-    public LoginSuccess02(Client c, DataInputStream in, DataOutputStream out) {
-        super(c, in, out);
-        this.in = in;
-        this.out = out;
+    public LoginSuccess02(Client c) {
+        super(c);
     }
     
     @Override
     public void read(Client c, int len) throws IOException{
-        System.out.println("Alright so its: " + getString(in));
-        System.out.println("And er... " + getString(in));
+        System.out.println("Alright so its: " + getString(c.in));
+        System.out.println("And er... " + getString(c.in));
         c.state = 3;
     }
 

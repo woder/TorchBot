@@ -68,28 +68,28 @@ public class Client {
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
-    public static byte gamemode;
+    public byte gamemode;
     String leveltype;
-    Location location;
+    public Location location;
     World world;
     boolean chunksloaded;
     boolean connectedirc;
-    int entityID;
-    byte dimension;
-    byte difficulty;
-    byte maxplayer;
-    byte flags;
-    float flyspeed;
-    float walkspeed;
-    long time;
-    long age;
-    float health;
-    short food;
-    float foodsat;
-    float exp;
-    short level;
-    short lvlto;
-    double stance;
+    public int entityID;
+    public byte dimension;
+    public byte difficulty;
+    public byte maxplayer;
+    public byte flags;
+    public float flyspeed;
+    public float walkspeed;
+    public long time;
+    public long age;
+    public float health;
+    public short food;
+    public float foodsat;
+    public float exp;
+    public short level;
+    public short lvlto;
+    public double stance;
     public String username = "";//TODO add way to change this
     int port;
     String servername;
@@ -106,9 +106,14 @@ public class Client {
     public File[] plugins = null;
     public String[] cmds = null;
     public String[] descriptions = null;
-    List<Slot> inventory = new ArrayList<Slot>();
+    public byte selectedslot;
+    public boolean onground;
+    public float yaw;
+    public float pitch;
+    public List<Slot> inventory = new ArrayList<Slot>();
     //List<Player> players = new ArrayList<Player>();//Is exclusive to players
-    List<Entity> entities = new ArrayList<Entity>();//Includes players
+    public List<String> onplayers = new ArrayList<String>();
+    public List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
@@ -212,7 +217,7 @@ public class Client {
         proc = new MetaDataProcessor(this);
         chandle = new CommandHandler(this);
         whandle = new WorldHandler(this);
-        net = new NetworkHandler(this,in,out);          
+        net = new NetworkHandler(this);          
         world = whandle.getWorld();
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
