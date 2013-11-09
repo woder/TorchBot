@@ -4,15 +4,15 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
-public class ChatMessage02 extends Packet{
-    public ChatMessage02(Client c) {
+public class EntityStatus26 extends Packet{
+    public EntityStatus26(Client c) {
         super(c);
     }
     
     @Override
     public void read(Client c, int len) throws IOException{
-        String messages = getString(c.in);
-        c.chat.formatMessage(messages);       
+        c.in.readInt();
+        c.in.readByte();
     }
 
 }

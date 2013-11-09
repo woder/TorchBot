@@ -1,11 +1,13 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import me.woder.event.Event;
 import me.woder.network.Packet;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -14,7 +16,6 @@ import net.sf.json.JSONSerializer;
 
 public class ChatHandler {
     Client c;
-    @SuppressWarnings("unused")
     private Logger log;
     
     public ChatHandler(Client c){
@@ -53,16 +54,26 @@ public class ChatHandler {
     
     public String formatMessage(String message){
         String mess = "Something went wrong";
+        String user = "Unknown";
         System.out.println(message);
         JSONObject json = (JSONObject) JSONSerializer.toJSON(message);     
         //JSONArray text = rec.;
        try{
         JSONArray arr = json.getJSONArray("with");
-        mess = arr.getString(1);
-        System.out.println("Mess is: " + mess);
+        if(arr.toArray().length > 1){
+         mess = arr.getString(1);
+         JSONObject te = arr.getJSONObject(0);
+         user = te.getString("text");
+        }
+        log.log(Level.FINEST,mess);
+        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {user, mess}));
+        c.gui.addText("§0" + user + ": " + mess);       
+        if(mess.contains("!")){
+            c.chandle.processCommand(mess);
+        }
        }catch(JSONException e){
          c.gui.addText("§4Formating error!");
-       }
+       }            
         return mess;
     }
 

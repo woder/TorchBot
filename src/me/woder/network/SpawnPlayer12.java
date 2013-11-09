@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 import me.woder.bot.Player;
+import me.woder.event.Event;
 
 public class SpawnPlayer12 extends Packet{
     public SpawnPlayer12(Client c) {
@@ -13,6 +14,7 @@ public class SpawnPlayer12 extends Packet{
     @Override
     public void read(Client c, int len) throws IOException{
         readVarInt(c.in);
+        String uuid = getString(c.in);
         String playern = getString(c.in);
         //c.chat.sendMessage("Player " + ChatColor.stripColor(playername) + " spawned next to me");
         int xi = c.in.readInt();
@@ -25,9 +27,10 @@ public class SpawnPlayer12 extends Packet{
         c.in.readByte();
         c.in.readByte();
         short currentitem = c.in.readShort();
-        System.out.println("Item is: " + currentitem);
+        c.chat.sendMessage("Item is: " + currentitem);
         new Player(c, playern, x, y, z);
         c.proc.readWatchableObjects(c.in);
+        c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, currentitem}));
     }
 
 }

@@ -1,25 +1,16 @@
 package me.woder.gui;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
-    private Random random = new Random();
-    private boolean isRed;
-    private String s = "";
     public List<RComponent> radardots = new ArrayList<RComponent>();
     //GroupLayout lay = (GroupLayout)this.getLayout();
 

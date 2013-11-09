@@ -30,6 +30,7 @@ public class NetworkHandler {
         play.put(5, new SpawnPos05(c));
         play.put(8, new PlayerPosLook08(c));
         play.put(9, new HeldItemChange09(c));
+        play.put(11, new Animation11(c));
         play.put(12, new SpawnPlayer12(c));
         play.put(14, new SpawnObject14(c));
         play.put(15, new SpawnMob15(c));
@@ -40,9 +41,13 @@ public class NetworkHandler {
         play.put(23, new EntityRelativeMoveLok23(c));
         play.put(24, new EntityTeleport24(c));
         play.put(25, new EntityHeadLook25(c));
+        play.put(26, new EntityStatus26(c));
         play.put(28, new EntityMetaData28(c));
         play.put(32, new EntityProperties32(c));
+        play.put(33, new MapChunk33(c));
+        play.put(35, new BlockChange35(c));
         play.put(38, new MapBulkChunk38(c));
+        play.put(40, new Effect40(c));
         play.put(41, new SoundEffect41(c));
         play.put(43, new ChangeGameState43(c));
         play.put(47, new SetSlot47(c));
@@ -71,7 +76,7 @@ public class NetworkHandler {
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");System.exit(0);}else{
                 p.read(c, len - 1);         
             }
         }else{

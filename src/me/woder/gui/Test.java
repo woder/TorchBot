@@ -13,6 +13,10 @@ import javax.swing.*;
  */
 public class Test extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Random random = new Random();
     private boolean isRed;
     private String s = "";

@@ -41,10 +41,12 @@ import com.google.common.io.ByteStreams;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import me.woder.event.EventHandler;
 import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
 import me.woder.network.NetworkHandler;
 import me.woder.network.Packet;
+import me.woder.plugin.PluginLoader;
 import me.woder.world.Location;
 import me.woder.world.World;
 import me.woder.world.WorldHandler;
@@ -52,8 +54,10 @@ import me.woder.world.WorldHandler;
 
 public class Client {
     public TorchGUI gui;
+    public EventHandler ehandle;
     public ChatHandler chat;
     public MetaDataProcessor proc;
+    public PluginLoader ploader;
     public CommandHandler chandle;
     public WorldHandler whandle;
     public MovementHandler move;
@@ -171,6 +175,8 @@ public class Client {
         gui.addText("§3 or press the change server button to login to a new server.");   
         pingServer(servername, port);      
         authPlayer(username, password);
+        ploader = new PluginLoader(this);
+        ploader.loadplugins();
     }
     
     public void startBot(String server, String port){
@@ -214,6 +220,7 @@ public class Client {
         out.flush();                             
          
         chat = new ChatHandler(this);
+        ehandle = new EventHandler(this);
         proc = new MetaDataProcessor(this);
         chandle = new CommandHandler(this);
         whandle = new WorldHandler(this);

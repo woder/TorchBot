@@ -126,13 +126,13 @@ public class Chunk {
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
-     public void updateBlock(int Bx, int By, int Bz, int id, byte meta) {
+     public void updateBlock(int Bx, int By, int Bz, int id, int meta) {
         // Updates the block in this chunk.
         // TODO: Ensure that the block being updated is in this chunk.
         // Even though chances of that exception throwing are tiny.
 
         Part part = GetSectionByNumber(By);
-        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, meta);
+        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, (byte)meta);
 
      }
     

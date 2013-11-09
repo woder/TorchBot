@@ -5,6 +5,10 @@ import java.io.IOException;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
+import me.woder.network.Packet;
 import me.woder.world.Block;
 import me.woder.world.Import;
 import me.woder.world.Location;
@@ -34,9 +38,10 @@ public class CommandHandler {
                   }
             }else if(command.contains("respawn")){
                 try {
-                    c.out.writeByte(0xCD);        
-                    c.out.writeByte(1);
-                    c.out.flush();
+                    ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+                    Packet.writeVarInt(buf, 22);
+                    buf.writeByte(0);
+                    Packet.sendPacket(buf, c.out);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

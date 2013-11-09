@@ -4,12 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
-import javax.swing.ToolTipManager;
 
 public class RComponent extends JComponent {
     private static final long serialVersionUID = 1L;
@@ -24,7 +20,7 @@ public class RComponent extends JComponent {
        this.h = h;
        this.type = type;
        //this.setBounds(x, y, w, h);
-       final Rectangle rect = new Rectangle(w, h, x, y);
+       //final Rectangle rect = new Rectangle(w, h, x, y);
        /*addMouseMotionListener(new MouseMotionListener() {  
            
            @Override  

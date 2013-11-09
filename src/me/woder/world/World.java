@@ -23,9 +23,10 @@ public class World {
     
     public Block getBlock(Location l){
         BigDecimal ChunkX = BigDecimal.valueOf(l.getX());
-        BigDecimal ChunkZ = BigDecimal.valueOf(l.getY());
+        BigDecimal ChunkZ = BigDecimal.valueOf(l.getZ());
         ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
         ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        
         Chunk thisChunk = null;
         Block thisblock = null;
 
@@ -35,6 +36,8 @@ public class World {
                 break;
             }
         }
+       System.out.println("Getting block at: " + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " cx:" + ChunkX + " cz: " + ChunkZ);
+
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(l.getBlockX(),l.getBlockY(),l.getBlockZ());
        }
@@ -62,7 +65,7 @@ public class World {
         return thisblock;
     }
     
-    public void setBlock(int x, int y, int z, int id, byte meta){
+    public void setBlock(int x, int y, int z, int id, int meta){
         double ChunkX = x/16;
         double ChunkZ = z/16;
 

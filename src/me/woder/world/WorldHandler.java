@@ -4,6 +4,7 @@ import me.woder.bot.Client;
 
 public class WorldHandler {
     private World world;
+    @SuppressWarnings("unused")
     private Client c;
     
     public WorldHandler(Client c){
