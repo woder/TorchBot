@@ -19,6 +19,7 @@ public class NetworkHandler {
         log = Logger.getLogger("me.woder.network");
         this.c = c;
         //Login packets
+        login.put(0, new Disconnect00(c));
         login.put(1, new EncryptionRequest253(c));
         login.put(2, new LoginSuccess02(c));
         //Play packets
@@ -57,6 +58,7 @@ public class NetworkHandler {
         play.put(56, new PlayerListItem56(c));
         play.put(57, new PlayerAbilites57(c));
         play.put(63, new PluginMessage63(c));
+        play.put(64, new Disconnect64(c));
     }
     
     public void readData() throws IOException{
@@ -76,7 +78,7 @@ public class NetworkHandler {
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");System.exit(0);}else{
+            if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");}else{
                 p.read(c, len - 1);         
             }
         }else{

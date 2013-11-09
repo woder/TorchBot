@@ -11,16 +11,6 @@ public class World {
         
     }
     
-    public void spit(){
-        for(Chunk ch : chunklist){
-            for(Part p : ch.parts){
-               for(int i = 0; i < p.blocks.length; i++){
-                System.out.println("Block at " + p.y + " " + p.blocks[i]);
-               }
-            }
-        }
-    }
-    
     public Block getBlock(Location l){
         BigDecimal ChunkX = BigDecimal.valueOf(l.getX());
         BigDecimal ChunkZ = BigDecimal.valueOf(l.getZ());
@@ -66,15 +56,15 @@ public class World {
     }
     
     public void setBlock(int x, int y, int z, int id, int meta){
-        double ChunkX = x/16;
-        double ChunkZ = z/16;
-
-        ChunkX = Math.ceil(ChunkX);
-        ChunkZ = Math.ceil(ChunkZ);     
+        BigDecimal ChunkX = BigDecimal.valueOf(x);
+        BigDecimal ChunkZ = BigDecimal.valueOf(z);
+        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        
         Chunk thisChunk = null;
 
         for(Chunk b : chunklist) {
-            if (b.getX() == (int)ChunkX & b.getZ() == (int)ChunkZ) {          
+            if (b.getX() == ChunkX.intValue() & b.getZ() == ChunkZ.intValue()) {          
                 thisChunk = b;
                 break;
             }

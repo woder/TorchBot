@@ -173,8 +173,8 @@ public class Client {
         prefix = "!";
         gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
         gui.addText("§3 or press the change server button to login to a new server.");   
-        pingServer(servername, port);      
         authPlayer(username, password);
+        //pingServer(servername, port);      
         ploader = new PluginLoader(this);
         ploader.loadplugins();
     }
@@ -193,9 +193,11 @@ public class Client {
     public void startBot(){
         chunksloaded = false;
         connectedirc = false;
+        running = true;
         try{
           // open a socket
         System.out.println("Attempting to connect to: " + servername + " on " + port);
+        gui.addText("§3Attempting to connect to: " + servername + " on " + port);
         clientSocket = new Socket(servername, port);
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
@@ -229,7 +231,7 @@ public class Client {
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
          
-         while(true){
+         while(running){
             //mainloop
            net.readData();//Read data
            gui.tick();
@@ -260,6 +262,19 @@ public class Client {
         }        
     }
     
+    public void stopBot(){
+        try {
+            running = false;
+            out.close();
+            in.close();
+            clientSocket.close();
+            this.state = 2;
+        } catch (IOException e) {
+            gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
+            netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
+        }        
+    }
+    
     public void pingServer(String server, int port){
         try {
             clientSocket = new Socket(server, port);
@@ -279,8 +294,7 @@ public class Client {
             out.flush();
           byte id = in.readByte();
           if(id==-1){
-              short lend = in.readShort();
-              String[] data = getString(in, lend, 400).split("\0");
+              String[] data = Packet.getString(in).split("\0");
               String gamev = data[2];
               String motd = data[3];
               String online = data[4];
@@ -348,26 +362,7 @@ public class Client {
             e.printStackTrace();
         }
     }
-    
-     
-    public static String getString(DataInputStream datainputstream, int length,
-            int max) throws IOException {
-        if (length > max)
-            throw new IOException(
-                    "Received string length longer than maximum allowed ("
-                            + length + " > " + max + ")");
-        if (length < 0) {
-            throw new IOException(
-                    "Received string length is less than zero! Weird string!");
-        }
-        StringBuilder stringbuilder = new StringBuilder();
 
-        for (int j = 0; j < length; j++) {
-            stringbuilder.append(datainputstream.readChar());
-        }
-
-        return stringbuilder.toString();
-    }
      
     public String sendSessionRequest(String user, String session, String serverid)
     {
@@ -443,7 +438,7 @@ public class Client {
             clienttoken = json.getString("clientToken");
             System.out.println(json.toString());
             profile = json.getJSONObject("selectedProfile").getString("id");
-            System.out.println("So the dick is: " + hc.getResponseMessage() + " and the puss: " + accesstoken + " and er: " + clienttoken + " profile is " + profile);
+            username = json.getJSONObject("selectedProfile").getString("name");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
