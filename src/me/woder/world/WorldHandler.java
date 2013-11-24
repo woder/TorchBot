@@ -9,7 +9,7 @@ public class WorldHandler {
     
     public WorldHandler(Client c){
         this.c = c;
-        world = new World();
+        world = new World(c);
     }
     
     public World getWorld(){

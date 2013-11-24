@@ -176,7 +176,7 @@ public class Client {
         authPlayer(username, password);
         //pingServer(servername, port);      
         ploader = new PluginLoader(this);
-        ploader.loadplugins();
+        ploader.loadPlugins();
     }
     
     public void startBot(String server, String port){
@@ -235,6 +235,7 @@ public class Client {
             //mainloop
            net.readData();//Read data
            gui.tick();
+           move.tick();
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
            }
@@ -249,10 +250,7 @@ public class Client {
     }
     
     public void stopBot(String reason){
-        try {
-            out.writeByte(0xFF);
-            out.writeShort(reason.length());
-            out.writeChars(reason);
+        try {            
             out.close();
             in.close();
             clientSocket.close();

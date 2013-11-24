@@ -15,11 +15,6 @@ public class Part {
         //blocks = new byte[4096];
     }
     
-    public void setBlock(int x, int y, int z, byte id){
-        int loc = x + (z * 16) + (y * 256);
-        blocks[loc] = id;
-    }
-    
     public void setBlock(int x, int y, int z, byte id, byte meta){
         int loc = x + (z * 16) + (y * 256);
         short c = (short) (id & 0xff);

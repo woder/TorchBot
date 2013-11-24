@@ -23,11 +23,9 @@ public class SpawnPlayer12 extends Packet{
         int x = xi / 32;
         int y = yi / 32;
         int z = zi / 32;
-        c.chat.sendMessage(x + "," + y + "," + z);
         c.in.readByte();
         c.in.readByte();
         short currentitem = c.in.readShort();
-        c.chat.sendMessage("Item is: " + currentitem);
         new Player(c, playern, x, y, z);
         c.proc.readWatchableObjects(c.in);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, currentitem}));

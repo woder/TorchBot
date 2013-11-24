@@ -6,12 +6,15 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.woder.network.Packet;
 import me.woder.world.Location;
 
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.AStar.InvalidPathException;
 import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 
 public class MovementHandler {
@@ -109,6 +112,13 @@ public class MovementHandler {
         return (id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
                 || id == 76 || id == 78);
     }
+    
+   public void tick(){
+       /*ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+       Packet.writeVarInt(buf, 1);
+       //Packet.writeString(buf, message);
+       Packet.sendPacket(buf, c.out);*/
+   }
     
     public void sendMovement(Location l){
         c.location = l;

@@ -53,6 +53,7 @@ public class NetworkHandler {
         play.put(43, new ChangeGameState43(c));
         play.put(47, new SetSlot47(c));
         play.put(48, new WindowItems48(c));
+        play.put(51, new UpdateSign51(c));
         play.put(53, new UpdateBlockEntity53(c));
         play.put(55, new Statistics55(c));
         play.put(56, new PlayerListItem56(c));
@@ -64,6 +65,7 @@ public class NetworkHandler {
     public void readData() throws IOException{
         int len = Packet.readVarInt(c.in);
         int type = Packet.readVarInt(c.in);
+        
         log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){

@@ -31,7 +31,7 @@ public class PluginLoader {
         this.c = c;
     }
     
-    public void loadplugins(){
+    public void loadPlugins(){
         List<String> commands = new ArrayList<String>();
         List<String> description = new ArrayList<String>();
         List<String> pcommands = new ArrayList<String>();
@@ -58,7 +58,7 @@ public class PluginLoader {
             context.evaluateString(scope, script, "script", 1, null);
             Function fct = (Function)scope.get("getName", scope);
             Object result = fct.call(context, scope, scope, null);      
-            c.gui.addText("§3Loading " + result + "...");
+            c.gui.addText("§3Loading '" + result + "'...");
             Function run = (Function)scope.get("run", scope);
             Object started = run.call(context, scope, scope, null);
             Function commandall = (Function)scope.get("getCommand", scope);
@@ -70,7 +70,7 @@ public class PluginLoader {
                commands.add(tmp[0]);  
                description.add(tmp[1]);
                pcommands.add(tmp[0]);
-               description.add(tmp[1]);
+               pdescription.add(tmp[1]);
               }else{
                  c.gui.addText("§4Warning: missing command description in plugin " + result + "!" );
               }
@@ -78,6 +78,7 @@ public class PluginLoader {
             Function getevent = (Function)scope.get("getListener", scope);
             Object eventlist = getevent.call(context, scope, scope, null);
             System.out.println("event is: " + eventlist.toString());
+            c.gui.addText("§3Plugin '" + result + "' registered events: " + eventlist);
             String[] events = eventlist.toString().split(",");
             plugins.add(new Plugin(result.toString(), script, pcommands, pdescription, events));
             if(!started.equals(true)){
@@ -98,5 +99,10 @@ public class PluginLoader {
          
          c.cmds = commands.toArray(new String[commands.size()]);
          c.descriptions = description.toArray(new String[description.size()]); 
+    }
+    
+    public void reloadPlugins(){
+       plugins = new ArrayList<Plugin>();
+       loadPlugins();
     }
 }

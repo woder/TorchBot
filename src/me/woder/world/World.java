@@ -1,14 +1,47 @@
 package me.woder.world;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
+import me.woder.bot.Client;
+import me.woder.event.Event;
+import me.woder.network.Packet;
+
 public class World {
     public List<Chunk> chunklist = new ArrayList<Chunk>();
+    public Import importer = new Import();
+    Client c;
     
-    public World(){
-        
+    public World(Client c){
+        this.c = c;
+    }
+    
+    public Import getImport(){
+        return importer;
+    }
+    
+    public void placeBlock(int x, int y, int z, int id){
+       ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
+       try {
+        Packet.writeVarInt(buf, 8);
+        buf.writeInt(x);
+        buf.writeByte(y);
+        buf.writeInt(z);
+        buf.writeByte(0);
+        buf.writeShort(-1);
+        buf.writeByte(0);
+        buf.writeByte(0);
+        buf.writeByte(0);
+        Packet.sendPacket(buf, c.out);
+       } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+       }
     }
     
     public Block getBlock(Location l){
@@ -26,7 +59,6 @@ public class World {
                 break;
             }
         }
-       System.out.println("Getting block at: " + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " cx:" + ChunkX + " cz: " + ChunkZ);
 
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(l.getBlockX(),l.getBlockY(),l.getBlockZ());
@@ -71,6 +103,7 @@ public class World {
         }
       if(thisChunk != null){        
         thisChunk.updateBlock(x, y, z, id, meta);
+        c.chandle.impor.onBlockChange(new Event("onBlockChange", new Object[]{x,y,z,id,meta}), c);
       }
     }
     

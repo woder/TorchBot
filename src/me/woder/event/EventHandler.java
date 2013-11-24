@@ -79,12 +79,43 @@ public class EventHandler {
         }
     }
     
+    public void handleCommand(String name, String[] args){
+        List<Plugin> pul = getPluginCommands(name);
+        for(int i = 0; i < pul.toArray().length; i++){
+            try {
+                ScriptableObject scope = context.initStandardObjects();
+                Object wrappedBot = Context.javaToJS(c, scope);
+                ScriptableObject.putProperty(scope, "c", wrappedBot);
+                context.evaluateString(scope, pul.get(i).content, "script", 1, null);
+                Function fct = (Function)scope.get(name, scope);
+                fct.call(context, scope, scope, args);   
+             } catch (SecurityException e) {
+                 c.gui.addText("§3Warning: Security error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+             } catch (IllegalArgumentException e) {
+                 c.gui.addText("§3Warning: Wrong amount of argument error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+             }
+        }
+    }
+    
+    
+    public List<Plugin> getPluginCommands(String command){
+        List<Plugin> tmp = new ArrayList<Plugin>();
+        for(int i = 0; i < c.ploader.plugins.toArray().length; i++){
+            Plugin p = c.ploader.plugins.get(i);
+            for(int z = 0; z < p.commands.toArray().length; z++){
+                if(p.commands.get(z).equalsIgnoreCase(command)){
+                    tmp.add(p);
+                    break;
+                }
+            }
+        }
+        return tmp;
+    }
     //this gets the plugins that actually have this event in them, to save memory usage
     public List<Plugin> getPluginEvents(Event event){
         List<Plugin> tmp = new ArrayList<Plugin>();
         for(int i = 0; i < c.ploader.plugins.toArray().length; i++){
             Plugin p = c.ploader.plugins.get(i);
-            System.out.println("Now looking at: " + p.getName());
             for(int z = 0; z < p.events.length; z++){
                 if(p.events[z].equalsIgnoreCase(event.type)){
                     tmp.add(p);
