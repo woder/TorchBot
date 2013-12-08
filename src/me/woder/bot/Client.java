@@ -244,7 +244,7 @@ public class Client {
            gui.tick();
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
-            //move.tick();
+            move.tick();
             move.sendOnGround();
            }
            if(connectedirc){

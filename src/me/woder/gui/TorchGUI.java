@@ -170,7 +170,8 @@ public class TorchGUI extends JPanel{
         JButton btnNewButton_7 = new JButton("Move one");
         btnNewButton_7.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                c.move.move(-1072.5, 2.620, -413.5);              
+                //c.move.move(c.location.getX()+1, c.location.getY(), c.location.getZ());     
+                c.location.setX(c.location.getX()+1);
             }
         });
         

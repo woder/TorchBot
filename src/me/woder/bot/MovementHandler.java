@@ -114,18 +114,7 @@ public class MovementHandler {
     }
     
    public void tick(){
-       ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-      try{
-       Packet.writeVarInt(buf, 4);
-       buf.writeDouble(c.location.getX());
-       buf.writeDouble(c.location.getY());
-       buf.writeDouble(c.stance);
-       buf.writeDouble(c.location.getZ());
-       buf.writeBoolean(true);
-       Packet.sendPacket(buf, c.out);
-      }catch(IOException e){
-        e.printStackTrace();
-      }
+      move(c.location.getX(), c.location.getY(), c.location.getZ());
    }
     
     public void sendMovement(Location l){
@@ -158,7 +147,6 @@ public class MovementHandler {
          buf.writeFloat(c.pitch);
          buf.writeBoolean(c.onground);
          Packet.sendPacket(buf, c.out);
-         c.chat.sendMessage("Attempted to mov to: " + x + " " + y + " " + z);
         }catch(IOException e){
           e.printStackTrace();
         }
