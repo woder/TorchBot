@@ -1,6 +1,5 @@
 package me.woder.bot;
 
-import java.awt.Image;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -33,10 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -245,7 +241,7 @@ public class Client {
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
             move.tick();
-            move.sendOnGround();
+            //move.sendOnGround();
            }
            if(connectedirc){
              irc.read();//Read text from irc, if there is some

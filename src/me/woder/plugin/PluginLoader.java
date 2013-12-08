@@ -31,6 +31,7 @@ public class PluginLoader {
         this.c = c;
     }
     
+    @SuppressWarnings("deprecation")
     public void loadPlugins(){
         List<String> commands = new ArrayList<String>();
         List<String> description = new ArrayList<String>();
