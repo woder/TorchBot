@@ -2,6 +2,9 @@ package me.woder.network;
 
 import java.io.IOException;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
 import me.woder.bot.Client;
 
 public class JoinGame01 extends Packet{
@@ -17,6 +20,20 @@ public class JoinGame01 extends Packet{
         c.difficulty = c.in.readByte();
         c.maxplayer = c.in.readByte();
         System.out.println("Level type is: " + getString(c.in));
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        try{
+         Packet.writeVarInt(buf, 21);
+         Packet.writeString(buf, "en_GB");
+         buf.writeByte(0);
+         buf.writeByte(0);
+         buf.writeBoolean(true);
+         buf.writeByte(0);
+         buf.writeBoolean(true);
+         Packet.sendPacket(buf, c.out);
+        }catch(IOException e){
+          e.printStackTrace();
+        }
+        
     }
 
 }

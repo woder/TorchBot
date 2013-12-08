@@ -44,6 +44,7 @@ public class TorchGUI extends JPanel{
     public PRadar pradar;
     public HashMap<String, AttributeSet> attributes;
     private JTextField textField;
+    public JLabel favicon;
     Client c;
     JTextPane chat;
     JTextArea status;
@@ -166,11 +167,23 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_6 = new JButton("Place holder");
         
-        JButton btnNewButton_7 = new JButton("Place holder");
+        JButton btnNewButton_7 = new JButton("Move one");
+        btnNewButton_7.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                c.move.move(-1072.5, 2.620, -413.5);              
+            }
+        });
         
-        JButton btnNewButton_8 = new JButton("Place holder");
+        JButton btnNewButton_8 = new JButton("Test radar");
+        btnNewButton_8.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                pradar.moveDots(70, 100);
+            }
+        });
         
         pradar = new PRadar();
+        
+        favicon = new JLabel("");
         
         GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
         groupLayout.setHorizontalGroup(
@@ -181,28 +194,27 @@ public class TorchGUI extends JPanel{
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 520, GroupLayout.PREFERRED_SIZE)
                             .addGap(10)
-                            .addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-                                .addGroup(groupLayout.createSequentialGroup()
-                                    .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(ComponentPlacement.UNRELATED))
-                                .addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-                                    .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(ComponentPlacement.UNRELATED)))
                             .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_2, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_8, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_3, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_4, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_5, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_6, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNewButton_7, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(status, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(pradar, GroupLayout.PREFERRED_SIZE, 266, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+                                .addComponent(favicon, GroupLayout.DEFAULT_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_2, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_8, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_3, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_4, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_5, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_6, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                .addComponent(btnNewButton_7, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(textField, GroupLayout.PREFERRED_SIZE, 447, GroupLayout.PREFERRED_SIZE)
                             .addGap(7)
                             .addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
                             .addGap(10)
-                            .addComponent(news, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(news, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(10, Short.MAX_VALUE))
         );
         groupLayout.setVerticalGroup(
             groupLayout.createParallelGroup(Alignment.LEADING)
@@ -230,7 +242,9 @@ public class TorchGUI extends JPanel{
                             .addGap(11)
                             .addComponent(btnNewButton_6)
                             .addGap(11)
-                            .addComponent(btnNewButton_7)))
+                            .addComponent(btnNewButton_7)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(favicon, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)))
                     .addGap(11)
                     .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
                         .addComponent(textField, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
@@ -281,6 +295,25 @@ public class TorchGUI extends JPanel{
     public void addText(String text){
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = text + "\n";
+        //Legacy code, color method seems to have changed :(
+        if(text.contains("§")){
+          addSym(text);
+        }else{
+          addCom(text);
+        }
+    }
+    
+    private void addCom(String text){
+        AttributeSet attribute = attributes.get("0");
+         try{
+             int len = doc.getLength();
+             doc.insertString(len, text, attribute);
+         }catch (BadLocationException e){
+             e.printStackTrace();
+         }      
+    }
+    
+    private void addSym(String text){
         String[] lines = text.split("§");
 
         for (int i = 1; i < lines.length; i++){

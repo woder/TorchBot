@@ -1,75 +1,91 @@
 package me.woder.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 
 public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
+    BufferedImage background;
     public List<RComponent> radardots = new ArrayList<RComponent>();
-    //GroupLayout lay = (GroupLayout)this.getLayout();
 
     public PRadar() {
-        //playerDot(new RDot("<html>Player woder22<br>Location: 40, 10, 20</html>", 1, new Point(10,10)));
-        /*playerDot(new RDot("<html>Player nah<br>Location: 40, 10, 20</html>", 2, new Point(15,10)));
-        playerDot(new RDot("<html>Player evil<br>Location: 40, 10, 20</html>", 2, new Point(12,19)));
-        playerDot(new RDot("<html>Player bro<br>Location: 40, 10, 20</html>", 1, new Point(30,20)));*/
-        this.setLayout(new GridBagLayout());
-        /*playerDot(new RComponent(0, 0, 5, 5, "<html>Player woder22<br>Location: 30, 50, 20</html>", 0));
-        playerDot(new RComponent(30, 50, 5, 5, "<html>Player woder22<br>Location: 30, 50, 20</html>", 0));*/
-        playerDot(new RComponent(10, 10, 10, 10, "<html>Player Unreal34<br>Location: 40, 10, 20</html>", 1));
+        background = new BufferedImage(266, 233, BufferedImage.TYPE_INT_ARGB);          
+        playerDot(new RComponent(30, 30, 10, 10, "this is text", 1, this));
+        playerDot(new RComponent(131,116,10,10,"<html>Player Unreal34<br>Location: 40, 10, 20</html>", 0, this));
         
+        addMouseMotionListener(new MouseMotionListener() {  
+            
+            @Override  
+            public void mouseMoved(MouseEvent e) {  
+                boolean tooltip = false;
+                for(RComponent d : radardots){
+                    if(d.isInside(e.getPoint())){
+                        setToolTipText(d.text); 
+                        tooltip = true;
+                    }
+                }
+                
+                if(!tooltip){
+                   setToolTipText(null);  
+                }
+                
+                ToolTipManager.sharedInstance().setInitialDelay(1);
+                ToolTipManager.sharedInstance().setReshowDelay(1);
+                ToolTipManager.sharedInstance().mouseMoved(e);                 
+            }  
+              
+            @Override  
+            public void mouseDragged(MouseEvent e) {  
+                // TODO Auto-generated method stub  
+                  
+            }  
+        });
     }
     
     public void playerDot(RComponent comp){
-        /*comp.setLocation(p);
-        comp.location = p;*/
-        //comp.setBounds(10, 20, 5, 5);
         radardots.add(comp);
         this.add(comp);
-        comp.setVisible(true);
+    }
+    
+    public void moveDots(int x, int y){
+        for(RComponent r : radardots){
+            r.moveDot(x, y);
+            r.repaint();
+        }
     }
 
-    @Override 
-    public void paintComponent(Graphics g) {
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(266, 233);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        setBackground(Color.WHITE);
-        for(RComponent d : radardots){
-            d.repaint();
-        }
-        /*isRed = random.nextBoolean();
-
-        //set the background to blue
-        setBackground(Color.BLUE);
-        s = "BLUE";
-
-        //if 'isRed' is true, set the background to red
-        if (isRed) {
-            setBackground(Color.RED);
-            s = "RED";
-        }
-        //write either "RED" or "BLUE" using graphics
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("serif", Font.BOLD, 60));
-        g.drawOval(0, 0, 300, 300);
-        g.drawString(s, getWidth() / 2 - g.getFontMetrics().stringWidth(s) / 2,
-                getHeight() / 2 + g.getFontMetrics().getHeight() / 2);*/
+        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D g2 = background.createGraphics();
+        g2.setColor(Color.black);
+        g2.drawLine(background.getWidth() / 2, 0, background.getWidth() / 2, background.getHeight());
+        g2.drawLine(0, background.getHeight() / 2, background.getWidth(), background.getHeight() / 2);
+        g2.drawLine(0, 0, background.getWidth(), 0);
+        g2.drawLine(background.getWidth()-1, 0, background.getWidth()-1, background.getHeight()-1);
+        g2.drawLine(background.getWidth()-1, background.getHeight()-1, 0, background.getHeight()-1);
+        g2.drawLine(0, background.getHeight(), 0, 0);
+        int x = (getWidth() - background.getWidth()) / 2;
+        int y = (getHeight() - background.getHeight()) / 2;
+        g2d.drawImage(background, x, y, this);
+        g2d.dispose();
+        background = new BufferedImage(262, 233, BufferedImage.TYPE_INT_ARGB);
     }
-    
-    public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setSize(500, 500);
-        f.setTitle("Sometimes Red, Sometimes Blue");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setContentPane(new PRadar());
-        f.pack();
-        f.setVisible(true);
-    }
-    
     
 }

@@ -1,6 +1,7 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,11 +19,32 @@ public class ChatHandler {
     Client c;
     private Logger log;
     private Logger err;
+    //support for legacy system:
+    HashMap<String, String> attributes;
+    
     
     public ChatHandler(Client c){
         this.c = c;
         log = Logger.getLogger("me.woder.chat");
         err = Logger.getLogger("me.woder.error");
+        attributes = new HashMap<String, String>();
+        attributes.put("black", "0");
+        attributes.put("dark_blue", "1");
+        attributes.put("dark_green", "2");
+        attributes.put("dark_aqua", "3");
+        attributes.put("dark_red", "4");
+        attributes.put("dark_purple", "5");
+        attributes.put("gold", "6");
+        attributes.put("gray", "7");
+        attributes.put("dark_gray", "8");
+        attributes.put("blue", "9");
+        attributes.put("green", "a");
+        attributes.put("aqua", "b");
+        attributes.put("red", "c");
+        attributes.put("light_purple", "d");
+        attributes.put("yellow", "e");        
+        attributes.put("white", "f");
+        attributes.put("reset", "r");
     }
     
     public void sendMessage(String message){
@@ -63,8 +85,10 @@ public class ChatHandler {
        if(json.containsKey("with")){
          mess = formatWith(json, mess, user);
          
+       }else if(json.containsKey("extra")){
+         mess = formatExtra(json);
        }else{
-         mess = formatRaw(mess, json);  
+           mess = formatRaw(mess, json); 
        }      
         return mess;
     }
@@ -90,6 +114,28 @@ public class ChatHandler {
              c.gui.addText("§4Formating error!");
          }         
         return mess;
+    }
+    
+    private String formatExtra(JSONObject json){
+        String formated = "";
+        JSONArray arr = json.getJSONArray("extra");
+        for (int i = 0; i < arr.size(); i++){
+           if(arr.get(i).toString().contains("{")){
+            JSONObject ob = arr.getJSONObject(i);
+            String key = ob.getString("color");
+            String theText = ob.getString("text");
+            System.out.println("color: " + key + " text: " + theText);
+            formated = formated + "§" + attributes.get(key) + theText;
+           }else{
+            formated = formated + "§0" + arr.getString(i);  
+           }
+        }
+        c.gui.addText(formated);     
+        String[] args = formated.split(" ");
+        if(formated.contains(c.prefix)){
+            c.chandle.processCommand(args[1].replace(c.prefix, ""), args, "Unknown");
+        }
+        return formated;
     }
     
     public String formatRaw(String mess, JSONObject json){

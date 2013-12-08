@@ -34,11 +34,6 @@ public class Packet {
         String s = "";
        try {
             length = readVarInt(in);       
-        System.out.println("len is " + length);
-        if (length > 3000)
-            throw new IOException(
-                   "Received string length longer than maximum allowed ("
-                           + length + " > " + 3000 + ")");
         if (length < 0) {
            throw new IOException(
                    "Received string length is less than zero! Weird string!");

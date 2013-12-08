@@ -1,7 +1,9 @@
 package me.woder.bot;
 
+import java.awt.Image;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -31,9 +33,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.bouncycastle.util.encoders.Base64;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -76,7 +83,7 @@ public class Client {
     String leveltype;
     public Location location;
     World world;
-    boolean chunksloaded;
+    public boolean chunksloaded;
     boolean connectedirc;
     public int entityID;
     public byte dimension;
@@ -174,7 +181,7 @@ public class Client {
         gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
         gui.addText("§3 or press the change server button to login to a new server.");   
         authPlayer(username, password);
-        //pingServer(servername, port);      
+        pingServer(servername, port);      
         ploader = new PluginLoader(this);
         ploader.loadPlugins();
     }
@@ -235,9 +242,10 @@ public class Client {
             //mainloop
            net.readData();//Read data
            gui.tick();
-           move.tick();
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
+            //move.tick();
+            move.sendOnGround();
            }
            if(connectedirc){
              irc.read();//Read text from irc, if there is some
@@ -273,32 +281,48 @@ public class Client {
         }        
     }
     
+    @SuppressWarnings("unused")
     public void pingServer(String server, int port){
         try {
             clientSocket = new Socket(server, port);
             out = new DataOutputStream(clientSocket.getOutputStream());
             in = new DataInputStream(clientSocket.getInputStream());
-            out.writeByte(0xFE);
-            out.writeByte(1);
-            out.flush();
-            out.writeByte(0xFA);
-            out.writeShort(11);
-            out.writeChars("MC|PingHost");
-            out.writeShort(7+(2*server.length()));
-            out.writeByte(75);
-            out.writeShort(server.length());
-            out.writeChars(server);
-            out.writeInt(port);
-            out.flush();
-          byte id = in.readByte();
-          if(id==-1){
-              String[] data = Packet.getString(in).split("\0");
-              String gamev = data[2];
-              String motd = data[3];
-              String online = data[4];
-              String maxp = data[5];
-              gui.addText("§5Game version: " + gamev + " " + motd + " " + online + "/" + maxp);
-          }
+            ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            Packet.writeVarInt(buf, 0);
+            Packet.writeVarInt(buf, 4);
+            Packet.writeString(buf, servername);
+            buf.writeShort(port);
+            Packet.writeVarInt(buf, 1);          
+            Packet.sendPacket(buf, out);
+            
+            buf = ByteStreams.newDataOutput();
+            Packet.writeVarInt(buf, 0);
+            Packet.sendPacket(buf, out);
+            
+            Packet.readVarInt(in);
+            int id = Packet.readVarInt(in);
+            
+            if(id == 0){
+                String pings = Packet.getString(in);
+                System.out.println("Pings: " + pings);
+                JSONObject json = (JSONObject) JSONSerializer.toJSON(pings);  
+                JSONObject version = json.getJSONObject("version");
+                String prot = version.getString("name");
+                String ver = version.getString("protocol");
+                JSONObject players = json.getJSONObject("players");
+                String max = players.getString("max");
+                String online = players.getString("online");
+                String text = json.getString("description");
+                if(json.containsKey("favicon")){
+                   String images = json.getString("favicon").replace("data:image/png;base64,", "");
+                   byte[] data = Base64.decode(images);
+                   InputStream is = new ByteArrayInputStream(data);
+                   ImageIcon test = new ImageIcon(data);
+                   gui.favicon.setIcon(test);
+                   gui.repaint();                
+                }
+                gui.addText("§5Game version: " + ver + "  " + text + " " + online + "/" + max);
+            }
           out.close();
           in.close();
           clientSocket.close();

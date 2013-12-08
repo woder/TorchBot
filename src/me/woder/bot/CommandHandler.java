@@ -110,6 +110,7 @@ public class CommandHandler {
                 Packet.writeVarInt(buf, 22);
                 buf.writeByte(0);
                 Packet.sendPacket(buf, c.out);
+                c.chat.sendMessage("Respawned!");
             } catch (IOException e) {
                 e.printStackTrace();
             }

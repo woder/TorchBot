@@ -58,6 +58,8 @@ public class NetworkHandler {
         play.put(55, new Statistics55(c));
         play.put(56, new PlayerListItem56(c));
         play.put(57, new PlayerAbilites57(c));
+        play.put(61, new UpdateScore61(c));
+        play.put(62, new TeamPacket62(c));
         play.put(63, new PluginMessage63(c));
         play.put(64, new Disconnect64(c));
     }

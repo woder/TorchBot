@@ -123,7 +123,7 @@ public class Chunk {
      public byte[] getData(byte[] deCompressed) {
         // Loading chunks, network handler hands off the decompressed bytes
         // This function takes its portion, and returns what's left.
-
+        c.chunksloaded = true;
         blocks = new byte[blocknum];
         byte[] temp;
         blockmeta = new byte[blocknum/2];

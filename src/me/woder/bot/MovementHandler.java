@@ -114,10 +114,18 @@ public class MovementHandler {
     }
     
    public void tick(){
-       /*ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-       Packet.writeVarInt(buf, 1);
-       //Packet.writeString(buf, message);
-       Packet.sendPacket(buf, c.out);*/
+       ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+      try{
+       Packet.writeVarInt(buf, 4);
+       buf.writeDouble(c.location.getX());
+       buf.writeDouble(c.location.getY());
+       buf.writeDouble(c.stance);
+       buf.writeDouble(c.location.getZ());
+       buf.writeBoolean(true);
+       Packet.sendPacket(buf, c.out);
+      }catch(IOException e){
+        e.printStackTrace();
+      }
    }
     
     public void sendMovement(Location l){
@@ -135,6 +143,35 @@ public class MovementHandler {
             c.out.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void move(double x, double y, double z) {
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        try{
+         Packet.writeVarInt(buf, 6);
+         buf.writeDouble(x);
+         buf.writeDouble(y-1.620);
+         buf.writeDouble(y);
+         buf.writeDouble(z);
+         buf.writeFloat(c.yaw);
+         buf.writeFloat(c.pitch);
+         buf.writeBoolean(c.onground);
+         Packet.sendPacket(buf, c.out);
+         c.chat.sendMessage("Attempted to mov to: " + x + " " + y + " " + z);
+        }catch(IOException e){
+          e.printStackTrace();
+        }
+    }
+    
+    public void sendOnGround(){
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        try{
+         Packet.writeVarInt(buf, 3);
+         buf.writeBoolean(c.onground);
+         Packet.sendPacket(buf, c.out);
+        }catch(IOException e){
+          e.printStackTrace();
         }
     }
 }
