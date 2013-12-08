@@ -6,12 +6,15 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.woder.network.Packet;
 import me.woder.world.Location;
 
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.AStar.InvalidPathException;
 import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 
 public class MovementHandler {
@@ -110,6 +113,10 @@ public class MovementHandler {
                 || id == 76 || id == 78);
     }
     
+   public void tick(){
+      move(c.location.getX(), c.location.getY(), c.location.getZ());
+   }
+    
     public void sendMovement(Location l){
         c.location = l;
         c.chat.sendMessage("Attempting to move to location: " + l.getX() + "," + l.getY() + "," + l.getZ());
@@ -125,6 +132,34 @@ public class MovementHandler {
             c.out.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void move(double x, double y, double z) {
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        try{
+         Packet.writeVarInt(buf, 6);
+         buf.writeDouble(x);
+         buf.writeDouble(y-1.620);
+         buf.writeDouble(y);
+         buf.writeDouble(z);
+         buf.writeFloat(c.yaw);
+         buf.writeFloat(c.pitch);
+         buf.writeBoolean(c.onground);
+         Packet.sendPacket(buf, c.out);
+        }catch(IOException e){
+          e.printStackTrace();
+        }
+    }
+    
+    public void sendOnGround(){
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        try{
+         Packet.writeVarInt(buf, 3);
+         buf.writeBoolean(c.onground);
+         Packet.sendPacket(buf, c.out);
+        }catch(IOException e){
+          e.printStackTrace();
         }
     }
 }

@@ -2,6 +2,7 @@ package me.woder.bot;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -31,15 +32,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
+import javax.swing.ImageIcon;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.bouncycastle.util.encoders.Base64;
+
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import me.woder.event.EventHandler;
 import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
+import me.woder.network.NetworkHandler;
+import me.woder.network.Packet;
+import me.woder.plugin.PluginLoader;
 import me.woder.world.Location;
 import me.woder.world.World;
 import me.woder.world.WorldHandler;
@@ -47,8 +57,10 @@ import me.woder.world.WorldHandler;
 
 public class Client {
     public TorchGUI gui;
+    public EventHandler ehandle;
     public ChatHandler chat;
     public MetaDataProcessor proc;
+    public PluginLoader ploader;
     public CommandHandler chandle;
     public WorldHandler whandle;
     public MovementHandler move;
@@ -56,39 +68,41 @@ public class Client {
     public IRCBridge irc;
     public DataOutputStream out;
     public DataInputStream in;
-    PublicKey publickey;
-    SecretKey secretkey;
-    SecretKey sharedkey;
+    public PublicKey publickey;
+    public SecretKey secretkey;
+    public SecretKey sharedkey;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
-    public static byte gamemode;
+    public byte gamemode;
     String leveltype;
-    Location location;
+    public Location location;
     World world;
-    boolean chunksloaded;
+    public boolean chunksloaded;
     boolean connectedirc;
-    int entityID;
-    byte dimension;
-    byte difficulty;
-    byte maxplayer;
-    byte flags;
-    float flyspeed;
-    float walkspeed;
-    long time;
-    long age;
-    float health;
-    short food;
-    float foodsat;
-    float exp;
-    short level;
-    short lvlto;
-    double stance;
-    String username = "";//TODO add way to change this
+    public int entityID;
+    public byte dimension;
+    public byte difficulty;
+    public byte maxplayer;
+    public byte flags;
+    public float flyspeed;
+    public float walkspeed;
+    public long time;
+    public long age;
+    public float health;
+    public short food;
+    public float foodsat;
+    public float exp;
+    public short level;
+    public short lvlto;
+    public double stance;
+    public String username = "";//TODO add way to change this
     int port;
     String servername;
     String sessionId;
+    public int protocol;
+    public int state = 2;
     public boolean running = true;
     private String password;
     public String accesstoken;
@@ -99,9 +113,14 @@ public class Client {
     public File[] plugins = null;
     public String[] cmds = null;
     public String[] descriptions = null;
-    List<Slot> inventory = new ArrayList<Slot>();
+    public byte selectedslot;
+    public boolean onground;
+    public float yaw;
+    public float pitch;
+    public List<Slot> inventory = new ArrayList<Slot>();
     //List<Player> players = new ArrayList<Player>();//Is exclusive to players
-    List<Entity> entities = new ArrayList<Entity>();//Includes players
+    public List<String> onplayers = new ArrayList<String>();
+    public List<Entity> entities = new ArrayList<Entity>();//Includes players
     //Credits to umby24 for the help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
@@ -157,8 +176,10 @@ public class Client {
         prefix = "!";
         gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
         gui.addText("§3 or press the change server button to login to a new server.");   
-        pingServer(servername, port);      
         authPlayer(username, password);
+        pingServer(servername, port);      
+        ploader = new PluginLoader(this);
+        ploader.loadPlugins();
     }
     
     public void startBot(String server, String port){
@@ -175,38 +196,52 @@ public class Client {
     public void startBot(){
         chunksloaded = false;
         connectedirc = false;
+        running = true;
         try{
           // open a socket
         System.out.println("Attempting to connect to: " + servername + " on " + port);
+        gui.addText("§3Attempting to connect to: " + servername + " on " + port);
         clientSocket = new Socket(servername, port);
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
         //our hand shake
-        int str = username.length();
-        out.writeByte(0x02);
-        out.writeByte(78);//74 = 1.6.2
-        out.writeShort(str);
-        out.writeChars(username);
-        out.writeShort(servername.length());
-        out.writeChars(servername);
-        out.writeInt(port);
+
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        Packet.writeVarInt(buf, 0);
+        Packet.writeVarInt(buf, 4);
+        Packet.writeString(buf, servername);
+        buf.writeShort(port);
+        Packet.writeVarInt(buf, 2);
+        
+        Packet.sendPacket(buf, out);
+        
+        buf = ByteStreams.newDataOutput();
+        
+        Packet.writeVarInt(buf, 0);
+        Packet.writeString(buf, username);
+
+        Packet.sendPacket(buf, out);
+        
         out.flush();                             
          
         chat = new ChatHandler(this);
+        ehandle = new EventHandler(this);
         proc = new MetaDataProcessor(this);
         chandle = new CommandHandler(this);
         whandle = new WorldHandler(this);
-        net = new NetworkHandler(this,in,out);          
+        net = new NetworkHandler(this);          
         world = whandle.getWorld();
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
          
-         while(true){
+         while(running){
             //mainloop
            net.readData();//Read data
            gui.tick();
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
+            move.tick();
+            //move.sendOnGround();
            }
            if(connectedirc){
              irc.read();//Read text from irc, if there is some
@@ -219,10 +254,7 @@ public class Client {
     }
     
     public void stopBot(String reason){
-        try {
-            out.writeByte(0xFF);
-            out.writeShort(reason.length());
-            out.writeChars(reason);
+        try {            
             out.close();
             in.close();
             clientSocket.close();
@@ -232,33 +264,61 @@ public class Client {
         }        
     }
     
+    public void stopBot(){
+        try {
+            running = false;
+            out.close();
+            in.close();
+            clientSocket.close();
+            this.state = 2;
+        } catch (IOException e) {
+            gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
+            netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
+        }        
+    }
+    
+    @SuppressWarnings("unused")
     public void pingServer(String server, int port){
         try {
             clientSocket = new Socket(server, port);
             out = new DataOutputStream(clientSocket.getOutputStream());
             in = new DataInputStream(clientSocket.getInputStream());
-            out.writeByte(0xFE);
-            out.writeByte(1);
-            out.flush();
-            out.writeByte(0xFA);
-            out.writeShort(11);
-            out.writeChars("MC|PingHost");
-            out.writeShort(7+(2*server.length()));
-            out.writeByte(75);
-            out.writeShort(server.length());
-            out.writeChars(server);
-            out.writeInt(port);
-            out.flush();
-          byte id = in.readByte();
-          if(id==-1){
-              short lend = in.readShort();
-              String[] data = getString(in, lend, 400).split("\0");
-              String gamev = data[2];
-              String motd = data[3];
-              String online = data[4];
-              String maxp = data[5];
-              gui.addText("§5Game version: " + gamev + " " + motd + " " + online + "/" + maxp);
-          }
+            ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            Packet.writeVarInt(buf, 0);
+            Packet.writeVarInt(buf, 4);
+            Packet.writeString(buf, servername);
+            buf.writeShort(port);
+            Packet.writeVarInt(buf, 1);          
+            Packet.sendPacket(buf, out);
+            
+            buf = ByteStreams.newDataOutput();
+            Packet.writeVarInt(buf, 0);
+            Packet.sendPacket(buf, out);
+            
+            Packet.readVarInt(in);
+            int id = Packet.readVarInt(in);
+            
+            if(id == 0){
+                String pings = Packet.getString(in);
+                System.out.println("Pings: " + pings);
+                JSONObject json = (JSONObject) JSONSerializer.toJSON(pings);  
+                JSONObject version = json.getJSONObject("version");
+                String prot = version.getString("name");
+                String ver = version.getString("protocol");
+                JSONObject players = json.getJSONObject("players");
+                String max = players.getString("max");
+                String online = players.getString("online");
+                String text = json.getString("description");
+                if(json.containsKey("favicon")){
+                   String images = json.getString("favicon").replace("data:image/png;base64,", "");
+                   byte[] data = Base64.decode(images);
+                   InputStream is = new ByteArrayInputStream(data);
+                   ImageIcon test = new ImageIcon(data);
+                   gui.favicon.setIcon(test);
+                   gui.repaint();                
+                }
+                gui.addText("§5Game version: " + ver + "  " + text + " " + online + "/" + max);
+            }
           out.close();
           in.close();
           clientSocket.close();
@@ -320,26 +380,7 @@ public class Client {
             e.printStackTrace();
         }
     }
-    
-     
-    public static String getString(DataInputStream datainputstream, int length,
-            int max) throws IOException {
-        if (length > max)
-            throw new IOException(
-                    "Received string length longer than maximum allowed ("
-                            + length + " > " + max + ")");
-        if (length < 0) {
-            throw new IOException(
-                    "Received string length is less than zero! Weird string!");
-        }
-        StringBuilder stringbuilder = new StringBuilder();
 
-        for (int j = 0; j < length; j++) {
-            stringbuilder.append(datainputstream.readChar());
-        }
-
-        return stringbuilder.toString();
-    }
      
     public String sendSessionRequest(String user, String session, String serverid)
     {
@@ -415,7 +456,7 @@ public class Client {
             clienttoken = json.getString("clientToken");
             System.out.println(json.toString());
             profile = json.getJSONObject("selectedProfile").getString("id");
-            System.out.println("So the dick is: " + hc.getResponseMessage() + " and the puss: " + accesstoken + " and er: " + clienttoken + " profile is " + profile);
+            username = json.getJSONObject("selectedProfile").getString("name");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

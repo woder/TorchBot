@@ -76,22 +76,6 @@ public class Chunk {
                 Part mySection = parts.get(current);
                 System.out.println("Part is: " + mySection.y);
                 mySection.blocks = metablock;
-                FileWriter writer;
-                try {
-                    writer = new FileWriter("filename",true);;
-                    int slow = 0;
-                    for(int s = 0; s < metablock.length; s+=2){
-                        writer.write("shortarr:" + metablock[s] + " firstid: " + temp[s] + " firstmeta: " + temp2[slow] + " index: " + s + " chunk x, chunk z" + x + " " + z + "\n");
-                        writer.write("shortarr:" + metablock[s+1] + " firstid: " + temp[s+1] + " firstmeta: " + temp2[slow] + " index: " + (s+1) + "\n");
-                        slow++;
-                    }
-                    writer.write("Block length: " + blocks.length + " meta: " + metablock.length + "\n");
-                    writer.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 offset += 4096;
                 metaoff += 2048;
                 current += 1;
@@ -126,20 +110,20 @@ public class Chunk {
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
-     public void updateBlock(int Bx, int By, int Bz, int id, byte meta) {
+     public void updateBlock(int Bx, int By, int Bz, int id, int meta) {
         // Updates the block in this chunk.
         // TODO: Ensure that the block being updated is in this chunk.
         // Even though chances of that exception throwing are tiny.
 
         Part part = GetSectionByNumber(By);
-        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, meta);
+        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, (byte)meta);
 
      }
     
      public byte[] getData(byte[] deCompressed) {
         // Loading chunks, network handler hands off the decompressed bytes
         // This function takes its portion, and returns what's left.
-
+        c.chunksloaded = true;
         blocks = new byte[blocknum];
         byte[] temp;
         blockmeta = new byte[blocknum/2];
@@ -201,7 +185,6 @@ public class Chunk {
      }
      
      private int getZinSection(int BlockZ) {
-         System.out.println("Bz" + BlockZ + " Cz" + z);
          return BlockZ - (z * 16);
      }
     

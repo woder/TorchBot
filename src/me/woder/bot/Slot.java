@@ -26,6 +26,7 @@ public class Slot {
              System.out.println("There is: " + count + " of item " + bid);
              damage = in.readShort();
              short next = in.readShort();
+             System.out.println("Next is: " + next);
               if(next != -1){
                   byte[] var2 = new byte[next];
                   in.readFully(var2);

@@ -5,7 +5,7 @@ public class Block {
     private int x;
     private int y;
     private int z;
-    private byte metadata;
+    private int metadata;
     private World world;
     
     public Block(World world, int x, int y, int z, int id){
@@ -16,7 +16,7 @@ public class Block {
         this.world = world;
     }
     
-    public Block(World world, int x, int y, int z, int id, byte metadata){
+    public Block(World world, int x, int y, int z, int id, int metadata){
         this.id = id;
         this.x = x;
         this.y = y;
@@ -25,7 +25,7 @@ public class Block {
         this.metadata = metadata;
     }
     
-    public byte getMetaData(){
+    public int getMetaData(){
         return metadata;
     }
     
