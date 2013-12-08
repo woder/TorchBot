@@ -1,6 +1,8 @@
 TorchBot
 ========
 
+This program is listed under GPLv3 license.
+
 A bot for minecraft written in java
 
 So far it doesn't do much, but features are to come.
