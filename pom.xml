@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>TorchBot</groupId>
+  <artifactId>TorchBot</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>TorchBot</name>
+  <description>A bot for minecraft
+</description>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+	  <groupId>net.sf.json-lib</groupId>
+	  <artifactId>json-lib</artifactId>
+	  <version>2.4</version>
+	  <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>guava</artifactId>
+	  <version>r05</version>
+    </dependency>
+    <dependency>
+	  <groupId>org.apache.directory.studio</groupId>
+	  <artifactId>org.apache.commons.io</artifactId>
+	  <version>2.4</version>
+    </dependency>
+    <dependency>
+	  <groupId>rhino</groupId>
+	  <artifactId>js</artifactId>
+	  <version>1.7R1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.bouncycastle</groupId>
+    	<artifactId>bcprov-jdk15on</artifactId>
+    	<version>1.49</version>
+    </dependency>
+  </dependencies>
+</project>
