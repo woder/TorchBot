@@ -15,8 +15,8 @@ public class HealthUpdate06 extends Packet{
     public void read(Client c, int len) throws IOException{
         c.health = c.in.readFloat();
         c.food = c.in.readShort();
-        
-        //c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,bid,meta}));
+        c.foodsat = c.in.readFloat();
+        c.ehandle.handleEvent(new Event("onHealthUpdate", new Object[] {c.health,c.food,c.foodsat}));
     }  
 
 }

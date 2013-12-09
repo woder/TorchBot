@@ -15,7 +15,7 @@ import javax.swing.ToolTipManager;
 
 public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
-    BufferedImage background;
+    public BufferedImage background;
     public List<RComponent> radardots = new ArrayList<RComponent>();
 
     public PRadar() {

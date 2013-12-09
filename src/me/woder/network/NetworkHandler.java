@@ -29,6 +29,7 @@ public class NetworkHandler {
         play.put(3, new TimeUpdate03(c));
         play.put(4, new EntityEquipment04(c));
         play.put(5, new SpawnPos05(c));
+        play.put(6, new HealthUpdate06(c));
         play.put(8, new PlayerPosLook08(c));
         play.put(9, new HeldItemChange09(c));
         play.put(11, new Animation11(c));

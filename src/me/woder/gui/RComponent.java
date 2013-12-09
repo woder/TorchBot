@@ -59,7 +59,7 @@ public class RComponent extends JComponent {
        }
        g2.fillRect(x, y, w, h);
        g2.dispose();
-       img.repaint();
+       //img.repaint();
     }
 
  }

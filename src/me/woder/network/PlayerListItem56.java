@@ -14,12 +14,12 @@ public class PlayerListItem56 extends Packet{
         String player = getString(c.in);
         boolean online = c.in.readBoolean();
         c.in.readShort();
-        if(!c.onplayers.contains(player)){
+        /*if(!c.onplayers.contains(player)){
            c.onplayers.add(player); 
         }
         if(!online){
            c.onplayers.remove(player);
-        }
+        }*/
     }
 
 }

@@ -81,7 +81,7 @@ public class MovementHandler {
         int id = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0).getTypeId();
         if(canBlockBeWalkedThrough(id)){
             Location down = getCenter(c.location.getX(), c.location.getY()-2, c.location.getZ());
-            sendMovement(down);
+            move(down.getX(), down.getY(), down.getZ());
         }
     }
     
@@ -101,7 +101,7 @@ public class MovementHandler {
             //now check if the head is safe
             if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
-                sendMovement(l);
+                move(l.getX(), l.getY(), l.getZ());
                 canGo = true;
             }
         }//if we can't go there then we will return false
@@ -116,24 +116,6 @@ public class MovementHandler {
    public void tick(){
       move(c.location.getX(), c.location.getY(), c.location.getZ());
    }
-    
-    public void sendMovement(Location l){
-        c.location = l;
-        c.chat.sendMessage("Attempting to move to location: " + l.getX() + "," + l.getY() + "," + l.getZ());
-        try {  
-            c.out.writeByte(0x0B);
-            c.out.writeDouble(l.getX());
-            c.out.writeDouble(l.getY());
-            System.out.println("Y = " + l.getY());
-            c.stance = l.getBlockY()+1.2;
-            c.out.writeDouble(l.getY()+1.62);
-            c.out.writeDouble(l.getZ());
-            c.out.writeBoolean(true);
-            c.out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void move(double x, double y, double z) {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
