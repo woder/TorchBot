@@ -13,7 +13,6 @@ public class BlockChange35 extends Packet{
     
     @Override
     public void read(Client c, int len) throws IOException{
-        c.gui.addText("packet received");
         int x = c.in.readInt();
         int y = (c.in.readByte() & 0xff);
         int z = c.in.readInt();

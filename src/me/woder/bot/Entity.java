@@ -1,22 +1,18 @@
 package me.woder.bot;
 
+import me.woder.gui.RComponent;
 import me.woder.world.Location;
 import me.woder.world.World;
 
 public class Entity {
     Client c;
     int entityid;
+    RComponent dot;
     World world;
-    double x;
-    double y;
-    double z;
+    double x, y, z, rx, ry, rz;
     int type;
-    byte pitch;
-    byte headpitch;
-    byte yaw;
-    int vx;
-    int vy;
-    int vz;
+    byte pitch, headpitch, yaw;
+    int vx, vy, vz;
     
     public Entity(Client c){
         this.c = c;
@@ -36,6 +32,11 @@ public class Entity {
         this.vx = vx;
         this.vy = vy;
         this.vz = vz;
+        this.rx = x - c.location.getX();
+        this.ry = y - c.location.getY();
+        this.rz = z - c.location.getZ();
+        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar);
+        c.gui.pradar.playerDot(dot);
     }
     
     public int getEntityId(){
@@ -47,20 +48,56 @@ public class Entity {
     }
     
     public void setLocation(Location l){
+        c.chat.sendMessage("Location was: " + this.x + " location was set to: " + l.getX());
         this.x = l.getX();
         this.y = l.getY();
         this.z = l.getZ();
+        setRadarPos(l);
+    }
+    
+    public void setLocationRelative(Location l){
+        this.x = x + l.getX();
+        this.y = y + l.getY();
+        this.z = z + l.getZ();
+        setRadarPos(new Location(c.whandle.getWorld(), x, y, z));
+    }
+    
+    public void setLocationLookRelative(Location l, byte yaw, byte pitch){
+        c.chat.sendMessage("Location was: " + this.x + " location is being changed by: " + l.getX());
+        this.x = x + l.getX();
+        this.y = y + l.getY();
+        this.z = z + l.getZ();
+        this.yaw = yaw;
+        this.pitch = pitch;
+        setRadarPos(new Location(c.whandle.getWorld(), x, y, z));
+    }
+    
+    public void setLocationLook(Location l, byte yaw, byte pitch){
+        this.x = l.getX();
+        this.y = l.getY();
+        this.z = l.getZ();
+        this.yaw = yaw;
+        this.pitch = pitch;
+        setRadarPos(l);
     }
     
     public void setRadarPos(Location l){
-        x = l.getX() - c.location.getX();
-        y = l.getY() - c.location.getY();
-        z = l.getZ() - c.location.getZ();
-        c.chat.sendMessage("Relative: " + x + ", " + y + ", " + z);
+        rx = (c.location.getX() - l.getX()) + 131;
+        ry = c.location.getY() - l.getY();
+        rz = (c.location.getZ() - l.getZ()) + 116;
+    }
+    
+    public Location getRadarPos(){
+        return new Location(c.whandle.getWorld(), rx, ry, rz);
     }
     
     public Location getLocation(){
         return new Location(world, x, y, z);
+    }
+
+    public void tickRadar() {
+        dot.moveDot((int)rx, (int)rz);    
+        dot.repaint();
     }
 
 }

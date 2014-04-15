@@ -17,11 +17,13 @@ public class EventHandler {
     Client c;
     Context context;
     
+    @SuppressWarnings("deprecation")
     public EventHandler(Client c){
         this.c = c;
         context = Context.enter();
     }
     
+    @SuppressWarnings("deprecation")
     public void eventHandlers(Event event, Client c){
         for(int i = 0; i < c.plugins.length; i++){
                File plugin = c.plugins[i];

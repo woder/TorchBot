@@ -17,11 +17,12 @@ public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
     public BufferedImage background;
     public List<RComponent> radardots = new ArrayList<RComponent>();
+    public RComponent dbot = new RComponent(131,116,10,10,"<html>Player Unreal34<br>Location: 40, 10, 20</html>", 0, this);
 
     public PRadar() {
         background = new BufferedImage(266, 233, BufferedImage.TYPE_INT_ARGB);          
         playerDot(new RComponent(30, 30, 10, 10, "this is text", 1, this));
-        playerDot(new RComponent(131,116,10,10,"<html>Player Unreal34<br>Location: 40, 10, 20</html>", 0, this));
+        playerDot(dbot);
         
         addMouseMotionListener(new MouseMotionListener() {  
             

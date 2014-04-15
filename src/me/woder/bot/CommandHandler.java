@@ -21,6 +21,7 @@ public class CommandHandler {
     }
     
     public void processCommand(String command, String[] args, String username){
+        System.out.println("Command is: " + command);
         if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
         }else if(command.equalsIgnoreCase("under")){
@@ -42,6 +43,14 @@ public class CommandHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else if(command.equalsIgnoreCase("move")){
+            Player p = c.en.findPlayer("woder22");
+            Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-2, c.location.getBlockZ());
+            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
+            c.move.runPathing(l, loc, 50);
+        }else if(command.equalsIgnoreCase("holding")){
+            Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
+            c.chat.sendMessage("Holding: " + p.getHeldItem());
         }else if(command.equalsIgnoreCase("reload")){
             c.ploader.reloadPlugins();
         }else if(command.equalsIgnoreCase("export")){
@@ -92,7 +101,7 @@ public class CommandHandler {
             c.chat.sendMessage(sender + ": " + append);
         }
       }else{
-        c.chat.sendMessage("Catagorys are: op, fun, normal and plugin <Bot created by woder>");
+        c.chat.sendMessage("Catagories are: op, fun, normal and plugin <Bot created by woder>");
       }
     }
 

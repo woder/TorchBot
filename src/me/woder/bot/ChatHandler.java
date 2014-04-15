@@ -1,6 +1,8 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import com.google.common.io.ByteStreams;
 
 import me.woder.event.Event;
 import me.woder.network.Packet;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -58,38 +61,29 @@ public class ChatHandler {
        }
     }
     
-    /*public String readMessage(){
-        short len;
-        String messages = null;
-        try {
-            len = c.in.readShort();
-            messages = getString(c.in, len, 1500);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(messages.contains("!")){
-            c.chandle.processCommand(formatMessage(messages));
-            log.log(Level.FINEST,formatMessage(messages));
-        }
-        log.log(Level.FINEST,messages);
-        c.gui.addText(formatMessage(messages));
-        return messages;
-    }*/
-    
     public String formatMessage(String message){
         String mess = "Something went wrong";
         String user = "Unknown";
         System.out.println(message);
-        JSONObject json = (JSONObject) JSONSerializer.toJSON(message);     
-        //JSONArray text = rec.;
-       if(json.containsKey("with")){
-         mess = formatWith(json, mess, user);
-         
-       }else if(json.containsKey("extra")){
-         mess = formatExtra(json);
-       }else{
-           mess = formatRaw(mess, json); 
-       }      
+        try{
+         JSON jsonr = JSONSerializer.toJSON(message);     
+         if(!jsonr.isArray()){
+           JSONObject json = (JSONObject) jsonr;
+           if(json.containsKey("with")){
+             mess = formatWith(json, mess, user);
+           }else if(json.containsKey("extra")){
+             mess = formatExtra(json);
+           }else{
+             mess = formatRaw(mess, json); 
+           }      
+         }else{
+            //TODO add method to parse this
+            //jsonr = (JSONArray) jsonr;
+         }
+        }catch(JSONException ex){
+           System.out.println("Warning: Formating error");
+           err.log(Level.WARNING, "MESSAGE: " + message + " IS NOT VALID JSON, SKIPPING STRING...");
+        }
         return mess;
     }
     
@@ -130,10 +124,21 @@ public class ChatHandler {
             formated = formated + "§0" + arr.getString(i);  
            }
         }
-        c.gui.addText(formated);     
-        String[] args = formated.split(" ");
+        c.gui.addText(formated);  
+        ArrayList<String> args = new ArrayList<String>(Arrays.asList(formated.split(" ")));
+        String username = ChatColor.stripColor(args.get(0));
+        username = username.replace(":", "");
+        args.remove(0);
         if(formated.contains(c.prefix)){
-            c.chandle.processCommand(args[1].replace(c.prefix, ""), args, "Unknown");
+            String commande = formated.substring(formated.indexOf(c.prefix));
+            System.out.println(commande);
+            int d = commande.length();
+            if(commande.indexOf(" ") != -1){
+              d = commande.indexOf(" ");
+            }
+            String command = commande.substring(0, d);
+            System.out.println(command);
+            c.chandle.processCommand(command.replace(c.prefix, ""), args.toArray(new String[args.size()]), username);
         }
         return formated;
     }

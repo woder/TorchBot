@@ -13,7 +13,9 @@ public class HealthUpdate06 extends Packet{
     
     @Override
     public void read(Client c, int len) throws IOException{
-        c.health = c.in.readFloat();
+        int health = (int)c.in.readFloat();
+        c.health = health;
+        c.chat.sendMessage("Health is now: " + c.health);
         c.food = c.in.readShort();
         c.foodsat = c.in.readFloat();
         c.ehandle.handleEvent(new Event("onHealthUpdate", new Object[] {c.health,c.food,c.foodsat}));

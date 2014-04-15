@@ -65,6 +65,7 @@ public class Client {
     public WorldHandler whandle;
     public MovementHandler move;
     public NetworkHandler net;
+    public EntityTracker en;
     public IRCBridge irc;
     public DataOutputStream out;
     public DataInputStream in;
@@ -97,7 +98,7 @@ public class Client {
     public short level;
     public short lvlto;
     public double stance;
-    public String username = "";//TODO add way to change this
+    public String username;//TODO add way to change this
     int port;
     String servername;
     String sessionId;
@@ -105,11 +106,12 @@ public class Client {
     public int state = 2;
     public boolean running = true;
     private String password;
+    public int mcversion = 5;
     public String accesstoken;
     public String clienttoken;
     public String profile;
-    public String versioninfo = "TorchBot version 0.2 by woder";
     public String version = "0.2";
+    public String versioninfo = "TorchBot version " + version + " by woder";
     public File[] plugins = null;
     public String[] cmds = null;
     public String[] descriptions = null;
@@ -205,7 +207,7 @@ public class Client {
 
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         Packet.writeVarInt(buf, 0);
-        Packet.writeVarInt(buf, 4);
+        Packet.writeVarInt(buf, mcversion);
         Packet.writeString(buf, servername);
         buf.writeShort(port);
         Packet.writeVarInt(buf, 2);
@@ -227,14 +229,17 @@ public class Client {
         chandle = new CommandHandler(this);
         whandle = new WorldHandler(this);
         net = new NetworkHandler(this);          
+        en = new EntityTracker(this);
         world = whandle.getWorld();
+        location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
          
          while(running){
-            //mainloop
+           //mainloop
            net.readData();//Read data
            gui.tick();
+           en.tickRadar();
            if(chunksloaded){
             //move.applyGravity();//Apply gravity
             move.tick();
@@ -255,6 +260,7 @@ public class Client {
             out.close();
             in.close();
             clientSocket.close();
+            this.state = 2;
         } catch (IOException e) {
             gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
