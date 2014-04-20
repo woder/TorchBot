@@ -273,7 +273,7 @@ public class TorchGUI extends JPanel{
     }
     
     public void stopB(){
-        c.stopBot("Leaving");
+        c.stopBot();
     }
     
     public void processCommand(String text){

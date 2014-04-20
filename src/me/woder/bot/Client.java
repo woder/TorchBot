@@ -56,7 +56,7 @@ import me.woder.world.WorldHandler;
 
 
 public class Client {
-    public TorchGUI gui;
+    public TorchGUI gui; //TODO fix this mess of a variable declaration
     public EventHandler ehandle;
     public ChatHandler chat;
     public MetaDataProcessor proc;
@@ -72,6 +72,8 @@ public class Client {
     public PublicKey publickey;
     public SecretKey secretkey;
     public SecretKey sharedkey;
+    public Authenticator auth;
+    public ServerPinger servping;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -110,7 +112,7 @@ public class Client {
     public String accesstoken;
     public String clienttoken;
     public String profile;
-    public String version = "0.2";
+    public String version = "0.3";
     public String versioninfo = "TorchBot version " + version + " by woder";
     public File[] plugins = null;
     public String[] cmds = null;
@@ -123,7 +125,7 @@ public class Client {
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
-    Logger errlog = Logger.getLogger("me.woder.network");
+    Logger errlog = Logger.getLogger("me.woder.network"); //doesn't seem right - check why error log is being saved to network log
     
     
     public void main(TorchGUI window){
@@ -173,10 +175,12 @@ public class Client {
         Logger.getLogger("me.woder.chat").setLevel(Level.FINEST);
         Logger.getLogger("me.woder.error").setLevel(Level.FINEST);
         prefix = "!";
-        gui.addText("§3Welcome to TorchBot 0.2, press the connect button to connect to the server defined in config");
+        gui.addText("§3Welcome to TorchBot " + version + ", press the connect button to connect to the server defined in config");
         gui.addText("§3 or press the change server button to login to a new server.");   
-        authPlayer(username, password);
-        pingServer(servername, port);      
+        auth = new Authenticator(this);//declare our new objects
+        servping = new ServerPinger(this);
+        auth.authPlayer(username, password);//use them to do important things
+        servping.pingServer(servername, port);      
         ploader = new PluginLoader(this);
         ploader.loadPlugins();
     }
@@ -255,18 +259,6 @@ public class Client {
       }
     }
     
-    public void stopBot(String reason){
-        try {            
-            out.close();
-            in.close();
-            clientSocket.close();
-            this.state = 2;
-        } catch (IOException e) {
-            gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
-            netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
-        }        
-    }
-    
     public void stopBot(){
         try {
             running = false;
@@ -279,63 +271,7 @@ public class Client {
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
         }        
     }
-    
-    @SuppressWarnings("unused")
-    public void pingServer(String server, int port){
-        try {
-            clientSocket = new Socket(server, port);
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            in = new DataInputStream(clientSocket.getInputStream());
-            ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-            Packet.writeVarInt(buf, 0);
-            Packet.writeVarInt(buf, 4);
-            Packet.writeString(buf, servername);
-            buf.writeShort(port);
-            Packet.writeVarInt(buf, 1);          
-            Packet.sendPacket(buf, out);
-            
-            buf = ByteStreams.newDataOutput();
-            Packet.writeVarInt(buf, 0);
-            Packet.sendPacket(buf, out);
-            
-            Packet.readVarInt(in);
-            int id = Packet.readVarInt(in);
-            
-            if(id == 0){
-                String pings = Packet.getString(in);
-                System.out.println("Pings: " + pings);
-                JSONObject json = (JSONObject) JSONSerializer.toJSON(pings);  
-                JSONObject version = json.getJSONObject("version");
-                String prot = version.getString("name");
-                String ver = version.getString("protocol");
-                JSONObject players = json.getJSONObject("players");
-                String max = players.getString("max");
-                String online = players.getString("online");
-                String text = json.getString("description");
-                if(json.containsKey("favicon")){
-                   String images = json.getString("favicon").replace("data:image/png;base64,", "");
-                   byte[] data = Base64.decode(images);
-                   InputStream is = new ByteArrayInputStream(data);
-                   ImageIcon test = new ImageIcon(data);
-                   gui.favicon.setIcon(test);
-                   gui.repaint();                
-                }
-                gui.addText("§5Game version: " + ver + "  " + text + " " + online + "/" + max);
-            }
-          out.close();
-          in.close();
-          clientSocket.close();
-            
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            netlog.log(Level.SEVERE, "CONNECTION ERROR: " + e.getMessage());
-            gui.addText("§4CONNECTION ERROR: " + e.getMessage());
-            gui.addText("§4Check server info: " + server + " on " + port);
-            
-        }
-    }      
+      
     
     public void activateEncryption(){
         try {
@@ -360,8 +296,7 @@ public class Client {
     }
 
      
-    public String sendSessionRequest(String user, String session, String serverid)
-    {
+    public String sendSessionRequest(String user, String session, String serverid){
         try
         {
             URL var4 = new URL("http://session.minecraft.net/game/joinserver.jsp?user=" + urlEncode(user) + "&sessionId=" + urlEncode(session) + "&serverId=" + urlEncode(serverid));
@@ -398,49 +333,6 @@ public class Client {
               count += n;
             }
             return count;
-    }
-
-    public String authPlayer(String user, String password){
-        HttpURLConnection hc = null;
-        try {
-            URL var4 = new URL("https://authserver.mojang.com/authenticate");
-            hc = (HttpURLConnection) var4.openConnection();
-            hc.setRequestProperty("content-type","application/json; charset=utf-8"); 
-            hc.setRequestMethod("POST");
-            hc.setDoInput(true);
-            hc.setDoOutput(true);
-            hc.setUseCaches(false); 
-            OutputStreamWriter wr = new OutputStreamWriter(hc.getOutputStream());
-            JSONObject data = new JSONObject();
-            JSONObject agent = new JSONObject();
-            agent.put("name", "minecraft");
-            agent.put("version", "1");
-            data.put("agent", agent);
-            data.put("username",user);
-            data.put("password", password);
-            System.out.println(data.toString());
-            wr.write(data.toString());
-            wr.flush();
-            InputStream stream = null;
-            try {
-              stream = hc.getInputStream();
-            }           
-            catch (IOException e) {
-               //TODO er... handle this?
-               e.printStackTrace();
-            }
-            JSONObject json = (JSONObject) JSONSerializer.toJSON(toString(stream));  
-            accesstoken = json.getString("accessToken");
-            clienttoken = json.getString("clientToken");
-            System.out.println(json.toString());
-            profile = json.getJSONObject("selectedProfile").getString("id");
-            username = json.getJSONObject("selectedProfile").getString("name");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
     
     public static String sendPostRequest(String data, String Adress) {
