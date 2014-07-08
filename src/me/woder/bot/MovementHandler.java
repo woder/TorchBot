@@ -35,7 +35,7 @@ public class MovementHandler {
      
             switch(result){
             case SUCCESS : 
-                //Path was successfull. Do something here.
+                //Path was successful. Do something here.
                 moveAlong(start, route);
                 c.chat.sendMessage("Path was found! :D");
                 break;
@@ -68,7 +68,7 @@ public class MovementHandler {
              if(itr.hasNext()){
               Tile t = itr.next();
               Location loc = t.getLocation(start);
-              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));
+              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));             
              }else{
               this.cancel();
              }
@@ -101,7 +101,10 @@ public class MovementHandler {
             //now check if the head is safe
             if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
-                move(l.getX(), l.getY(), l.getZ());
+                c.location.setX(l.getX()+getDeci(c.location.getX()));
+                c.location.setY(l.getY()+1+getDeci(c.location.getY()));
+                c.location.setZ(l.getZ()+getDeci(c.location.getZ()));
+                //c.chat.sendMessage("Location: " + l.getBlockX() + ", " + (l.getBlockY()+1) + "," + l.getBlockZ() + " " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
                 canGo = true;
             }
         }//if we can't go there then we will return false
@@ -143,5 +146,13 @@ public class MovementHandler {
         }catch(IOException e){
           e.printStackTrace();
         }
+    }
+    
+    public double getDeci(double num){
+        double iPart;
+        double fPart;
+        iPart = (long) num;
+        fPart = num - iPart;
+        return fPart;
     }
 }

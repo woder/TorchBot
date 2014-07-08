@@ -172,6 +172,7 @@ public class TorchGUI extends JPanel{
             public void actionPerformed(ActionEvent arg0) {
                 //c.move.move(c.location.getX()+1, c.location.getY(), c.location.getZ());     
                 c.location.setX(c.location.getX()+1);
+                c.location.setZ(c.location.getZ()+1);
             }
         });
         

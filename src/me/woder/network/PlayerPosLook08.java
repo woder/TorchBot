@@ -20,7 +20,7 @@ public class PlayerPosLook08 extends Packet{
         c.pitch = c.in.readFloat();
         c.onground = c.in.readBoolean();
         log(Level.FINEST,"Location is: " + X + "," + Y + "," + Z);
-        c.chat.sendMessage("I updated my location to: " + X + ", " + Y + ", " + Z);
+        //c.chat.sendMessage("I updated my location to: " + X + ", " + Y + ", " + Z);
         c.move.move(X, Y, Z);
         c.location = new Location(c.whandle.getWorld(), X, Y, Z);
         System.out.println("Location updated to: " + X + "," + Y + "," + Z);

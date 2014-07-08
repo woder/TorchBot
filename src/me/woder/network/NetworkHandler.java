@@ -33,7 +33,7 @@ public class NetworkHandler {
         play.put(8, new PlayerPosLook08(c));
         play.put(9, new HeldItemChange09(c));
         play.put(11, new Animation11(c));
-        play.put(12, new SpawnPlayer12(c));
+        //play.put(12, new SpawnPlayer12(c));
         play.put(14, new SpawnObject14(c));
         play.put(15, new SpawnMob15(c));
         play.put(18, new EntityVelocity18(c));

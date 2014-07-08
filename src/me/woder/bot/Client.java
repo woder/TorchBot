@@ -2,7 +2,6 @@ package me.woder.bot;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -14,13 +13,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -32,17 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
-import javax.swing.ImageIcon;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.bouncycastle.util.encoders.Base64;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import me.woder.event.EventHandler;
 import me.woder.gui.TorchGUI;
@@ -100,7 +92,7 @@ public class Client {
     public short level;
     public short lvlto;
     public double stance;
-    public String username;//TODO add way to change this
+    public String username;
     int port;
     String servername;
     String sessionId;

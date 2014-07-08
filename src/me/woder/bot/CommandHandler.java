@@ -33,6 +33,12 @@ public class CommandHandler {
             }     
         }else if(command.equalsIgnoreCase("version")){
             c.chat.sendMessage(c.versioninfo);
+        }else if(command.equalsIgnoreCase("test")){
+            //646.0, 21.0, 3193.0
+            //646.4292323990389, 21.620000123977636, 3193.0737760235197
+            c.location.setX(646.4292323990389);
+            c.location.setY(21.620000123977636);
+            c.location.setZ(3192.0737760235197);
         }else if(command.equalsIgnoreCase("respawn")){
             try {
                 ByteArrayDataOutput buf = ByteStreams.newDataOutput();
@@ -45,8 +51,9 @@ public class CommandHandler {
             }
         }else if(command.equalsIgnoreCase("move")){
             Player p = c.en.findPlayer("woder22");
-            Location l = new Location(c.whandle.getWorld(),c.location.getBlockX(), c.location.getBlockY()-2, c.location.getBlockZ());
-            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
+            Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
+            //Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
+            Location loc = new Location(c.whandle.getWorld(), 646, 19, 3182);
             c.move.runPathing(l, loc, 50);
         }else if(command.equalsIgnoreCase("holding")){
             Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
