@@ -15,6 +15,12 @@ public class SpawnPlayer12 extends Packet{
         int eid = readVarInt(c.in);
         String uuid = getString(c.in);
         String playern = getString(c.in);
+        int datanumber = readVarInt(c.in);
+        for(int i = 0; i < datanumber; i++){
+            getString(c.in);
+            getString(c.in);
+            getString(c.in);
+        }
         int x = c.in.readInt() / 32;
         int y = c.in.readInt() / 32;
         int z = c.in.readInt() / 32;

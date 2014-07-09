@@ -15,7 +15,6 @@ public class Player extends Entity{
 
     public Player(Client c, int eid, String name, String uuid, int x, int y, int z, byte yaw, byte pitch, short current) {        
         super(c);
-        c.chat.sendMessage("Location is: " + x + "," + y + "," + z);
         this.c = c;
         this.eid = eid;
         this.name = name;

@@ -74,7 +74,7 @@ public class MovementHandler {
              }
             }
         };
-        timer.scheduleAtFixedRate(task, 0, 1000);
+        timer.scheduleAtFixedRate(task, 0, 300);
     }
     
     public void applyGravity(){
