@@ -55,11 +55,11 @@ public class Entity {
         setRadarPos(l);
     }
     
-    public void setLocationRelative(Location l){
-        this.x = x + l.getX();
-        this.y = y + l.getY();
-        this.z = z + l.getZ();
-        setRadarPos(new Location(c.whandle.getWorld(), x, y, z));
+    public void setLocationRelative(World world, double x, double y, double z){
+        this.x = this.x + x;
+        this.y = this.y + y;
+        this.z = this.z + z;
+        setRadarPos(new Location(world, this.x, this.y, this.z));
     }
     
     public void setLocationLookRelative(Location l, byte yaw, byte pitch){

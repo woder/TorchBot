@@ -47,7 +47,9 @@ public class CommandHandler {
             Player p = c.en.findPlayer("woder22");
             Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
             //Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
-            Location loc = new Location(c.whandle.getWorld(), 646, 19, 3182);
+            //Location loc = new Location(c.whandle.getWorld(), 646, 19, 3182);
+            c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
+            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ());
             c.move.runPathing(l, loc, 50);
         }else if(command.equalsIgnoreCase("holding")){
             Player p = c.en.findPlayer(ChatColor.stripColor(args[2]));

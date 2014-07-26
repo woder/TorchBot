@@ -20,10 +20,11 @@ public class EntityTracker {
        }
     }
     
-    public void addPlayer(int eid, World world, int x, int y, int z, byte pitch, byte yaw, short current, String name, String uuid){
+    public void addPlayer(int eid, World world, double x, double y, double z, byte pitch, byte yaw, short current, String name, String uuid){
        if(findEntityId(eid) == null){
         entities.add(new Player(c, eid, name, uuid, x, y, z, yaw, pitch, current));
         //c.chat.sendMessage("Adding player's entity id: " + eid + " and... " + entities.size());
+        c.chat.sendMessage("Player " + name + " is at " + x + ", " + y + "," + z);
        }
     }
     

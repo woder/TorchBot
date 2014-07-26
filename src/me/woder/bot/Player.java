@@ -2,6 +2,7 @@ package me.woder.bot;
 
 import me.woder.gui.RComponent;
 import me.woder.world.Location;
+import me.woder.world.World;
 
 public class Player extends Entity{
     Client c;
@@ -13,7 +14,7 @@ public class Player extends Entity{
     RComponent dot;
     double rx, ry, rz;
 
-    public Player(Client c, int eid, String name, String uuid, int x, int y, int z, byte yaw, byte pitch, short current) {        
+    public Player(Client c, int eid, String name, String uuid, double x, double y, double z, byte yaw, byte pitch, short current) {        
         super(c);
         this.c = c;
         this.eid = eid;
@@ -51,11 +52,12 @@ public class Player extends Entity{
     }
     
     @Override
-    public void setLocationRelative(Location l){
-        this.x = x + l.getX();
-        this.y = y + l.getY();
-        this.z = z + l.getZ();
-        setRadarPos(new Location(c.whandle.getWorld(), x, y, z));
+    public void setLocationRelative(World world, double x, double y, double z){
+        this.x = this.x + x;
+        this.y = this.y + y;
+        this.z = this.z + z;
+        //c.chat.sendMessage(this.name + " moved to: " + this.x + ", " + this.y + ", " + this.z);
+        setRadarPos(new Location(world, this.x, this.y, this.z));
     }
     
     @Override

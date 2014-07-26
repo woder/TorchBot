@@ -138,7 +138,7 @@ public class ChatHandler {
             }
             String command = commande.substring(0, d);
             System.out.println(command);
-            c.chandle.processCommand(command.replace(c.prefix, ""), args.toArray(new String[args.size()]), username);
+            c.chandle.processCommand(command.replace(c.prefix, ""), commande.substring(d).split(" "), username);
         }
         return formated;
     }

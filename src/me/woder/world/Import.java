@@ -40,7 +40,7 @@ public class Import {
             for(int ix = x; ix != (x2+d1); ix = ix+d1){
                 for(int iy = y; iy != (y2+d2); iy = iy+d2){
                     for(int iz = z; iz != (z2+d3); iz = iz+d3){                    
-                        c.chat.sendMessage("Attempting to get blocks at: " + ix + " " + iy + " " + iz + " : " + rx + " " + ry + " " + rz + ""); 
+                        //c.chat.sendMessage("Attempting to get blocks at: " + ix + " " + iy + " " + iz + " : " + rx + " " + ry + " " + rz + ""); 
                         Block b = c.whandle.getWorld().getBlock(ix, iy, iz);
                         writer.write(rx + "," + ry + "," + rz + "," + b.getTypeId() + "," + b.getMetaData() + "\n");
                         rz = rz + d3; 
@@ -69,7 +69,7 @@ public class Import {
             line = br.readLine();
             while (line != null) {
                 String[] stu = line.split(",");
-                c.chat.sendMessage(line);
+                //c.chat.sendMessage(line);
                 //create a fake block to hold our data **NOTICE THAT THESE COORDS ARE RELATIVE AND NOT REAL WORLD**
                 Block b = new Block(c.whandle.getWorld(), Integer.parseInt(stu[0]), Integer.parseInt(stu[1]), Integer.parseInt(stu[2]), Integer.parseInt(stu[3]), Integer.parseInt(stu[4]));
                 blocks.add(b);

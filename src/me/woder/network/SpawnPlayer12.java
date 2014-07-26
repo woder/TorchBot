@@ -1,6 +1,7 @@
 package me.woder.network;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import me.woder.bot.Client;
 import me.woder.event.Event;
@@ -21,9 +22,9 @@ public class SpawnPlayer12 extends Packet{
             getString(c.in);
             getString(c.in);
         }
-        int x = c.in.readInt() / 32;
-        int y = c.in.readInt() / 32;
-        int z = c.in.readInt() / 32;
+        double x = (double)c.in.readInt() / 32.0D;
+        double y = (double)c.in.readInt() / 32.0D;
+        double z = (double)c.in.readInt() / 32.0D;
         byte yaw = c.in.readByte();
         byte pitch = c.in.readByte();
         short currentitem = c.in.readShort();
