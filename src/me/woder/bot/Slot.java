@@ -1,37 +1,35 @@
 package me.woder.bot;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import com.google.common.io.ByteArrayDataOutput;
 
 public class Slot {
-    DataInputStream in;
     int slotnum;
+    short id;
     byte count;
     short damage;
+    short nbtlen;
     
-    public Slot(DataInputStream in, int slotnum){
-        this.in = in;
+    public Slot(int slotnum, short id, byte count, short damage, short nbtlen){
         this.slotnum = slotnum;
-        try {
-            processSlots(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.id = id;
+        this.count = count;
+        this.damage = damage;
+        this.nbtlen = nbtlen;
     }
-    
-    public void processSlots(DataInputStream in) throws IOException{
-         short bid = in.readShort();
-         if(bid != -1){
-             count = in.readByte();
-             System.out.println("There is: " + count + " of item " + bid);
-             damage = in.readShort();
-             short next = in.readShort();
-             System.out.println("Next is: " + next);
-              if(next != -1){
-                  byte[] var2 = new byte[next];
-                  in.readFully(var2);
-              }
-         }
-     }
+
+    public void sendSlot(ByteArrayDataOutput buf) {
+        buf.writeShort(id);
+        buf.writeByte(count);
+        buf.writeShort(damage);
+        buf.writeShort(nbtlen); //this does NOT support actual nbt at this current time       
+    }
+
+    public void setSlot(Slot slot) {
+        this.slotnum = slot.slotnum;
+        this.id = slot.id;
+        this.count = slot.count;
+        this.damage = slot.damage;
+        this.nbtlen = slot.nbtlen;
+    }
 
 }

@@ -55,7 +55,7 @@ public class MetaDataProcessor {
 
                 case 5:
                     System.out.println("Reading slot");
-                    new Slot(c.in,0);
+                    new SlotHandler().processSlots(c.in, 0);
                     break;
 
                 case 6:

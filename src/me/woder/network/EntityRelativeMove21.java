@@ -1,10 +1,10 @@
 package me.woder.network;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import me.woder.bot.Client;
 import me.woder.bot.Entity;
+import me.woder.world.Location;
 
 public class EntityRelativeMove21 extends Packet{
     
@@ -15,18 +15,15 @@ public class EntityRelativeMove21 extends Packet{
     @Override
     public void read(Client c, int len) throws IOException{
        int eid = c.in.readInt();
-       double dx = c.in.readByte();
-       double dy = c.in.readByte();
-       double dz = c.in.readByte();
-       BigDecimal x = BigDecimal.valueOf(dx);
-       BigDecimal y = BigDecimal.valueOf(dy);
-       BigDecimal z = BigDecimal.valueOf(dz);
-       x = x.divide(new BigDecimal("32"), BigDecimal.ROUND_FLOOR);
-       y = y.divide(new BigDecimal("32"), BigDecimal.ROUND_FLOOR);
-       z = z.divide(new BigDecimal("32"), BigDecimal.ROUND_FLOOR);
+       byte sx = c.in.readByte();
+       byte sy = c.in.readByte();
+       byte sz = c.in.readByte();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
-          e.setLocationRelative(c.whandle.getWorld(), x.doubleValue(), y.doubleValue(), z.doubleValue());
+          e.sx += sx;
+          e.sy += sy;
+          e.sz += sz;
+          e.setLocation(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D));
        }else{
           c.gui.addText("§1Entity is null! (id: " + eid + ")");
        }

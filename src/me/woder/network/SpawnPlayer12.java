@@ -22,9 +22,9 @@ public class SpawnPlayer12 extends Packet{
             getString(c.in);
             getString(c.in);
         }
-        double x = (double)c.in.readInt() / 32.0D;
-        double y = (double)c.in.readInt() / 32.0D;
-        double z = (double)c.in.readInt() / 32.0D;
+        int x = c.in.readInt();
+        int y = c.in.readInt();
+        int z = c.in.readInt();
         byte yaw = c.in.readByte();
         byte pitch = c.in.readByte();
         short currentitem = c.in.readShort();

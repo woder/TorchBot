@@ -9,6 +9,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.woder.bot.Client;
+import me.woder.bot.Slot;
 import me.woder.event.Event;
 import me.woder.network.Packet;
 
@@ -27,16 +28,17 @@ public class World {
     
     public void placeBlock(int x, int y, int z, int id){
        ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
+       c.chat.sendMessage("Attempting to send block at: " + x + ", " + y + ", " + z);
        try {
         Packet.writeVarInt(buf, 8);
         buf.writeInt(x);
         buf.writeByte(y);
         buf.writeInt(z);
         buf.writeByte(0);
-        buf.writeShort(-1);
-        buf.writeByte(0);
-        buf.writeByte(0);
-        buf.writeByte(0);
+        new Slot(0,(short)1,(byte)1,(short)0,(short)0).sendSlot(buf);
+        buf.writeByte(1);
+        buf.writeByte(1);
+        buf.writeByte(1);
         Packet.sendPacket(buf, c.out);
        } catch (IOException e) {
         // TODO Auto-generated catch block

@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import me.woder.bot.Client;
 import me.woder.bot.Slot;
+import me.woder.bot.SlotHandler;
 
 public class SetSlot47 extends Packet{
     public SetSlot47(Client c) {
@@ -17,13 +18,8 @@ public class SetSlot47 extends Packet{
         short slo = c.in.readShort();
         log(Level.FINEST,"Slot id is: " + slo);
         if(slo != -1){
-         if(c.inventory.size() >= slo){
-         //inventory.remove(slo);
-         }
-         new Slot(c.in, slo);
-         //inventory.add(slo,new Slot(in, slo));
-        }else{
-          new Slot(c.in, slo);
+            Slot e = new SlotHandler().processSlots(c.in, slo);
+            c.invhandle.setSlot(e);
         }
     }
 

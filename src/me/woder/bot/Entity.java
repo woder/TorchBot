@@ -7,9 +7,11 @@ import me.woder.world.World;
 public class Entity {
     Client c;
     int entityid;
+    Slot[] equipement;
     RComponent dot;
     World world;
     double x, y, z, rx, ry, rz;
+    public int sx, sy, sz;
     int type;
     byte pitch, headpitch, yaw;
     int vx, vy, vz;
@@ -22,9 +24,12 @@ public class Entity {
         this.c = c;
         this.entityid = eid;
         this.world = world;
-        this.x = x/32;
-        this.y = y/32;
-        this.z = z/32;
+        this.sx = x;
+        this.sy  = y;
+        this.sz = z;
+        this.x = x/32.0D;
+        this.y = y/32.0D;
+        this.z = z/32.0D;
         this.type = type;
         this.pitch = pitch;
         this.headpitch = headpitch;
@@ -37,6 +42,7 @@ public class Entity {
         this.rz = z - c.location.getZ();
         dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar);
         c.gui.pradar.playerDot(dot);
+        this.equipement = new Slot[5];
     }
     
     public int getEntityId(){
@@ -45,6 +51,10 @@ public class Entity {
     
     public Entity getEntity(){
         return this;
+    }
+    
+    public void setEquipement(int id, Slot slot){
+        this.equipement[id] = slot;
     }
     
     public void setLocation(Location l){

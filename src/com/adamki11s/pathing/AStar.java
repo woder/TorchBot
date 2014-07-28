@@ -273,8 +273,7 @@ public class AStar {
     }
 
     private boolean isLocationWalkable(Location l) {
-        Block b = l.getBlock();
-        
+        Block b = l.getBlock();       
         int i = b.getTypeId();
         int d = 0;
         if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != d && !canBlockBeWalkedThrough(i)) {

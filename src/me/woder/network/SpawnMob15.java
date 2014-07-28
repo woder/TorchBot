@@ -22,8 +22,7 @@ public class SpawnMob15 extends Packet{
         c.in.readShort();
         c.in.readShort();
         c.in.readShort();
-        c.proc.readWatchableObjects(c.in);
-        
+        c.proc.readWatchableObjects(c.in);    
     }
 
 }

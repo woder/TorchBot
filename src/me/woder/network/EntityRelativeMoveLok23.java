@@ -14,14 +14,17 @@ public class EntityRelativeMoveLok23 extends Packet{
     @Override
     public void read(Client c, int len) throws IOException{
        int eid = c.in.readInt();
-       double x = c.in.readByte() / 32;
-       double y = c.in.readByte() / 32;
-       double z = c.in.readByte() / 32;
+       byte x = c.in.readByte();
+       byte y = c.in.readByte();
+       byte z = c.in.readByte();
        byte yaw = c.in.readByte();
        byte pitch = c.in.readByte();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
-          e.setLocationLookRelative(new Location(c.whandle.getWorld(), x, y, z), yaw, pitch);
+          e.sx += x;
+          e.sy += y;
+          e.sz += z;          
+          e.setLocationLook(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D), yaw, pitch);
        }
     }
 

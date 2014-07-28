@@ -21,7 +21,6 @@ public class PRadar extends JPanel {
 
     public PRadar() {
         background = new BufferedImage(266, 233, BufferedImage.TYPE_INT_ARGB);          
-        playerDot(new RComponent(30, 30, 10, 10, "this is text", 1, this));
         playerDot(dbot);
         
         addMouseMotionListener(new MouseMotionListener() {  
@@ -56,6 +55,7 @@ public class PRadar extends JPanel {
     public void playerDot(RComponent comp){
         radardots.add(comp);
         this.add(comp);
+        this.repaint();
     }
     
     public void moveDots(int x, int y){

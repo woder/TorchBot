@@ -44,15 +44,15 @@ public class CommandHandler {
                 e.printStackTrace();
             }
         }else if(command.equalsIgnoreCase("move")){
-            Player p = c.en.findPlayer("woder22");
+            Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
             Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
             //Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
             //Location loc = new Location(c.whandle.getWorld(), 646, 19, 3182);
             c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
-            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ());
+            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
             c.move.runPathing(l, loc, 50);
         }else if(command.equalsIgnoreCase("holding")){
-            Player p = c.en.findPlayer(ChatColor.stripColor(args[2]));
+            Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
             c.chat.sendMessage("Holding: " + p.getHeldItem());
         }else if(command.equalsIgnoreCase("reload")){
             c.ploader.reloadPlugins();
@@ -60,8 +60,16 @@ public class CommandHandler {
             impor.processCommand(c, args);
         }else if(command.equalsIgnoreCase("import")){
             c.whandle.getWorld().importer.importb(c, args[1]);
+        }else if(command.equalsIgnoreCase("list")){
+            for(Slot s : c.invhandle.inventory){
+                c.chat.sendMessage("Slot " + s.slotnum + " cotains: " + s.count + " of item " + s.id);
+            }
+        }else if(command.equalsIgnoreCase("inv")){
+            c.invhandle.creativeSetSlot(Short.parseShort(args[1]), new Slot(Short.parseShort(args[1]), Short.parseShort(args[2]),(byte)1,(short)0,(short)-1));
+        }else if(command.equalsIgnoreCase("select")){
+            c.invhandle.selectSlot(Short.parseShort(args[1]));
         }else if(command.equalsIgnoreCase("place")){
-            c.whandle.getWorld().placeBlock(c.location.getBlockX()+1, c.location.getBlockY(), c.location.getBlockZ(), 3);
+            c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
         }else{
             c.ehandle.handleCommand(command, args);
         }

@@ -177,11 +177,6 @@ public class TorchGUI extends JPanel{
         });
         
         JButton btnNewButton_8 = new JButton("Test radar");
-        btnNewButton_8.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                pradar.moveDots(70, 100);
-            }
-        });
         
         pradar = new PRadar();
         

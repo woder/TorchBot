@@ -56,6 +56,7 @@ public class Client {
     public CommandHandler chandle;
     public WorldHandler whandle;
     public MovementHandler move;
+    public InvHandler invhandle;
     public NetworkHandler net;
     public EntityTracker en;
     public IRCBridge irc;
@@ -113,7 +114,7 @@ public class Client {
     public boolean onground;
     public float yaw;
     public float pitch;
-    public List<Slot> inventory = new ArrayList<Slot>();
+    public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
@@ -227,6 +228,7 @@ public class Client {
         net = new NetworkHandler(this);          
         en = new EntityTracker(this);
         world = whandle.getWorld();
+        invhandle = new InvHandler(this);
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
