@@ -18,7 +18,7 @@ public class WindowItems48 extends Packet{
         for(int i = 0; i < count;i++){
             Slot s = new SlotHandler().processSlots(c.in, i);
             c.invhandle.setSlot(s);
-        }
+        }       
     }
 
 }

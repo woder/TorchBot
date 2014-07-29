@@ -62,7 +62,7 @@ public class CommandHandler {
             c.whandle.getWorld().importer.importb(c, args[1]);
         }else if(command.equalsIgnoreCase("list")){
             for(Slot s : c.invhandle.inventory){
-                c.chat.sendMessage("Slot " + s.slotnum + " cotains: " + s.count + " of item " + s.id);
+                c.chat.sendMessage("Slot " + s.slotnum + " cotains: " + s.getCount() + " of item " + s.getId());
             }
         }else if(command.equalsIgnoreCase("inv")){
             c.invhandle.creativeSetSlot(Short.parseShort(args[1]), new Slot(Short.parseShort(args[1]), Short.parseShort(args[2]),(byte)1,(short)0,(short)-1));

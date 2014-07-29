@@ -16,6 +16,20 @@ import me.woder.plugin.Plugin;
 public class EventHandler {
     Client c;
     Context context;
+    /* Event list so far
+     * onSpawnPlayer String playername, String uuid, int x, int y, int z, byte yaw, byte pitch, short currentitem
+     * onSignUpdate int x, int y, int z, String line1, String line2, String line3, String line4
+     * onBlockChange int x, int y, int z, int bid, int meta
+     * onChatMessage String username, String message (NOTE; this event will often return "Unknown" as user, in that case the message will contain the user AND string)
+     * onEntityEquipement int entityid, int slotnum, int itemid, int itemcount, int itemdamage
+     * onEntityMove int eid, double x, double y, double z
+     * onEntityMoveLook int eid, double x, double y, double z, byte yaw, byte pitch
+     * onEntityTeleport int eid, double x, double y, double z
+     * onHealthUpdate float health, short food, float foodsat
+     * onPlayerAbilities byte flags, float flyspeed, float walkspeed
+     * onPlayerPosLook double x, double y, double z, byte yaw, byte pitch, boolean onground
+     * onSlotUpdate byte window, int slo, int itemid, int count, int damage
+     */
     
     @SuppressWarnings("deprecation")
     public EventHandler(Client c){

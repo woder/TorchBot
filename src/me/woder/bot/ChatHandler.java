@@ -81,7 +81,7 @@ public class ChatHandler {
             //jsonr = (JSONArray) jsonr;
          }
         }catch(JSONException ex){
-           System.out.println("Warning: Formating error");
+           c.gui.addText("§4Invalid json received; string skipped");
            err.log(Level.WARNING, "MESSAGE: " + message + " IS NOT VALID JSON, SKIPPING STRING...");
         }
         return mess;

@@ -123,7 +123,7 @@ public class Player extends Entity{
     }
     
     public short getHeldItem(){
-        return this.equipement[0].id;
+        return this.equipement[0].getId();
     }
    
 }

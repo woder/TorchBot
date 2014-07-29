@@ -1,7 +1,6 @@
 package me.woder.network;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import me.woder.bot.Client;
 import me.woder.event.Event;

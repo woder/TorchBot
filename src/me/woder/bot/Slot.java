@@ -4,32 +4,56 @@ import com.google.common.io.ByteArrayDataOutput;
 
 public class Slot {
     int slotnum;
-    short id;
-    byte count;
-    short damage;
+    private short id;
+    private byte count;
+    private short damage;
     short nbtlen;
     
     public Slot(int slotnum, short id, byte count, short damage, short nbtlen){
         this.slotnum = slotnum;
-        this.id = id;
-        this.count = count;
-        this.damage = damage;
+        this.setId(id);
+        this.setCount(count);
+        this.setDamage(damage);
         this.nbtlen = nbtlen;
     }
 
     public void sendSlot(ByteArrayDataOutput buf) {
-        buf.writeShort(id);
-        buf.writeByte(count);
-        buf.writeShort(damage);
+        buf.writeShort(getId());
+        buf.writeByte(getCount());
+        buf.writeShort(getDamage());
         buf.writeShort(nbtlen); //this does NOT support actual nbt at this current time       
     }
 
     public void setSlot(Slot slot) {
         this.slotnum = slot.slotnum;
-        this.id = slot.id;
-        this.count = slot.count;
-        this.damage = slot.damage;
+        this.setId(slot.getId());
+        this.setCount(slot.getCount());
+        this.setDamage(slot.getDamage());
         this.nbtlen = slot.nbtlen;
+    }
+
+    public short getDamage() {
+        return damage;
+    }
+
+    public void setDamage(short damage) {
+        this.damage = damage;
+    }
+
+    public short getId() {
+        return id;
+    }
+
+    public void setId(short id) {
+        this.id = id;
+    }
+
+    public byte getCount() {
+        return count;
+    }
+
+    public void setCount(byte count) {
+        this.count = count;
     }
 
 }

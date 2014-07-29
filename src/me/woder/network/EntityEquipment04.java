@@ -6,6 +6,7 @@ import me.woder.bot.Client;
 import me.woder.bot.Entity;
 import me.woder.bot.Slot;
 import me.woder.bot.SlotHandler;
+import me.woder.event.Event;
 
 public class EntityEquipment04 extends Packet{
     public EntityEquipment04(Client c) {
@@ -20,6 +21,7 @@ public class EntityEquipment04 extends Packet{
         Entity e = c.en.findEntityId(eid);
         if(e != null){
            e.setEquipement(slotnum, s);
+           c.ehandle.handleEvent(new Event("onEntityEquipement", new Object[] {eid,slotnum,s.getId(),s.getCount(),s.getDamage()}));
         }
     }
 

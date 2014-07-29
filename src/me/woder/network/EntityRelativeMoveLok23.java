@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 import me.woder.bot.Entity;
+import me.woder.event.Event;
 import me.woder.world.Location;
 
 public class EntityRelativeMoveLok23 extends Packet{
@@ -25,6 +26,7 @@ public class EntityRelativeMoveLok23 extends Packet{
           e.sy += y;
           e.sz += z;          
           e.setLocationLook(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D), yaw, pitch);
+          c.ehandle.handleEvent(new Event("onEntityMoveLook", new Object[] {eid,e.sx/32.0D, e.sy/32.0D, e.sz/32.0D, yaw, pitch}));
        }
     }
 
