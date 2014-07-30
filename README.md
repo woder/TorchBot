@@ -5,6 +5,10 @@ This program is listed under GPLv3 license.
 
 A bot for minecraft written in java
 
+THERE IS NOW A BUILD SERVER!
+Go to http://wltd.org:8080/ and select the TorchBot project, make sure to download the jar with dependencies
+There will be a pre-compiled and setup version there for you :)
+
 So far it doesn't do much, but features are to come.
 Current commands:
 !echo <text here> notice that this will break if you do not have color formating - working on a fix, it also blocks commands from being run unless you are on the list
