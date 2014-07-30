@@ -105,5 +105,6 @@ public class PluginLoader {
     public void reloadPlugins(){
        plugins = new ArrayList<Plugin>();
        loadPlugins();
+       c.chat.sendMessage(plugins.size() + " plugins reloaded!");
     }
 }

@@ -29,6 +29,7 @@ public class EventHandler {
      * onPlayerAbilities byte flags, float flyspeed, float walkspeed
      * onPlayerPosLook double x, double y, double z, byte yaw, byte pitch, boolean onground
      * onSlotUpdate byte window, int slo, int itemid, int count, int damage
+     * onTimeUpdate long age, long time
      */
     
     @SuppressWarnings("deprecation")

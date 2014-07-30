@@ -25,7 +25,6 @@ public class InvHandler {
          slot.sendSlot(buf);
          Packet.sendPacket(buf, c.out);
         } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
         }
     }
@@ -37,7 +36,6 @@ public class InvHandler {
          buf.writeShort(id);
          Packet.sendPacket(buf, c.out);
         } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
         }
     }
