@@ -99,6 +99,9 @@ public class CommandHandler {
             sendMessage(channel, "Commands are: echo, time, isup, mcping, haspaid, calc(not implemented yet)");
         }else if (messages[1].equalsIgnoreCase("fun")){
             sendMessage(channel, "Commands are: slap, roulette, eightball"); */
+      if(messages.length == 1){
+          
+      }
       if(messages.length > 1){
         if (messages[1].equalsIgnoreCase("plugin")){
             String append = "";
