@@ -1,3 +1,17 @@
+Please note! for the plugin to work properly you need to have the following in your code:
+getName(){}
+getCommand(){}
+getListener(){}
+
+if you are missing anyone of these it WILL NOT work, remember though that you can always set it to be blank
+(example below)
+function getListener(){
+return "";
+}
+
+and that will allow it to work properly - this has been the cause of many errors so don't get caught with this!
+(now on with the tutorial)
+
 Torchbot plugins work rather simply.
 
 First, you tell the bot what the name of your plugin is:
