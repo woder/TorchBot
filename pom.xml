@@ -2,10 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>TorchBot</groupId>
   <artifactId>TorchBot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.3.0</version>
   <name>TorchBot</name>
-  <description>A bot for minecraft
-</description>
+  <description>A bot for minecraft</description>
   <build>
     <sourceDirectory>src</sourceDirectory>
 	<defaultGoal>install</defaultGoal>
