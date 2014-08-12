@@ -63,6 +63,7 @@ public class World {
         }
 
        if(thisChunk != null){
+        
         thisblock = thisChunk.getBlock(l.getBlockX(),l.getBlockY(),l.getBlockZ());
        }
         return thisblock;

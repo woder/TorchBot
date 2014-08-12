@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import me.woder.network.Packet;
+import me.woder.world.Block;
 import me.woder.world.Location;
 
 import com.adamki11s.pathing.AStar;
@@ -78,10 +79,19 @@ public class MovementHandler {
     }
     
     public void applyGravity(){
-        int id = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0).getTypeId();
+        Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
+        int id = block.getTypeId();
         if(canBlockBeWalkedThrough(id)){
-            Location down = getCenter(c.location.getX(), c.location.getY()-2, c.location.getZ());
-            move(down.getX(), down.getY(), down.getZ());
+            //c.gui.addText("Data: " + c.location.getX() + ", " + Math.floor(c.location.getY()-2) + ", " + c.location.getZ());
+            c.location.setY(Math.floor(c.location.getY()-2));  
+            //c.gui.addText("Updated " + c.location.getY());
+        }else{
+            if(block.getY() != c.location.getY()){
+               c.gui.addText("Location set to: " + c.location.getY() + " because " + c.location.getY() + " and " + block.getY());
+               c.location.setY(Math.floor(c.location.getY()));
+            }else{
+               c.gui.addText("Thats a lie..."); 
+            }
         }
     }
     

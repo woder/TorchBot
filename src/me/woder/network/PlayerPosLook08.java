@@ -14,16 +14,15 @@ public class PlayerPosLook08 extends Packet{
     
     @Override
     public void read(Client c, int len) throws IOException{
-        double X = c.in.readDouble();
-        double Y = c.in.readDouble();
-        double Z = c.in.readDouble();
+        double x = c.in.readDouble();
+        double y = c.in.readDouble();
+        double z = c.in.readDouble();
         c.yaw = c.in.readFloat();
         c.pitch = c.in.readFloat();
         c.onground = c.in.readBoolean();
-        log(Level.FINEST,"Location is: " + X + "," + Y + "," + Z);
-        c.move.move(X, Y, Z);
-        c.ehandle.handleEvent(new Event("onPlayerPosLook", new Object[] {X, Y, Z, c.yaw, c.pitch, c.onground}));
-        c.location = new Location(c.whandle.getWorld(), X, Y, Z);
+        log(Level.FINEST,"Location is: " + x + "," + y + "," + z);
+        c.ehandle.handleEvent(new Event("onPlayerPosLook", new Object[] {x, y, z, c.yaw, c.pitch, c.onground}));
+        c.location = new Location(c.whandle.getWorld(), x, y, z);
     }
 
 }

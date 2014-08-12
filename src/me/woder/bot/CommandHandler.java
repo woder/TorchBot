@@ -44,13 +44,19 @@ public class CommandHandler {
                 e.printStackTrace();
             }
         }else if(command.equalsIgnoreCase("move")){
-            Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
-            Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
-            //Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-2, p.getLocation().getZ());
-            //Location loc = new Location(c.whandle.getWorld(), 646, 19, 3182);
-            c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
-            Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
-            c.move.runPathing(l, loc, 50);
+            if(args.length > 1){
+             Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
+             if(p != null){
+               Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
+               c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
+               Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
+               c.move.runPathing(l, loc, 50);
+             }else{
+               c.chat.sendMessage(username + ": couldn't find a player by that name");
+             }
+            }else{
+               c.chat.sendMessage("Wrong amount of arguments provided!");
+            }
         }else if(command.equalsIgnoreCase("holding")){
             Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
             c.chat.sendMessage("Holding: " + p.getHeldItem());
@@ -71,7 +77,7 @@ public class CommandHandler {
         }else if(command.equalsIgnoreCase("place")){
             c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
         }else{
-            c.ehandle.handleCommand(command, args);
+            c.ehandle.handleCommand(command, args, username);
         }
     }
     
@@ -99,9 +105,6 @@ public class CommandHandler {
             sendMessage(channel, "Commands are: echo, time, isup, mcping, haspaid, calc(not implemented yet)");
         }else if (messages[1].equalsIgnoreCase("fun")){
             sendMessage(channel, "Commands are: slap, roulette, eightball"); */
-      if(messages.length == 1){
-          
-      }
       if(messages.length > 1){
         if (messages[1].equalsIgnoreCase("plugin")){
             String append = "";
@@ -113,7 +116,7 @@ public class CommandHandler {
                }
             }
             c.chat.sendMessage(sender + ": " + append);
-        }
+        }     
       }else{
         c.chat.sendMessage("Catagories are: op, fun, normal and plugin <Bot created by woder>");
       }

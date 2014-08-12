@@ -124,11 +124,20 @@ public class ChatHandler {
             formated = formated + "§0" + arr.getString(i);  
            }
         }
-        c.gui.addText(formated);  
-        ArrayList<String> args = new ArrayList<String>(Arrays.asList(formated.split(" ")));
-        String username = ChatColor.stripColor(args.get(0));
-        username = username.replace(":", "");
-        args.remove(0);
+        c.gui.addText(formated);
+        int delimiter = formated.indexOf(":"); //TODO replace with variable to make this interchangable
+        int space = formated.indexOf(" ");
+        if(delimiter != -1 && space != -1 && delimiter-space < 0){
+           space = 0;
+        }
+        String username;
+        if(delimiter != -1 && space != -1 && delimiter-space > -1){
+         System.out.println("index: " + space + " in2: " + delimiter);
+         username = formated.substring(space, delimiter);
+         username = ChatColor.stripColor(username.replace(":", ""));
+        }else{
+         username = "Unknown";
+        }
         if(formated.contains(c.prefix)){
             String commande = formated.substring(formated.indexOf(c.prefix));
             System.out.println(commande);
@@ -138,8 +147,11 @@ public class ChatHandler {
             }
             String command = commande.substring(0, d);
             System.out.println(command);
+            commande.trim();
+            c.gui.addText("Ya: " + commande + " o: " + commande.substring(d));
             c.chandle.processCommand(command.replace(c.prefix, ""), commande.substring(d).split(" "), username);
         }
+        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
         return formated;
     }
     
