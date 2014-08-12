@@ -232,21 +232,28 @@ public class Client {
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
-         
-         while(running){
+        int tick = 0;
+        while(running){
+           tick+= 1;
            //mainloop
            net.readData();//Read data
            gui.tick();
            en.tickRadar();
            if(chunksloaded){
-            //move.applyGravity();//Apply gravity
+             if(tick == 5){
+                tick = 0;
+                //move.applyGravity();//Apply gravity
+             }
             move.tick();
             //move.sendOnGround();
+           }
+           if(tick == 5){
+               tick = 0;
            }
            if(connectedirc){
              irc.read();//Read text from irc, if there is some
            }
-         }
+        }
          
       }catch (Exception e){
           e.printStackTrace();

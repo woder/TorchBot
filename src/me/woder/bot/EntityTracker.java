@@ -36,11 +36,9 @@ public class EntityTracker {
     
     public Player findPlayer(String name){
         Player p = null;
-        c.chat.sendMessage("We are on a search for: " + name);
         for(Entity s : entities){
            if(s.getEntity() instanceof Player){
             Player a = (Player)s;
-            c.chat.sendMessage(a.getName());
             if(a.getName().equalsIgnoreCase(name)){
                 p = a;
                 break;

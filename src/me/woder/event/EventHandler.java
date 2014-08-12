@@ -96,8 +96,11 @@ public class EventHandler {
         }
     }
     
-    public void handleCommand(String name, String[] args){
+    public void handleCommand(String name, String[] args, String username){
         List<Plugin> pul = getPluginCommands(name);
+        for(String s : args){
+            c.gui.addText("S: " + s);
+        }
         for(int i = 0; i < pul.toArray().length; i++){
             try {
                 ScriptableObject scope = context.initStandardObjects();
@@ -105,7 +108,7 @@ public class EventHandler {
                 ScriptableObject.putProperty(scope, "c", wrappedBot);
                 context.evaluateString(scope, pul.get(i).content, "script", 1, null);
                 Function fct = (Function)scope.get(name, scope);
-                fct.call(context, scope, scope, args);   
+                fct.call(context, scope, scope, new Object[]{args, username});   
              } catch (SecurityException e) {
                  c.gui.addText("§3Warning: Security error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
              } catch (IllegalArgumentException e) {
