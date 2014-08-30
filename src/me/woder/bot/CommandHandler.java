@@ -82,15 +82,12 @@ public class CommandHandler {
     }
     
     public void processConsoleCommand(String message){
-        if(message.startsWith("/")){
-            //TODO do stuff with commands
-            AttributeSet attribute = c.gui.attributes.get(0);
-            try {
-                c.gui.doc.insertString(c.gui.doc.getLength(), message, attribute);
-            } catch (BadLocationException e) {
-                e.printStackTrace();
+        if(message.startsWith("-")){
+            String[] s = message.split(" ");
+            if(s[0].equalsIgnoreCase("isend")){
+               c.irc.sendMessage(s[1], s[2]);
+               c.gui.addText(message);
             }
-            c.chat.sendMessage(message);
         }else{
             c.chat.sendMessage(message);         
         }

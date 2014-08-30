@@ -76,7 +76,7 @@ public class Client {
     public Location location;
     World world;
     public boolean chunksloaded;
-    boolean connectedirc;
+    public boolean connectedirc;
     public int entityID;
     public byte dimension;
     public byte difficulty;
@@ -115,6 +115,7 @@ public class Client {
     public float yaw;
     public float pitch;
     public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
+    public boolean ircenable = false;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
@@ -131,6 +132,7 @@ public class Client {
                 username = prop.getProperty("username");
                 password = prop.getProperty("password");
                 servername = prop.getProperty("servername");
+                ircenable = Boolean.valueOf(prop.getProperty("irc"));
                 System.out.println(servername);
                 port = Integer.parseInt(prop.getProperty("port"));
          
@@ -144,6 +146,7 @@ public class Client {
                 prop.setProperty("password", "1234");
                 prop.setProperty("servername", "c.mcblocks.net");
                 prop.setProperty("port", "25565");
+                prop.setProperty("irc", "false");
                 prop.store(new FileOutputStream("config.properties"), null);
          
             } catch (IOException ex) {
@@ -232,6 +235,9 @@ public class Client {
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         irc = new IRCBridge(this);
+        if(ircenable){
+           irc.start();
+        }
         int tick = 0;
         while(running){
            tick+= 1;
@@ -249,9 +255,6 @@ public class Client {
            }
            if(tick == 5){
                tick = 0;
-           }
-           if(connectedirc){
-             irc.read();//Read text from irc, if there is some
            }
         }
          
