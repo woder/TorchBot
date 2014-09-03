@@ -7,6 +7,8 @@ import me.woder.bot.Entity;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class EntityRelativeMove21 extends Packet{
     
     public EntityRelativeMove21(Client c) {
@@ -14,11 +16,11 @@ public class EntityRelativeMove21 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-       int eid = c.in.readInt();
-       byte sx = c.in.readByte();
-       byte sy = c.in.readByte();
-       byte sz = c.in.readByte();
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+       int eid = buf.readInt();
+       byte sx = buf.readByte();
+       byte sy = buf.readByte();
+       byte sz = buf.readByte();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
           e.sx += sx;

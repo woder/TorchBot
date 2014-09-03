@@ -33,6 +33,7 @@ import javax.crypto.SecretKey;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
 
+import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -101,7 +102,8 @@ public class Client {
     public int state = 2;
     public boolean running = true;
     private String password;
-    public int mcversion = 5;
+    public int mcversion = 47;
+    public int threshold = 0;
     public String accesstoken;
     public String clienttoken;
     public String profile;
@@ -119,8 +121,7 @@ public class Client {
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
-    Logger errlog = Logger.getLogger("me.woder.network"); //doesn't seem right - check why error log is being saved to network log
-    
+    Logger errlog = Logger.getLogger("me.woder.network"); //doesn't seem right - check why error log is being saved to network log   
     
     public void main(TorchGUI window){
         this.gui = window;
@@ -389,9 +390,9 @@ public class Client {
         par0DataOutputStream.write(par1ArrayOfByte);
     }
      
-     public byte[] readBytesFromStream(DataInputStream par0DataInputStream) throws IOException{
-            short var1 = par0DataInputStream.readShort();
-
+     public byte[] readBytesFromStream(ByteArrayDataInput par0DataInputStream) throws IOException{
+            int var1 = Packet.readVarInt(par0DataInputStream);
+            System.out.println("Length is: " + var1);
             if (var1 < 0)
             {
                 throw new IOException("Key was smaller than nothing!  Weird key!");

@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class PluginMessage63 extends Packet{
     byte[] data;
     String channel;
@@ -13,10 +15,10 @@ public class PluginMessage63 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        channel = getString(c.in);
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        channel = getString(buf);
         System.out.println("Channel: " + channel);
-        data = c.readBytesFromStream(c.in);
+        data = c.readBytesFromStream(buf);
     }
 
 }

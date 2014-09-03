@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class SpawnObject14 extends Packet{
     
     public SpawnObject14(Client c) {
@@ -11,19 +13,19 @@ public class SpawnObject14 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        readVarInt(c.in);
-        c.in.readByte();
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readByte();
-        c.in.readByte();
-        int valuee = c.in.readInt();
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        readVarInt(buf);
+        buf.readByte();
+        buf.readInt();
+        buf.readInt();
+        buf.readInt();
+        buf.readByte();
+        buf.readByte();
+        int valuee = buf.readInt();
         if (valuee != 0){
-         c.in.readShort();
-         c.in.readShort();
-         c.in.readShort();
+         buf.readShort();
+         buf.readShort();
+         buf.readShort();
         }
     }
 

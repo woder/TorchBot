@@ -7,19 +7,21 @@ import me.woder.bot.Entity;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class EntityTeleport24 extends Packet{
     public EntityTeleport24(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int eid = c.in.readInt();
-        int dx = c.in.readInt();
-        int dy = c.in.readInt();
-        int dz = c.in.readInt();
-        byte yaw = c.in.readByte();
-        byte pitch = c.in.readByte();       
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        int eid = buf.readInt();
+        int dx = buf.readInt();
+        int dy = buf.readInt();
+        int dz = buf.readInt();
+        byte yaw = buf.readByte();
+        byte pitch = buf.readByte();       
         Entity e = c.en.findEntityId(eid);
         //c.chat.sendMessage("Coords: " + dx + ", " + dy + ", " + dz);
         if(e != null){

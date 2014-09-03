@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class SpawnPos05 extends Packet{
     int x, y, z;
     
@@ -12,10 +14,10 @@ public class SpawnPos05 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        x = c.in.readInt();
-        y = c.in.readInt();
-        x = c.in.readInt();
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        x = buf.readInt();
+        y = buf.readInt();
+        x = buf.readInt();
     }
 
 }

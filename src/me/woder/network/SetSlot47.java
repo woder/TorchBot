@@ -8,18 +8,20 @@ import me.woder.bot.Slot;
 import me.woder.bot.SlotHandler;
 import me.woder.event.Event;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class SetSlot47 extends Packet{
     public SetSlot47(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        byte window = c.in.readByte();
-        short slo = c.in.readShort();
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        byte window = buf.readByte();
+        short slo = buf.readShort();
         log(Level.FINEST,"Slot id is: " + slo);
         if(slo != -1){
-            Slot e = new SlotHandler().processSlots(c.in, slo);
+            Slot e = new SlotHandler().processSlots(buf, slo);
             c.invhandle.setSlot(e);
             c.ehandle.handleEvent(new Event("onSlotUpdate", new Object[] {window,slo,e.getId(),e.getCount(),e.getDamage()}));
         }

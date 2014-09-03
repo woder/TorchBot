@@ -5,30 +5,32 @@ import java.io.IOException;
 import me.woder.bot.Client;
 import me.woder.event.Event;
 
+import com.google.common.io.ByteArrayDataInput;
+
 public class SpawnPlayer12 extends Packet{
     public SpawnPlayer12(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int eid = readVarInt(c.in);
-        String uuid = getString(c.in);
-        String playern = getString(c.in);
-        int datanumber = readVarInt(c.in);
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        int eid = readVarInt(buf);
+        String uuid = getString(buf);
+        String playern = getString(buf);
+        int datanumber = readVarInt(buf);
         for(int i = 0; i < datanumber; i++){
-            getString(c.in);
-            getString(c.in);
-            getString(c.in);
+            getString(buf);
+            getString(buf);
+            getString(buf);
         }
-        int x = c.in.readInt();
-        int y = c.in.readInt();
-        int z = c.in.readInt();
-        byte yaw = c.in.readByte();
-        byte pitch = c.in.readByte();
-        short currentitem = c.in.readShort();
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        byte yaw = buf.readByte();
+        byte pitch = buf.readByte();
+        short currentitem = buf.readShort();
         c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid);
-        c.proc.readWatchableObjects(c.in);
+        c.proc.readWatchableObjects(buf);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, yaw, pitch, currentitem}));
     }
 

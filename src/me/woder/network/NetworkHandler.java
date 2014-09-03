@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 import me.woder.bot.Client;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 
 public class NetworkHandler {
     private Client c;
@@ -22,6 +27,7 @@ public class NetworkHandler {
         login.put(0, new Disconnect00(c));
         login.put(1, new EncryptionRequest253(c));
         login.put(2, new LoginSuccess02(c));
+        login.put(3, new SetCompression03(c));
         //Play packets
         play.put(0, new KeepAlive00(c));
         play.put(1, new JoinGame01(c));
@@ -66,29 +72,69 @@ public class NetworkHandler {
     }
     
     public void readData() throws IOException{
+      if(c.threshold > 0){
+        int plen = Packet.readVarInt(c.in);
+        int dlen = Packet.readVarInt(c.in);
+        System.out.println("Values: " + plen + " " + dlen);
+        if(dlen == 0){ //this packet isn't compressed
+           int type = Packet.readVarInt(c.in);
+           System.out.println("Length?? " + dlen + " " + type);
+           byte[] data = new byte[plen-1];
+           c.in.read(data, 0, plen-1);
+           ByteArrayDataInput buf = ByteStreams.newDataInput(data);//the ONLY reason we do this is because stupid minecraft made packets compress and changing it any other way means re-doing 68 packets
+           forwardPacket(plen, type, buf); //pass this on to the actual parser 
+        }else{ //this packet is compressed ***BROKEN***
+           if(dlen <= c.threshold){ //if the data length is more than we set in login packet 3, throw an error
+               byte[] data = new byte[dlen];
+               Inflater inflater = new Inflater();
+               inflater.setInput(data);
+               byte[] uncompressed = new byte[dlen];
+               try{
+                  System.out.println("De compressed " + inflater.inflate(uncompressed));
+               }catch(DataFormatException dataformatexception){
+                  throw new IOException("Bad compressed data format");
+               }finally{
+                  inflater.end();
+               }
+               ByteArrayDataInput buf = ByteStreams.newDataInput(data); //the ONLY reason we do this is because stupid minecraft made packets compress and changing it any other way means re-doing 68 packets
+               int type = Packet.readVarInt(buf);
+               forwardPacket(dlen, type, buf);
+           }else{
+              throw new IOException("Data was smaller than threshold!");
+           }
+        }
+      }else{ //We aren't currently compressing anything
         int len = Packet.readVarInt(c.in);
         int type = Packet.readVarInt(c.in);
-        
+        System.out.println("Length?? " + len + " " + type);
+        byte[] data = new byte[len-1];
+        c.in.read(data, 0, len-1);
+        ByteArrayDataInput buf = ByteStreams.newDataInput(data);//the ONLY reason we do this is because stupid minecraft made packets compress and changing it any other way means re-doing 68 packets
+        forwardPacket(len, type, buf); //pass this on to the actual parser
+      }
+
+    }
+    
+    public void forwardPacket(int len, int type, ByteArrayDataInput buf) throws IOException{
         log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){
             Packet p = status.get(type);
             if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");}else{
-                p.read(c, len - 1);         
+                p.read(c, len - 1, buf);         
             }
         }else if(c.state == 2){
             Packet p = login.get(type);
             if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");}else{
-                p.read(c, len - 1);         
+                p.read(c, len - 1, buf);         
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
             if(p==null){c.in.read(trash, 0, len-1);System.out.println("NOTICE: we just threw out a packet");}else{
-                p.read(c, len - 1);         
+                p.read(c, len - 1, buf);         
             }
         }else{
             throw new IOException("Unknown type!");
         }
-
     }
 }

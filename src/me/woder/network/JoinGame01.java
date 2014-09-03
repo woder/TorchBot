@@ -2,10 +2,11 @@ package me.woder.network;
 
 import java.io.IOException;
 
+import me.woder.bot.Client;
+
+import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-
-import me.woder.bot.Client;
 
 public class JoinGame01 extends Packet{
     public JoinGame01(Client c) {
@@ -13,23 +14,23 @@ public class JoinGame01 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.entityID = c.in.readInt();
-        c.gamemode = c.in.readByte();
-        c.dimension = c.in.readByte();
-        c.difficulty = c.in.readByte();
-        c.maxplayer = c.in.readByte();
-        System.out.println("Level type is: " + getString(c.in));
-        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+        c.entityID = buf.readInt();
+        c.gamemode = buf.readByte();
+        c.dimension = buf.readByte();
+        c.difficulty = buf.readByte();
+        c.maxplayer = buf.readByte();
+        System.out.println("Level type is: " + getString(buf));
+        ByteArrayDataOutput buff = ByteStreams.newDataOutput();
         try{
-         Packet.writeVarInt(buf, 21);
-         Packet.writeString(buf, "en_GB");
-         buf.writeByte(0);
-         buf.writeByte(0);
-         buf.writeBoolean(true);
-         buf.writeByte(0);
-         buf.writeBoolean(true);
-         Packet.sendPacket(buf, c.out);
+         Packet.writeVarInt(buff, 21);
+         Packet.writeString(buff, "en_GB");
+         buff.writeByte(0);
+         buff.writeByte(0);
+         buff.writeBoolean(true);
+         buff.writeByte(0);
+         buff.writeBoolean(true);
+         Packet.sendPacket(buff, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }

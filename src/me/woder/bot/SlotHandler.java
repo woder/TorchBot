@@ -1,7 +1,8 @@
 package me.woder.bot;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class SlotHandler {
     byte count;
@@ -10,7 +11,7 @@ public class SlotHandler {
     public SlotHandler(){
     }
     
-    public Slot processSlots(DataInputStream in, int slotnum) throws IOException{
+    public Slot processSlots(ByteArrayDataInput in, int slotnum) throws IOException{
          short bid = in.readShort();
          if(bid != -1){
              count = in.readByte();

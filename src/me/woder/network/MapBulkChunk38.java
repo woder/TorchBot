@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import me.woder.bot.Client;
 import me.woder.world.Chunk;
 
@@ -22,23 +24,23 @@ public class MapBulkChunk38 extends Packet{
     }
     
     @Override
-    public void read(Client c, int lens){
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
         try {
-          len = c.in.readShort();
-          datalength = c.in.readInt();
+          len = buf.readShort();
+          datalength = buf.readInt();
           Chunk[] chunks = new Chunk[len];
-          skylight = c.in.readBoolean();
+          skylight = buf.readBoolean();
           data = new byte[datalength];
-          c.in.readFully(data);
+          buf.readFully(data);
           Inflater inflater = new Inflater();
           inflater.setInput(data);            
           
           //step one, pull all data from the stream
           for(int i = 0; i < len; i++){
-            x = c.in.readInt();
-            z = c.in.readInt();
-            int pmap = (c.in.readShort() & 0xffff);
-            int amap = (c.in.readShort() & 0xffff);
+            x = buf.readInt();
+            z = buf.readInt();
+            int pmap = (buf.readShort() & 0xffff);
+            int amap = (buf.readShort() & 0xffff);
             chunks[i] = new Chunk(c, x, z, pmap, amap, skylight, true);         
             //save all the chunks
           }

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import me.woder.network.Packet;
 
 public class MetaDataProcessor {
@@ -15,7 +17,7 @@ public class MetaDataProcessor {
     }
     
     @SuppressWarnings("rawtypes")
-    public List readWatchableObjects(DataInputStream in) throws IOException{
+    public List readWatchableObjects(ByteArrayDataInput in) throws IOException{
         ArrayList var1 = null;
         System.out.println("Now reading metadata...");
         while(true){
@@ -55,7 +57,7 @@ public class MetaDataProcessor {
 
                 case 5:
                     System.out.println("Reading slot");
-                    new SlotHandler().processSlots(c.in, 0);
+                    new SlotHandler().processSlots(in, 0);
                     break;
 
                 case 6:

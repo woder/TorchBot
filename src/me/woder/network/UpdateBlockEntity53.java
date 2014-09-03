@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
+import com.google.common.io.ByteArrayDataInput;
+
 
 //TODO: Figure out what the fuck this even does
 
@@ -13,12 +15,12 @@ public class UpdateBlockEntity53 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-       c.in.readInt();
-       c.in.readShort(); //guess the guy who made this decided he wanted short
-       c.in.readInt();
-       c.in.readByte();
-       c.readBytesFromStream(c.in);
+    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+       buf.readInt();
+       buf.readShort(); //guess the guy who made this decided he wanted short
+       buf.readInt();
+       buf.readByte();
+       c.readBytesFromStream(buf);
     }
 
 }
