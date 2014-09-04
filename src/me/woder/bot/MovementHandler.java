@@ -141,7 +141,7 @@ public class MovementHandler {
          buf.writeFloat(c.yaw);
          buf.writeFloat(c.pitch);
          buf.writeBoolean(c.onground);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }
@@ -152,7 +152,7 @@ public class MovementHandler {
         try{
          Packet.writeVarInt(buf, 3);
          buf.writeBoolean(c.onground);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }

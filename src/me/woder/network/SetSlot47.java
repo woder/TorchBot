@@ -8,15 +8,13 @@ import me.woder.bot.Slot;
 import me.woder.bot.SlotHandler;
 import me.woder.event.Event;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class SetSlot47 extends Packet{
     public SetSlot47(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         byte window = buf.readByte();
         short slo = buf.readShort();
         log(Level.FINEST,"Slot id is: " + slo);

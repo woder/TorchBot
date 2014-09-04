@@ -7,15 +7,13 @@ import me.woder.bot.Entity;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class EntityRelativeMoveLok23 extends Packet{
     public EntityRelativeMoveLok23(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
        int eid = buf.readInt();
        byte x = buf.readByte();
        byte y = buf.readByte();

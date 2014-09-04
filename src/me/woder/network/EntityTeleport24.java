@@ -7,15 +7,13 @@ import me.woder.bot.Entity;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class EntityTeleport24 extends Packet{
     public EntityTeleport24(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int eid = buf.readInt();
         int dx = buf.readInt();
         int dy = buf.readInt();

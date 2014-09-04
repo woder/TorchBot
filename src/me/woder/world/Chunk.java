@@ -15,7 +15,6 @@ import me.woder.bot.Client;
 public class Chunk {
     private boolean groundup;
     private boolean lighting;
-    private int abitmap;
     private int pbitmap;
     private int x;
     private int z;
@@ -26,13 +25,12 @@ public class Chunk {
     private int ablocks;
     private Client c;
     
-    public Chunk(Client c, int x, int z, int pbitmap, int abitmap, boolean lighting, boolean groundup) {
+    public Chunk(Client c, int x, int z, int pbitmap, boolean lighting, boolean groundup) {
         // Create chunk sections.
         this.c = c;
         this.groundup = groundup;
         this.lighting = lighting;
         this.pbitmap = pbitmap;
-        this.abitmap = abitmap;
         this.x = x;
         this.z = z;
         parts = new ArrayList<Part>();

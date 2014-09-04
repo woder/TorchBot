@@ -7,15 +7,13 @@ import me.woder.bot.Client;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class PlayerPosLook08 extends Packet{
     public PlayerPosLook08(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();

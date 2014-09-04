@@ -5,8 +5,6 @@ import java.io.IOException;
 import me.woder.bot.Client;
 import me.woder.event.Event;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class HealthUpdate06 extends Packet{
 
     public HealthUpdate06(Client c) {
@@ -14,7 +12,7 @@ public class HealthUpdate06 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int health = (int)buf.readFloat();
         c.health = health;
         c.chat.sendMessage("Health is now: " + c.health);

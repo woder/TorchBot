@@ -39,7 +39,7 @@ public class World {
         buf.writeByte(1);
         buf.writeByte(1);
         buf.writeByte(1);
-        Packet.sendPacket(buf, c.out);
+        c.net.sendPacket(buf, c.out);
        } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

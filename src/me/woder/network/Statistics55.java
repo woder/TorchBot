@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import me.woder.bot.Client;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class Statistics55 extends Packet{
     HashMap<String, Integer> stats = new HashMap<String, Integer>();
     
@@ -15,10 +13,13 @@ public class Statistics55 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int count = readVarInt(buf);
+        System.out.println("Count: " + count);
         for(int i = 0; i < count; i++){
-            stats.put(getString(buf), readVarInt(buf));
+            String s = getString(buf);
+            System.out.println("S: " + s);
+            stats.put(s, readVarInt(buf));
         }
     }
 

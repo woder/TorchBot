@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import me.woder.bot.Client;
 import me.woder.world.Chunk;
 
@@ -23,7 +21,7 @@ public class MapChunk33 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
           x = buf.readInt();
           z = buf.readInt();
           boolean isGroundUp = buf.readBoolean();
@@ -34,7 +32,7 @@ public class MapChunk33 extends Packet{
           datalength = buf.readInt();
           data = new byte[datalength];
           buf.readFully(data);
-          Chunk chunke = new Chunk(c, x, z, bitmask, addmask, true, isGroundUp); 
+          Chunk chunke = new Chunk(c, x, z, bitmask, true, isGroundUp); 
           int extra = chunke.blocknum;
           extra += (chunke.blocknum / 2);
           if (isGroundUp){

@@ -4,15 +4,13 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class EntityProperties32 extends Packet{
     public EntityProperties32(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         buf.readInt();
         int Count = buf.readInt();
 

@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.io.ByteArrayDataInput;
-
+import me.woder.network.ByteArrayDataInputWrapper;
 import me.woder.network.Packet;
 
 public class MetaDataProcessor {
@@ -17,7 +16,7 @@ public class MetaDataProcessor {
     }
     
     @SuppressWarnings("rawtypes")
-    public List readWatchableObjects(ByteArrayDataInput in) throws IOException{
+    public List readWatchableObjects(ByteArrayDataInputWrapper in) throws IOException{
         ArrayList var1 = null;
         System.out.println("Now reading metadata...");
         while(true){

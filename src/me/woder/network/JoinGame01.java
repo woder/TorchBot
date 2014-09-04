@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -14,7 +13,7 @@ public class JoinGame01 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         c.entityID = buf.readInt();
         c.gamemode = buf.readByte();
         c.dimension = buf.readByte();
@@ -29,8 +28,7 @@ public class JoinGame01 extends Packet{
          buff.writeByte(0);
          buff.writeBoolean(true);
          buff.writeByte(0);
-         buff.writeBoolean(true);
-         Packet.sendPacket(buff, c.out);
+         c.net.sendPacket(buff, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import me.woder.bot.Client;
 import me.woder.world.Chunk;
 
@@ -23,8 +21,8 @@ public class MapBulkChunk38 extends Packet{
         this.c = c;
     }
     
-    @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+   /* @Override
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         try {
           len = buf.readShort();
           datalength = buf.readInt();
@@ -79,6 +77,20 @@ public class MapBulkChunk38 extends Packet{
             e.printStackTrace();
         }
         
+    }*/
+    
+    @Override
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+          boolean skylight = buf.readBoolean();
+          len = Packet.readVarInt(buf);
+          Chunk[] chunks = new Chunk[len];
+          
+          for(int i = 0; i < len; i++){
+              int chunkx = buf.readInt();
+              int chunkz = buf.readInt();
+              int bitmask = (buf.readShort() & 0xffff);
+              chunks[i] = new Chunk(c, x, z, bitmask, skylight, true);
+          }
     }
 
 }

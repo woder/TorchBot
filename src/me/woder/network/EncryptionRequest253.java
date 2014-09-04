@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import me.woder.bot.Client;
 import me.woder.bot.CryptManager;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -21,12 +20,12 @@ public class EncryptionRequest253 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         String serverid = getString(buf);
         log.log(Level.FINEST,"Reading server id: " + serverid);
         System.out.println("Server id is !" + serverid + "!");
-        c.publickey = CryptManager.decodePublicKey(c.readBytesFromStream(buf));//read the public key**taken from the original minecraft code**
-        byte[] verifytoken = c.readBytesFromStream(buf);//read the verify token        
+        c.publickey = CryptManager.decodePublicKey(c.readBytesFromStreamV(buf));//read the public key**taken from the original minecraft code**
+        byte[] verifytoken = c.readBytesFromStreamV(buf);//read the verify token        
         c.secretkey = CryptManager.createNewSharedKey();//generate a secret key
         c.sharedkey = c.secretkey;
         log.log(Level.FINEST,"Secret key is: " + c.secretkey);
@@ -44,7 +43,7 @@ public class EncryptionRequest253 extends Packet{
         buff.write(sharedSecret);
         Packet.writeVarInt(buff, verifyToken.length);
         buff.write(verifyToken);
-        sendPacket(buff, c.out);
+        c.net.sendPacket(buff, c.out);
         c.activateEncryption();
         c.decryptInputStream();
     }

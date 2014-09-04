@@ -55,7 +55,7 @@ public class ChatHandler {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         Packet.writeVarInt(buf, 1);
         Packet.writeString(buf, message);
-        Packet.sendPacket(buf, c.out);
+        c.net.sendPacket(buf, c.out);
        } catch(IOException e){
            e.printStackTrace();
        }

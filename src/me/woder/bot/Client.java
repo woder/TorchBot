@@ -33,13 +33,13 @@ import javax.crypto.SecretKey;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.woder.event.EventHandler;
 import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
+import me.woder.network.ByteArrayDataInputWrapper;
 import me.woder.network.NetworkHandler;
 import me.woder.network.Packet;
 import me.woder.plugin.PluginLoader;
@@ -204,6 +204,8 @@ public class Client {
         clientSocket = new Socket(servername, port);
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
+        
+        net = new NetworkHandler(this);//this needs to be done first because we need this to send stuff
         //our hand shake
 
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
@@ -213,14 +215,14 @@ public class Client {
         buf.writeShort(port);
         Packet.writeVarInt(buf, 2);
         
-        Packet.sendPacket(buf, out);
+        net.sendPacket(buf, out);
         
         buf = ByteStreams.newDataOutput();
         
         Packet.writeVarInt(buf, 0);
         Packet.writeString(buf, username);
 
-        Packet.sendPacket(buf, out);
+        net.sendPacket(buf, out);
         
         out.flush();                             
          
@@ -228,8 +230,7 @@ public class Client {
         ehandle = new EventHandler(this);
         proc = new MetaDataProcessor(this);
         chandle = new CommandHandler(this);
-        whandle = new WorldHandler(this);
-        net = new NetworkHandler(this);          
+        whandle = new WorldHandler(this);               
         en = new EntityTracker(this);
         world = whandle.getWorld();
         invhandle = new InvHandler(this);
@@ -384,13 +385,12 @@ public class Client {
     }
     
     
-    public void writeByteArray(DataOutputStream par0DataOutputStream, byte[] par1ArrayOfByte) throws IOException
-    {
+    public void writeByteArray(DataOutputStream par0DataOutputStream, byte[] par1ArrayOfByte) throws IOException{
         par0DataOutputStream.writeShort(par1ArrayOfByte.length);
         par0DataOutputStream.write(par1ArrayOfByte);
     }
      
-     public byte[] readBytesFromStream(ByteArrayDataInput par0DataInputStream) throws IOException{
+    public byte[] readBytesFromStreamV(ByteArrayDataInputWrapper par0DataInputStream) throws IOException{
             int var1 = Packet.readVarInt(par0DataInputStream);
             System.out.println("Length is: " + var1);
             if (var1 < 0)
@@ -403,7 +403,22 @@ public class Client {
                 par0DataInputStream.readFully(var2);
                 return var2;
             }
+    }
+    
+    public byte[] readBytesFromStream(ByteArrayDataInputWrapper par0DataInputStream) throws IOException{
+        int var1 = par0DataInputStream.readShort();
+        System.out.println("Length is: " + var1);
+        if (var1 < 0)
+        {
+            throw new IOException("Key was smaller than nothing!  Weird key!");
         }
+        else
+        {
+            byte[] var2 = new byte[var1];
+            par0DataInputStream.readFully(var2, 0, var1);
+            return var2;
+        }
+    }
      
 
 }

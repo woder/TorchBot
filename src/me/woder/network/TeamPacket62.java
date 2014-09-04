@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import me.woder.bot.Client;
 
 public class TeamPacket62 extends Packet{
@@ -16,7 +14,7 @@ public class TeamPacket62 extends Packet{
 
     List<String> players = new ArrayList<String>();
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
       String teamname = getString(buf);
       System.out.println("TEAM NAME: " + teamname);
         byte mode = buf.readByte();

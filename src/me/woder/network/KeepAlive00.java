@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import me.woder.bot.Client;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 public class KeepAlive00 extends Packet{
@@ -13,12 +12,12 @@ public class KeepAlive00 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int temp = buf.readInt();
         ByteArrayDataOutput buff = ByteStreams.newDataOutput();
         writeVarInt(buff, 0);
         buff.writeInt(temp);
-        sendPacket(buff, c.out);
+        c.net.sendPacket(buff, c.out);
     }
 
 }

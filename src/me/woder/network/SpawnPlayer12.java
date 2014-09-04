@@ -5,15 +5,13 @@ import java.io.IOException;
 import me.woder.bot.Client;
 import me.woder.event.Event;
 
-import com.google.common.io.ByteArrayDataInput;
-
 public class SpawnPlayer12 extends Packet{
     public SpawnPlayer12(Client c) {
         super(c);
     }
     
     @Override
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int eid = readVarInt(buf);
         String uuid = getString(buf);
         String playern = getString(buf);

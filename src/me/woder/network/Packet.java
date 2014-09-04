@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import me.woder.bot.Client;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -22,7 +21,7 @@ public class Packet {
         log = Logger.getLogger("me.woder.network");
     }
     
-    public void read(Client c, int len, ByteArrayDataInput buf) throws IOException{
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         //allow child to override
     }
     
@@ -30,7 +29,7 @@ public class Packet {
         log.log(lvl, s);
     }
     
-    public static String getString(ByteArrayDataInput in) {
+    public static String getString(ByteArrayDataInputWrapper in) {
        int length;
        String s = "";
        try {
@@ -76,6 +75,7 @@ public class Packet {
         return s;
     }
     
+    //Only server pinger is allowed to use this, NOTHING ELSE
     public static void sendPacket(ByteArrayDataOutput buf, DataOutputStream out) throws IOException{
         ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
         writeVarInt(send1, buf.toByteArray().length);
@@ -89,7 +89,7 @@ public class Packet {
         out.write(s.getBytes("UTF-8"));
     }
     
-    public static int readVarInt(ByteArrayDataInput ins) throws IOException{
+    public static int readVarInt(ByteArrayDataInputWrapper ins) throws IOException{
       int i = 0;
       int j = 0;
       while (true){
@@ -135,6 +135,24 @@ public class Packet {
         }
      
         return i;
+    }
+
+    public static int[] readVarIntt(DataInputStream in) throws IOException{
+        int i = 0;
+        int j = 0;
+        int b = 0;
+        while (true){
+          int k = in.read();
+          b += 1;
+          i |= (k & 0x7F) << j++ * 7;
+     
+          if (j > 5) throw new RuntimeException("VarInt too big");
+     
+          if ((k & 0x80) != 128) break;
+        }
+        
+        int[] result = {i,b};
+        return result;
     }
   
 }
