@@ -18,6 +18,7 @@ public class SetSlot47 extends Packet{
         byte window = buf.readByte();
         short slo = buf.readShort();
         log(Level.FINEST,"Slot id is: " + slo);
+        System.out.println("Slot id is: " + slo);
         if(slo != -1){
             Slot e = new SlotHandler().processSlots(buf, slo);
             c.invhandle.setSlot(e);

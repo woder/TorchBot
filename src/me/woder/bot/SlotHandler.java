@@ -17,12 +17,12 @@ public class SlotHandler {
              count = in.readByte();
              System.out.println("There is: " + count + " of item " + bid);
              damage = in.readShort();
-             short next = in.readShort();
+             byte next = in.readByte();
              System.out.println("Next is: " + next);
-              if(next != -1){
+             /*if(next != -1){
                   byte[] var2 = new byte[next];
-                  in.readFully(var2);
-              }
+                  in.readFully(var2, 0, next);
+             }*/
          }
          return new Slot(slotnum, bid, count, damage, (short)0);
      }
