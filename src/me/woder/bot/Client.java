@@ -88,7 +88,7 @@ public class Client {
     public long time;
     public long age;
     public float health;
-    public short food;
+    public int food;
     public float foodsat;
     public float exp;
     public short level;
@@ -236,10 +236,10 @@ public class Client {
         invhandle = new InvHandler(this);
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
-        irc = new IRCBridge(this);
+        /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
-        }
+        }*/
         int tick = 0;
         while(running){
            tick+= 1;

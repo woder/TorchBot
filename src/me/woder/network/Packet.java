@@ -154,5 +154,11 @@ public class Packet {
         int[] result = {i,b};
         return result;
     }
+    
+    public static String readUUID(ByteArrayDataInputWrapper ins){
+        ins.readLong();
+        ins.readLong();
+        return "";
+    }
   
 }

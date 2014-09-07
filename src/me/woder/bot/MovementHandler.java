@@ -135,7 +135,6 @@ public class MovementHandler {
         try{
          Packet.writeVarInt(buf, 6);
          buf.writeDouble(x);
-         buf.writeDouble(y-1.620);
          buf.writeDouble(y);
          buf.writeDouble(z);
          buf.writeFloat(c.yaw);

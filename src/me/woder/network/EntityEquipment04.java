@@ -15,7 +15,7 @@ public class EntityEquipment04 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-        int eid = buf.readInt();
+        int eid = Packet.readVarInt(buf);
         short slotnum = buf.readShort();
         Slot s = new SlotHandler().processSlots(buf, slotnum);
         Entity e = c.en.findEntityId(eid);

@@ -27,12 +27,12 @@ public class TeamPacket62 extends Packet{
             System.out.println("Team,pre,s,f: " + teamdis + "," + prefix + "," + suffix + "," + friendlyfire);
         }
         
-        if(mode == 0 || mode == 3 || mode == 4){
+        /*if(mode == 0 || mode == 3 || mode == 4){
             short number = buf.readShort();
             System.out.println("LENGHT: " + number);
             for(int i = 0; i < number; i++){
                 players.add(getString(buf));
             }
-        }
+        }*/
     }
 }

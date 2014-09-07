@@ -11,7 +11,7 @@ public class EntityVelocity18 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-       buf.readInt();
+       Packet.readVarInt(buf);
        buf.readShort();
        buf.readShort();
        buf.readShort();

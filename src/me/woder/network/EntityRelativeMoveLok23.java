@@ -14,12 +14,13 @@ public class EntityRelativeMoveLok23 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-       int eid = buf.readInt();
+       int eid = Packet.readVarInt(buf);
        byte x = buf.readByte();
        byte y = buf.readByte();
        byte z = buf.readByte();
        byte yaw = buf.readByte();
        byte pitch = buf.readByte();
+       boolean onground = buf.readBoolean();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
           e.sx += x;

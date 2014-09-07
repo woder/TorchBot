@@ -11,16 +11,15 @@ public class EntityProperties32 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-        buf.readInt();
-        int Count = buf.readInt();
+        Packet.readVarInt(buf); //Entity id
+        int count = buf.readInt(); //amount of stuff thats next
 
-        for (int i = 0; i < Count; i++) {
-            System.out.println(getString(buf));
-            buf.readDouble();
-            short elements = buf.readShort(); // -- Yeah fuck this packet in particular.
+        for (int i = 0; i < count; i++) { //loop over it
+            getString(buf); //The key
+            buf.readDouble(); //The value
+            int list = Packet.readVarInt(buf);
 
-            for (int x = 0; x < elements; x++) {
-                //string UUID = mc.nh.wSock.readString();
+            for (int x = 0; x < list; x++) {
                 buf.readLong(); // -- 128-bit integer wtf..
                 buf.readLong();
                 buf.readDouble();

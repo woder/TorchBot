@@ -27,28 +27,15 @@ public class MapChunk33 extends Packet{
           boolean isGroundUp = buf.readBoolean();
           short a = buf.readShort();
           int bitmask = a & 0xffff;
-          short as = buf.readShort();
-          int addmask = as & 0xffff;
-          datalength = buf.readInt();
+          datalength = Packet.readVarInt(buf);
           data = new byte[datalength];
-          buf.readFully(data);
+          buf.readFully(data, 0, datalength);
           Chunk chunke = new Chunk(c, x, z, bitmask, true, isGroundUp); 
           int extra = chunke.blocknum;
           extra += (chunke.blocknum / 2);
           if (isGroundUp){
                 extra += 256;
-          }
-          Inflater inflater = new Inflater();
-          inflater.setInput(data);
-          byte[] chunk = new byte[chunke.blocknum + extra];
-            try{
-               System.out.println("De compressed " + inflater.inflate(chunk));
-            }catch(DataFormatException dataformatexception){
-               throw new IOException("Bad compressed data format");
-            }finally{
-                inflater.end();
-            }
-             
+          }  
             if (bitmask == 0) {
                 // Unload chunk, save ALL the ram!
                 Chunk thischunk = null;
@@ -65,9 +52,9 @@ public class MapChunk33 extends Packet{
                 return;
              }
                        
-            chunke.getData(chunk);
-            //c.chat.sendMessage("Added chunk: " + chunke.getX() + " " + chunke.getZ());
-            c.whandle.getWorld().chunklist.add(chunke);//add it to the world :D
+          chunke.getData(data);
+          //c.chat.sendMessage("Added chunk: " + chunke.getX() + " " + chunke.getZ());
+          c.whandle.getWorld().chunklist.add(chunke);//add it to the world :D
         
     }
 

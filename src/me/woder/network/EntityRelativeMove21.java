@@ -15,10 +15,11 @@ public class EntityRelativeMove21 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-       int eid = buf.readInt();
+       int eid = Packet.readVarInt(buf);
        byte sx = buf.readByte();
        byte sy = buf.readByte();
        byte sz = buf.readByte();
+       boolean onground = buf.readBoolean();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
           e.sx += sx;
@@ -27,7 +28,7 @@ public class EntityRelativeMove21 extends Packet{
           e.setLocation(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D));
           c.ehandle.handleEvent(new Event("onEntityMove", new Object[] {eid,e.sx/32.0D, e.sy/32.0D, e.sz/32.0D}));
        }else{
-          c.gui.addText("§1Entity is null! (id: " + eid + ")");
+          //c.gui.addText("§1Entity is null! (id: " + eid + ")");
        }
     }
 

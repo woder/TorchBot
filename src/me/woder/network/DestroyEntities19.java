@@ -11,9 +11,9 @@ public class DestroyEntities19 extends Packet {
 
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-        byte count = buf.readByte();
-        for (int i = 0; i < count; i++) {
-            buf.readInt();
+        int count = Packet.readVarInt(buf); //the count
+        for (int i = 0; i < count; i++) { //read all of them in
+            Packet.readVarInt(buf); //TODO make this do something; this is IMPORTANT
         }
     }
 

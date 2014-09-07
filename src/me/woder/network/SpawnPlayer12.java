@@ -13,21 +13,15 @@ public class SpawnPlayer12 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int eid = readVarInt(buf);
-        String uuid = getString(buf);
-        String playern = getString(buf);
-        int datanumber = readVarInt(buf);
-        for(int i = 0; i < datanumber; i++){
-            getString(buf);
-            getString(buf);
-            getString(buf);
-        }
+        String uuid = Packet.readUUID(buf);
+        String playern = "";
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();
         byte yaw = buf.readByte();
         byte pitch = buf.readByte();
         short currentitem = buf.readShort();
-        c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid);
+        c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid); //TODO fix the playername issue
         c.proc.readWatchableObjects(buf);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, yaw, pitch, currentitem}));
     }

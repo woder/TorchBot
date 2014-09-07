@@ -70,6 +70,7 @@ public class NetworkHandler {
         play.put(62, new TeamPacket62(c));
         play.put(63, new PluginMessage63(c));
         play.put(64, new Disconnect64(c));
+        play.put(70, new SetCompression70(c));
     }
     
     public void readData() throws IOException{
@@ -78,7 +79,6 @@ public class NetworkHandler {
         int[] dlens = Packet.readVarIntt(c.in);
         int dlen = dlens[0];
         int plen = plen1-dlens[1];
-        System.out.println("Values: " + plen + " " + dlen + " size of dlen: " + dlens[1]);
         if(dlen == 0){ //this packet isn't compressed
            readUncompressed(plen);
         }else{ //this packet is compressed ***BROKEN***
@@ -95,16 +95,15 @@ public class NetworkHandler {
         int[] types = Packet.readVarIntt(c.in);
         int type = types[0];
         int len = len1-types[1];
-        System.out.println("Length?? " + len + " " + type);
         byte[] data = new byte[len];
-        c.in.read(data, 0, len);
+        c.in.readFully(data, 0, len);
         //the ONLY reason we do this is because stupid minecraft made packets compress and changing it any other way means re-doing 68 packets
         forwardPacket(len, type, new ByteArrayDataInputWrapper(data)); //pass this on to the actual parser
     }
     
     public void readUncompressed(int len) throws IOException{
         byte[] data = new byte[len];
-        System.out.println("length is: " + c.in.read(data, 0, len));
+        c.in.readFully(data, 0, len);
         ByteArrayDataInputWrapper bf = new ByteArrayDataInputWrapper(data);
         int type = Packet.readVarInt(bf);
         //the ONLY reason we do this is because stupid minecraft made packets compress and changing it any other way means re-doing 68 packets
@@ -114,12 +113,12 @@ public class NetworkHandler {
     public void readCompressed(int plen, int dlen) throws IOException{
         if(dlen >= c.threshold){ //if the data length is less than we set in login packet 3, throw an error
             byte[] data = new byte[plen];
-            c.in.read(data, 0, plen);
+            c.in.readFully(data, 0, plen);
             Inflater inflater = new Inflater();
             inflater.setInput(data);
             byte[] uncompressed = new byte[dlen];
             try{
-               System.out.println("De compressed " + inflater.inflate(uncompressed));
+               inflater.inflate(uncompressed);
             }catch(DataFormatException dataformatexception){
                dataformatexception.printStackTrace();
                throw new IOException("Bad compressed data format");
@@ -167,14 +166,12 @@ public class NetworkHandler {
         send2.write(send1.toByteArray());
         out.write(send2.toByteArray());
         out.flush();
-        System.out.println("I sent a packet"); 
       }else{
         ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
         Packet.writeVarInt(send1, buf.toByteArray().length);
         send1.write(buf.toByteArray());
         out.write(send1.toByteArray());
         out.flush();
-        System.out.println("I sent a packet");
       }
     }
 }

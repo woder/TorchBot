@@ -91,6 +91,15 @@ public class MapBulkChunk38 extends Packet{
               int bitmask = (buf.readShort() & 0xffff);
               chunks[i] = new Chunk(c, x, z, bitmask, skylight, true);
           }
+          
+          byte[] rest = new byte[buf.getAvailable()];
+          buf.readFully(rest, 0, buf.getAvailable());
+          
+          for(int i = 0; i < len; i++){
+              rest = chunks[i].getData(rest);//takes what it needs and leaves the rest
+              //System.out.println("Adding the chunks... ");
+              c.whandle.getWorld().chunklist.add(chunks[i]);//add it to the world :D
+          }
     }
 
 }

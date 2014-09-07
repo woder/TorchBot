@@ -19,7 +19,7 @@ public class PlayerPosLook08 extends Packet{
         double z = buf.readDouble();
         c.yaw = buf.readFloat();
         c.pitch = buf.readFloat();
-        c.onground = buf.readBoolean();
+        byte flags = buf.readByte();
         log(Level.FINEST,"Location is: " + x + "," + y + "," + z);
         c.ehandle.handleEvent(new Event("onPlayerPosLook", new Object[] {x, y, z, c.yaw, c.pitch, c.onground}));
         c.location = new Location(c.whandle.getWorld(), x, y, z);
