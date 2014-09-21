@@ -1,6 +1,7 @@
 package me.woder.network;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import me.woder.bot.Client;
 import me.woder.event.Event;
@@ -13,8 +14,8 @@ public class SpawnPlayer12 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int eid = readVarInt(buf);
-        String uuid = Packet.readUUID(buf);
-        String playern = "";
+        UUID uuid = Packet.readUUID(buf);
+        String playern = c.en.getNameUUID(uuid);
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();

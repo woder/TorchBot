@@ -2,9 +2,6 @@ package me.woder.bot;
 
 import java.io.IOException;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -25,7 +22,7 @@ public class CommandHandler {
         if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
         }else if(command.equalsIgnoreCase("under")){
-            Block b = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
+            Block b = c.whandle.getWorld().getBlock(c.location).getRelative(0, -1, 0);
             if (b != null) {
                 c.chat.sendMessage("Block is: " + b.getTypeId() + " and its meta data is: " + b.getMetaData());
             } else {
@@ -47,7 +44,7 @@ public class CommandHandler {
             if(args.length > 1){
              Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
              if(p != null){
-               Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-2, c.location.getZ());
+               Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
                c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
                Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
                c.move.runPathing(l, loc, 50);

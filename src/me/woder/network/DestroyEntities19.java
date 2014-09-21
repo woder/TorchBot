@@ -13,7 +13,8 @@ public class DestroyEntities19 extends Packet {
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int count = Packet.readVarInt(buf); //the count
         for (int i = 0; i < count; i++) { //read all of them in
-            Packet.readVarInt(buf); //TODO make this do something; this is IMPORTANT
+            int eid = Packet.readVarInt(buf);
+            c.en.delEntity(eid);
         }
     }
 

@@ -1,6 +1,7 @@
 package me.woder.network;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import me.woder.bot.Client;
 
@@ -13,8 +14,7 @@ public class PlayerListItem56 extends Packet{
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int action = Packet.readVarInt(buf);
         int length = Packet.readVarInt(buf);
-        long uuid1 = buf.readLong();
-        long uuid2 = buf.readLong();
+        UUID uuid = Packet.readUUID(buf);
         
         switch(action){
            case 0:

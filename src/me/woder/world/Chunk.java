@@ -6,22 +6,27 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.woder.bot.Client;
+import me.woder.network.ByteArrayDataInputWrapper;
 
 @SuppressWarnings("unused")
 public class Chunk {
     private boolean groundup;
     private boolean lighting;
+    private int chunksize;
     private int pbitmap;
     private int x;
     private int z;
     private byte[] blocks;
-    private byte[] blockmeta;
+    private int[] blockse;
     public List<Part> parts;
     public int blocknum;
+    public int nsection;
     private int ablocks;
     private Client c;
     
@@ -36,12 +41,13 @@ public class Chunk {
         parts = new ArrayList<Part>();
 
         blocknum = 0;
+        nsection = 0;
         ablocks = 0;
         //System.out.println(Integer.toBinaryString(pbitmap));
         for (int i = 0; i < 16; i++) {
             //System.out.println("Bit map = " + (pbitmap & (1 << i)));
             if ((pbitmap & (1 << i)) != 0) {
-                blocknum++; // "parts of the chunk"
+                nsection++; // "parts of the chunk"
                 parts.add(new Part((byte)i, c));
                 //System.out.println("Added new part: " + i);
             }
@@ -52,51 +58,30 @@ public class Chunk {
                 ablocks++;
             }
         }
-
+        //size of the chunk
+        chunksize = nsection * (4096 * (5 + (lighting?1:0)) / 2) + (groundup?256:0);
         // Number of sections * blocks per section = blocks in this "Chunk"
-        blocknum = blocknum * 4096;
+        blocknum = nsection * 4096;
     }
     
     public void fillChunk(){
-        int offset = 0;
-        int metaoff = 0;
-        int current = 0;
+       int offset = 0;
+       int current = 0;
         
-        for (int i = 0; i < 16; i++) {
-            if ((pbitmap & (1 << i)) != 0) {
+       for(int i = 0; i < 16; i++) {
+           if ((pbitmap & (1 << i)) != 0) {
 
-                byte[] temp = new byte[4096];
-                byte[] temp2 = new byte[2048];
-
-                System.arraycopy(blocks, offset, temp, 0, 4096);
-                System.arraycopy(blockmeta, metaoff, temp2, 0, 2048);
-                short[] metablock = getShortArray(temp, temp2);
+                int[] temp = new int[4096];
+                System.arraycopy(blockse, offset, temp, 0, 4096);
                 Part mySection = parts.get(current);
                 System.out.println("Part is: " + mySection.y);
-                mySection.blocks = metablock;
+                mySection.blocks = temp;
                 offset += 4096;
-                metaoff += 2048;
                 current += 1;
             }
-        }
+       }
         
      }
-    
-    public short[] getShortArray(byte[] a, byte[] b){
-        short[] finals = new short[a.length];
-        int mi = 0;
-        for(int i = 0; i < a.length; i+=2){
-            short c = (short) (((short) a[i] & 0xff) | (((short) b[mi] & 0xf) << 8));
-            //System.out.println("Data before: " + a[i] + " meta:" + ((b[mi] & 0xf0) >> 4));           
-            finals[i] = c;
-            short e = (short) (((short) a[i+1] & 0xff) | (((short) b[mi] & 0xf0) << 4));
-            //System.out.println("Data before: " + a[i+1] + " meta:" + ((b[mi] & 0xf)));
-            finals[i+1] = e;
-            mi++;
-        }
-        
-        return finals;
-    }
     
      public int getBlockId(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
@@ -113,39 +98,44 @@ public class Chunk {
         // TODO: Ensure that the block being updated is in this chunk.
         // Even though chances of that exception throwing are tiny.
 
-        Part part = GetSectionByNumber(By);
-        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), (byte) id, (byte)meta);
+        Part part = GetSectionByNumber(By);    
+        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), id, meta);
 
      }
     
-     public byte[] getData(byte[] deCompressed) {
+   //Data looks like this now: Block data and Meta (unsigned short), Block light, sky light (if true), biome, (if true)
+     public void getData(ByteArrayDataInputWrapper buf) {
         // Loading chunks, network handler hands off the decompressed bytes
         // This function takes its portion, and returns what's left.
+        //the size of this chunk
+        
         c.chunksloaded = true;
         blocks = new byte[blocknum];
         byte[] temp;
-        blockmeta = new byte[blocknum/2];
-        int removeable = blocknum;
-
-        if (lighting == true)
-            removeable += (blocknum / 2);
-
-        if (groundup)
-            removeable += 256;
-
-        System.arraycopy(deCompressed, 0, blocks, 0, blocknum);
-        System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);
+        blockse = readUnsignedShorts(buf);
+        System.out.println("Chunk size is: " + chunksize + " block num is: " + blocknum);
+        temp = new byte[chunksize - (blocknum*2)];
+        buf.readFully(temp, 0, temp.length);
+        //System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);
         /*for(int i = 0; i < blocks.length; i++){
             System.out.println("id: " + blocks[i]);
         }*/
         //System.out.println(deCompressed.length);
         //System.out.println("Blocknum" + blocknum + " block num AND removeable: " + (blocknum + removeable));
-        temp = new byte[deCompressed.length - (blocknum + removeable)];     
-        System.arraycopy(deCompressed, (blocknum + removeable), temp, 0, temp.length);
 
         fillChunk(); // Populate all of our sections with the bytes we just aquired.
 
-        return temp;
+     }
+     
+     public int[] readUnsignedShorts(ByteArrayDataInputWrapper buf){
+         int[] ints = new int[blocknum];
+         for(int i = 0; i<blocknum; i++){
+             //ints[i] = (buf.readShort() & 0xffff);
+             int one = buf.readByte() & 0xff;
+             int two = buf.readByte() & 0xff;           
+             ints[i] = ((two << 8) | one) & 0xffff;
+         }
+         return ints;
      }
      
      public Integer getX(){

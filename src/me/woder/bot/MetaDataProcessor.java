@@ -1,6 +1,5 @@
 package me.woder.bot;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class MetaDataProcessor {
                     break;
 
                 case 4:
-                    System.out.println(Packet.getString(c.in));
+                    System.out.println("well then " + Packet.getString(in));
                     break;
 
                 case 5:

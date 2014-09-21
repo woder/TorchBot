@@ -28,14 +28,7 @@ public class MapChunk33 extends Packet{
           short a = buf.readShort();
           int bitmask = a & 0xffff;
           datalength = Packet.readVarInt(buf);
-          data = new byte[datalength];
-          buf.readFully(data, 0, datalength);
           Chunk chunke = new Chunk(c, x, z, bitmask, true, isGroundUp); 
-          int extra = chunke.blocknum;
-          extra += (chunke.blocknum / 2);
-          if (isGroundUp){
-                extra += 256;
-          }  
             if (bitmask == 0) {
                 // Unload chunk, save ALL the ram!
                 Chunk thischunk = null;
@@ -52,7 +45,7 @@ public class MapChunk33 extends Packet{
                 return;
              }
                        
-          chunke.getData(data);
+          chunke.getData(buf);
           //c.chat.sendMessage("Added chunk: " + chunke.getX() + " " + chunke.getZ());
           c.whandle.getWorld().chunklist.add(chunke);//add it to the world :D
         

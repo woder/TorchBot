@@ -303,17 +303,11 @@ public class Client {
 
      
     public String sendSessionRequest(String user, String session, String serverid){
-        try
-        {
-            URL var4 = new URL("http://session.minecraft.net/game/joinserver.jsp?user=" + urlEncode(user) + "&sessionId=" + urlEncode(session) + "&serverId=" + urlEncode(serverid));
-            BufferedReader var5 = new BufferedReader(new InputStreamReader(var4.openStream()));
-            String var6 = var5.readLine();
-            var5.close();
-            return var6;
-        }
-        catch (IOException var7)
-        {
-            return var7.toString();
+        try {
+            return sendGetRequest("http://session.minecraft.net/game/joinserver.jsp?user=" + urlEncode(user) + "&sessionId=" + urlEncode(session) + "&serverId=" + urlEncode(serverid));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
     }
     
@@ -378,6 +372,21 @@ public class Client {
                 ex.printStackTrace();
             }
             return answer;
+    }
+    
+    public String sendGetRequest(String url){
+        try
+        {
+            URL var4 = new URL(url);
+            BufferedReader var5 = new BufferedReader(new InputStreamReader(var4.openStream()));
+            String var6 = var5.readLine();
+            var5.close();
+            return var6;
+        }
+        catch (IOException var7)
+        {
+            return var7.toString();
+        }
     }
     
     private static String urlEncode(String par0Str) throws IOException {

@@ -3,6 +3,7 @@ package me.woder.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +30,7 @@ public class Packet {
         log.log(lvl, s);
     }
     
-    public static String getString(ByteArrayDataInputWrapper in) {
+    public static String getString(ByteArrayDataInputWrapper in) { //read a string from a bytebuffer
        int length;
        String s = "";
        try {
@@ -52,7 +53,7 @@ public class Packet {
        return s;
     }
     
-    public static String getString(DataInputStream in) {
+    public static String getString(DataInputStream in) { //read a string from the datastream
         int length;
         String s = "";
         try {
@@ -75,7 +76,8 @@ public class Packet {
         return s;
     }
     
-    //Only server pinger is allowed to use this, NOTHING ELSE
+    //Only server pinger is allowed to use this, NOTHING ELSE (other stuff should use c.net.sendPacket
+    @Deprecated
     public static void sendPacket(ByteArrayDataOutput buf, DataOutputStream out) throws IOException{
         ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
         writeVarInt(send1, buf.toByteArray().length);
@@ -84,12 +86,12 @@ public class Packet {
         out.flush();
     }
     
-    public static void writeString(ByteArrayDataOutput out, String s) throws IOException{
+    public static void writeString(ByteArrayDataOutput out, String s) throws IOException{ //writes a string to the bytebuffer
         writeVarInt(out, s.length());
         out.write(s.getBytes("UTF-8"));
     }
     
-    public static int readVarInt(ByteArrayDataInputWrapper ins) throws IOException{
+    public static int readVarInt(ByteArrayDataInputWrapper ins) throws IOException{ //reads a varint from the buffer
       int i = 0;
       int j = 0;
       while (true){
@@ -105,7 +107,7 @@ public class Packet {
       return i;
     }
      
-    public static void writeVarInt(ByteArrayDataOutput outs, int paramInt) throws IOException{
+    public static void writeVarInt(ByteArrayDataOutput outs, int paramInt) throws IOException{ //writes a varint to the buffer
         while (true) {
           if ((paramInt & 0xFFFFFF80) == 0) {
             outs.writeByte((byte) paramInt);
@@ -121,7 +123,7 @@ public class Packet {
         // Allow child to write   
     }
 
-    public static int readVarInt(DataInputStream in) throws IOException{
+    public static int readVarInt(DataInputStream in) throws IOException{ //reads a varint from the stream
         int i = 0;
         int j = 0;
         while (true){
@@ -137,7 +139,7 @@ public class Packet {
         return i;
     }
 
-    public static int[] readVarIntt(DataInputStream in) throws IOException{
+    public static int[] readVarIntt(DataInputStream in) throws IOException{ //reads a varint from the stream, returning both the length and the value
         int i = 0;
         int j = 0;
         int b = 0;
@@ -155,10 +157,13 @@ public class Packet {
         return result;
     }
     
-    public static String readUUID(ByteArrayDataInputWrapper ins){
-        ins.readLong();
-        ins.readLong();
-        return "";
+    public static void writeUUID(ByteArrayDataOutput outs, UUID u){
+        outs.writeLong(u.getMostSignificantBits());
+        outs.writeLong(u.getLeastSignificantBits());
+    }
+    
+    public static UUID readUUID(ByteArrayDataInputWrapper ins){ //reads a UUID field
+        return new UUID(ins.readLong(), ins.readLong());
     }
   
 }

@@ -18,9 +18,11 @@ public class BlockChange35 extends Packet{
         int y = (int) (val << 26 >> 52);
         int z = (int) (val << 38 >> 38);
         int bid = readVarInt(buf);
-        c.gui.addText("Block id: " + bid);
-        c.whandle.getWorld().setBlock(x, y, z, bid, 0);
-        c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,bid,0}));
+        int block = (bid & 0xfff0) >> 4;
+        int meta = (bid & 0xf);
+        c.gui.addText("Updating block at: " + x + " " + y + " " + z + " with: " + block + "  " + meta);
+        c.whandle.getWorld().setBlock(x, y, z, block, meta);
+        c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,block,meta}));
     }
 
 }

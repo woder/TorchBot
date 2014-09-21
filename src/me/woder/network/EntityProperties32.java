@@ -20,8 +20,7 @@ public class EntityProperties32 extends Packet{
             int list = Packet.readVarInt(buf);
 
             for (int x = 0; x < list; x++) {
-                buf.readLong(); // -- 128-bit integer wtf..
-                buf.readLong();
+                Packet.readUUID(buf);
                 buf.readDouble();
                 buf.readByte();
             }
