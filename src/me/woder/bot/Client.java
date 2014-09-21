@@ -39,6 +39,7 @@ import com.google.common.io.ByteStreams;
 import me.woder.event.EventHandler;
 import me.woder.gui.TorchGUI;
 import me.woder.irc.IRCBridge;
+import me.woder.network.ByteArrayDataInputWrapper;
 import me.woder.network.NetworkHandler;
 import me.woder.network.Packet;
 import me.woder.plugin.PluginLoader;
@@ -76,7 +77,7 @@ public class Client {
     public Location location;
     World world;
     public boolean chunksloaded;
-    boolean connectedirc;
+    public boolean connectedirc;
     public int entityID;
     public byte dimension;
     public byte difficulty;
@@ -87,7 +88,7 @@ public class Client {
     public long time;
     public long age;
     public float health;
-    public short food;
+    public int food;
     public float foodsat;
     public float exp;
     public short level;
@@ -101,7 +102,8 @@ public class Client {
     public int state = 2;
     public boolean running = true;
     private String password;
-    public int mcversion = 5;
+    public int mcversion = 47;
+    public int threshold = 0;
     public String accesstoken;
     public String clienttoken;
     public String profile;
@@ -115,11 +117,11 @@ public class Client {
     public float yaw;
     public float pitch;
     public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
+    public boolean ircenable = false;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
-    Logger errlog = Logger.getLogger("me.woder.network"); //doesn't seem right - check why error log is being saved to network log
-    
+    Logger errlog = Logger.getLogger("me.woder.network"); //doesn't seem right - check why error log is being saved to network log   
     
     public void main(TorchGUI window){
         this.gui = window;
@@ -131,6 +133,7 @@ public class Client {
                 username = prop.getProperty("username");
                 password = prop.getProperty("password");
                 servername = prop.getProperty("servername");
+                ircenable = Boolean.valueOf(prop.getProperty("irc"));
                 System.out.println(servername);
                 port = Integer.parseInt(prop.getProperty("port"));
          
@@ -144,6 +147,7 @@ public class Client {
                 prop.setProperty("password", "1234");
                 prop.setProperty("servername", "c.mcblocks.net");
                 prop.setProperty("port", "25565");
+                prop.setProperty("irc", "false");
                 prop.store(new FileOutputStream("config.properties"), null);
          
             } catch (IOException ex) {
@@ -200,6 +204,8 @@ public class Client {
         clientSocket = new Socket(servername, port);
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
+        
+        net = new NetworkHandler(this);//this needs to be done first because we need this to send stuff
         //our hand shake
 
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
@@ -209,14 +215,14 @@ public class Client {
         buf.writeShort(port);
         Packet.writeVarInt(buf, 2);
         
-        Packet.sendPacket(buf, out);
+        net.sendPacket(buf, out);
         
         buf = ByteStreams.newDataOutput();
         
         Packet.writeVarInt(buf, 0);
         Packet.writeString(buf, username);
 
-        Packet.sendPacket(buf, out);
+        net.sendPacket(buf, out);
         
         out.flush();                             
          
@@ -224,14 +230,16 @@ public class Client {
         ehandle = new EventHandler(this);
         proc = new MetaDataProcessor(this);
         chandle = new CommandHandler(this);
-        whandle = new WorldHandler(this);
-        net = new NetworkHandler(this);          
+        whandle = new WorldHandler(this);               
         en = new EntityTracker(this);
         world = whandle.getWorld();
         invhandle = new InvHandler(this);
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
-        irc = new IRCBridge(this);
+        /*irc = new IRCBridge(this);
+        if(ircenable){
+           irc.start();
+        }*/
         int tick = 0;
         while(running){
            tick+= 1;
@@ -249,9 +257,6 @@ public class Client {
            }
            if(tick == 5){
                tick = 0;
-           }
-           if(connectedirc){
-             irc.read();//Read text from irc, if there is some
            }
         }
          
@@ -298,17 +303,11 @@ public class Client {
 
      
     public String sendSessionRequest(String user, String session, String serverid){
-        try
-        {
-            URL var4 = new URL("http://session.minecraft.net/game/joinserver.jsp?user=" + urlEncode(user) + "&sessionId=" + urlEncode(session) + "&serverId=" + urlEncode(serverid));
-            BufferedReader var5 = new BufferedReader(new InputStreamReader(var4.openStream()));
-            String var6 = var5.readLine();
-            var5.close();
-            return var6;
-        }
-        catch (IOException var7)
-        {
-            return var7.toString();
+        try {
+            return sendGetRequest("http://session.minecraft.net/game/joinserver.jsp?user=" + urlEncode(user) + "&sessionId=" + urlEncode(session) + "&serverId=" + urlEncode(serverid));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
     }
     
@@ -375,20 +374,34 @@ public class Client {
             return answer;
     }
     
+    public String sendGetRequest(String url){
+        try
+        {
+            URL var4 = new URL(url);
+            BufferedReader var5 = new BufferedReader(new InputStreamReader(var4.openStream()));
+            String var6 = var5.readLine();
+            var5.close();
+            return var6;
+        }
+        catch (IOException var7)
+        {
+            return var7.toString();
+        }
+    }
+    
     private static String urlEncode(String par0Str) throws IOException {
         return URLEncoder.encode(par0Str, "UTF-8");
     }
     
     
-    public void writeByteArray(DataOutputStream par0DataOutputStream, byte[] par1ArrayOfByte) throws IOException
-    {
+    public void writeByteArray(DataOutputStream par0DataOutputStream, byte[] par1ArrayOfByte) throws IOException{
         par0DataOutputStream.writeShort(par1ArrayOfByte.length);
         par0DataOutputStream.write(par1ArrayOfByte);
     }
      
-     public byte[] readBytesFromStream(DataInputStream par0DataInputStream) throws IOException{
-            short var1 = par0DataInputStream.readShort();
-
+    public byte[] readBytesFromStreamV(ByteArrayDataInputWrapper par0DataInputStream) throws IOException{
+            int var1 = Packet.readVarInt(par0DataInputStream);
+            System.out.println("Length is: " + var1);
             if (var1 < 0)
             {
                 throw new IOException("Key was smaller than nothing!  Weird key!");
@@ -399,7 +412,22 @@ public class Client {
                 par0DataInputStream.readFully(var2);
                 return var2;
             }
+    }
+    
+    public byte[] readBytesFromStream(ByteArrayDataInputWrapper par0DataInputStream) throws IOException{
+        int var1 = par0DataInputStream.readShort();
+        System.out.println("Length is: " + var1);
+        if (var1 < 0)
+        {
+            throw new IOException("Key was smaller than nothing!  Weird key!");
         }
+        else
+        {
+            byte[] var2 = new byte[var1];
+            par0DataInputStream.readFully(var2, 0, var1);
+            return var2;
+        }
+    }
      
 
 }

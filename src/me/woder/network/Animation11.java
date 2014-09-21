@@ -10,9 +10,9 @@ public class Animation11 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        readVarInt(c.in);
-        c.in.readByte();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        readVarInt(buf);
+        buf.readByte();
     }
 
 }

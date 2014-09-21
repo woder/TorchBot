@@ -21,24 +21,24 @@ public class MapBulkChunk38 extends Packet{
         this.c = c;
     }
     
-    @Override
-    public void read(Client c, int lens){
+   /* @Override
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         try {
-          len = c.in.readShort();
-          datalength = c.in.readInt();
+          len = buf.readShort();
+          datalength = buf.readInt();
           Chunk[] chunks = new Chunk[len];
-          skylight = c.in.readBoolean();
+          skylight = buf.readBoolean();
           data = new byte[datalength];
-          c.in.readFully(data);
+          buf.readFully(data);
           Inflater inflater = new Inflater();
           inflater.setInput(data);            
           
           //step one, pull all data from the stream
           for(int i = 0; i < len; i++){
-            x = c.in.readInt();
-            z = c.in.readInt();
-            int pmap = (c.in.readShort() & 0xffff);
-            int amap = (c.in.readShort() & 0xffff);
+            x = buf.readInt();
+            z = buf.readInt();
+            int pmap = (buf.readShort() & 0xffff);
+            int amap = (buf.readShort() & 0xffff);
             chunks[i] = new Chunk(c, x, z, pmap, amap, skylight, true);         
             //save all the chunks
           }
@@ -77,6 +77,27 @@ public class MapBulkChunk38 extends Packet{
             e.printStackTrace();
         }
         
+    }*/
+    
+    //Data looks like this now: Block data and Meta (unsigned short), Block light, sky light (if true), biome, (if true)
+    @Override
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+          boolean skylight = buf.readBoolean();
+          len = Packet.readVarInt(buf);
+          Chunk[] chunks = new Chunk[len];
+          
+          for(int i = 0; i < len; i++){
+              x = buf.readInt();
+              z = buf.readInt();
+              int bitmask = (buf.readShort() & 0xffff);
+              chunks[i] = new Chunk(c, x, z, bitmask, skylight, true);
+          }
+          
+          for(int i = 0; i < len; i++){
+              chunks[i].getData(buf);//takes what it needs and leaves the rest
+              //System.out.println("Adding the chunks... ");
+              c.whandle.getWorld().chunklist.add(chunks[i]);//add it to the world :D
+          }
     }
 
 }

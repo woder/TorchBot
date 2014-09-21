@@ -10,13 +10,11 @@ public class Effect40 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readByte();
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readBoolean();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        buf.readInt();
+        buf.readLong();
+        buf.readInt();
+        buf.readBoolean();
     }
 
 }

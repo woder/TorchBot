@@ -39,7 +39,7 @@ public class World {
         buf.writeByte(1);
         buf.writeByte(1);
         buf.writeByte(1);
-        Packet.sendPacket(buf, c.out);
+        c.net.sendPacket(buf, c.out);
        } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -48,9 +48,9 @@ public class World {
     
     public Block getBlock(Location l){
         BigDecimal ChunkX = BigDecimal.valueOf(l.getX());
-        BigDecimal ChunkZ = BigDecimal.valueOf(l.getZ());
-        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
-        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        BigDecimal ChunkZ = BigDecimal.valueOf(l.getZ());   
+        ChunkX = ChunkX.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
         
         Chunk thisChunk = null;
         Block thisblock = null;
@@ -72,8 +72,8 @@ public class World {
     public Block getBlock(int x, int y, int z){
         BigDecimal ChunkX = BigDecimal.valueOf(x);
         BigDecimal ChunkZ = BigDecimal.valueOf(z);
-        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
-        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
+        ChunkX = ChunkX.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
         
         Chunk thisChunk = null;
         Block thisblock = null;
@@ -93,9 +93,8 @@ public class World {
     public void setBlock(int x, int y, int z, int id, int meta){
         BigDecimal ChunkX = BigDecimal.valueOf(x);
         BigDecimal ChunkZ = BigDecimal.valueOf(z);
-        ChunkX = ChunkX.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
-        ChunkZ = ChunkZ.divide(new BigDecimal("16"), BigDecimal.ROUND_FLOOR);
-        
+        ChunkX = ChunkX.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
+        ChunkZ = ChunkZ.divide(new BigDecimal("16"), 0, BigDecimal.ROUND_FLOOR);
         Chunk thisChunk = null;
 
         for(Chunk b : chunklist) {

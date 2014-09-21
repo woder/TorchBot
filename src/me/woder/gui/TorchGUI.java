@@ -292,7 +292,7 @@ public class TorchGUI extends JPanel{
     public void addText(String text){
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = text + "\n";
-        //Legacy code, color method seems to have changed :(
+        //Legacy code, color method seems to have changed :( #notwiththishackdoe
         if(text.contains("§")){
           addSym(text);
         }else{

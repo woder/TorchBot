@@ -13,10 +13,11 @@ public class PluginMessage63 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        channel = getString(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        channel = getString(buf);
         System.out.println("Channel: " + channel);
-        data = c.readBytesFromStream(c.in);
+        data = new byte[buf.getAvailable()];
+        buf.readFully(data);
     }
 
 }

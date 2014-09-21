@@ -10,9 +10,9 @@ public class EntityHeadLook25 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.in.readInt();
-        c.in.readByte();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        Packet.readVarInt(buf);
+        buf.readByte();
     }
 
 }

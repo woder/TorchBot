@@ -10,21 +10,19 @@ public class EntityProperties32 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.in.readInt();
-        int Count = c.in.readInt();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        Packet.readVarInt(buf); //Entity id
+        int count = buf.readInt(); //amount of stuff thats next
 
-        for (int i = 0; i < Count; i++) {
-            System.out.println(getString(c.in));
-            c.in.readDouble();
-            short elements = c.in.readShort(); // -- Yeah fuck this packet in particular.
+        for (int i = 0; i < count; i++) { //loop over it
+            getString(buf); //The key
+            buf.readDouble(); //The value
+            int list = Packet.readVarInt(buf);
 
-            for (int x = 0; x < elements; x++) {
-                //string UUID = mc.nh.wSock.readString();
-                c.in.readLong(); // -- 128-bit integer wtf..
-                c.in.readLong();
-                c.in.readDouble();
-                c.in.readByte();
+            for (int x = 0; x < list; x++) {
+                Packet.readUUID(buf);
+                buf.readDouble();
+                buf.readByte();
             }
         }
 

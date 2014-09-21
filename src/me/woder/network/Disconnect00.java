@@ -10,8 +10,8 @@ public class Disconnect00 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        String reason = getString(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        String reason = getString(buf);
         c.gui.addText("§4Kicked: " + reason);
         c.stopBot();
     }

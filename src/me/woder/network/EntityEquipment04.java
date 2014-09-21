@@ -14,10 +14,10 @@ public class EntityEquipment04 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int eid = c.in.readInt();
-        short slotnum = c.in.readShort();
-        Slot s = new SlotHandler().processSlots(c.in, slotnum);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        int eid = Packet.readVarInt(buf);
+        short slotnum = buf.readShort();
+        Slot s = new SlotHandler().processSlots(buf, slotnum);
         Entity e = c.en.findEntityId(eid);
         if(e != null){
            e.setEquipement(slotnum, s);

@@ -12,14 +12,17 @@ public class BlockChange35 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int x = c.in.readInt();
-        int y = (c.in.readByte() & 0xff);
-        int z = c.in.readInt();
-        int bid = readVarInt(c.in);
-        int meta = (c.in.readByte() & 0xff);
-        c.whandle.getWorld().setBlock(x, y, z, bid, meta);
-        c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,bid,meta}));
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        long val = buf.readLong();
+        int x = (int) (val >> 38);
+        int y = (int) (val << 26 >> 52);
+        int z = (int) (val << 38 >> 38);
+        int bid = readVarInt(buf);
+        int block = (bid & 0xfff0) >> 4;
+        int meta = (bid & 0xf);
+        c.gui.addText("Updating block at: " + x + " " + y + " " + z + " with: " + block + "  " + meta);
+        c.whandle.getWorld().setBlock(x, y, z, block, meta);
+        c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,block,meta}));
     }
 
 }

@@ -1,8 +1,6 @@
 package me.woder.bot;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +53,7 @@ public class ChatHandler {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         Packet.writeVarInt(buf, 1);
         Packet.writeString(buf, message);
-        Packet.sendPacket(buf, c.out);
+        c.net.sendPacket(buf, c.out);
        } catch(IOException e){
            e.printStackTrace();
        }

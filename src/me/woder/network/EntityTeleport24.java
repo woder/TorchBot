@@ -13,13 +13,14 @@ public class EntityTeleport24 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int eid = c.in.readInt();
-        int dx = c.in.readInt();
-        int dy = c.in.readInt();
-        int dz = c.in.readInt();
-        byte yaw = c.in.readByte();
-        byte pitch = c.in.readByte();       
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        int eid = Packet.readVarInt(buf);
+        int dx = buf.readInt();
+        int dy = buf.readInt();
+        int dz = buf.readInt();
+        byte yaw = buf.readByte();
+        byte pitch = buf.readByte();  
+        boolean onground = buf.readBoolean();
         Entity e = c.en.findEntityId(eid);
         //c.chat.sendMessage("Coords: " + dx + ", " + dy + ", " + dz);
         if(e != null){

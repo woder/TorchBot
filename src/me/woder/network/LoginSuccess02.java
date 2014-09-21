@@ -10,9 +10,9 @@ public class LoginSuccess02 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        System.out.println("Alright so its: " + getString(c.in));
-        System.out.println("And er... " + getString(c.in));
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        System.out.println("Alright so its: " + getString(buf));
+        System.out.println("And er... " + getString(buf));
         c.state = 3;
     }
 

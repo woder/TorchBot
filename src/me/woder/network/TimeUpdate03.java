@@ -11,9 +11,9 @@ public class TimeUpdate03 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.age = c.in.readLong();
-        c.time = c.in.readLong();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        c.age = buf.readLong();
+        c.time = buf.readLong();
         c.ehandle.handleEvent(new Event("onTimeUpdate", new Object[] {c.age, c.time}));
     }
 

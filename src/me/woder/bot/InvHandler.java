@@ -23,7 +23,7 @@ public class InvHandler {
          Packet.writeVarInt(buf, 16);
          buf.writeShort(id);
          slot.sendSlot(buf);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         } catch (IOException e) {
          e.printStackTrace();
         }
@@ -34,7 +34,7 @@ public class InvHandler {
         try {
          Packet.writeVarInt(buf, 9);
          buf.writeShort(id);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         } catch (IOException e) {
          e.printStackTrace();
         }

@@ -7,12 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
-import java.util.Timer;
 
+import me.woder.bot.ChatColor;
 import me.woder.bot.Client;
 
 
-public class IRCBridge {
+public class IRCBridge extends Thread{
     public BufferedReader reader;
     public InputStreamReader in;
     public BufferedWriter writer;
@@ -33,11 +33,20 @@ public class IRCBridge {
     public IRCBridge(Client c) {
         this.c = c;
     }
-
-    @SuppressWarnings("unused")
-    public  void connect() throws IOException {
+    public void run(){
         try {
-            System.out.println("Connecting...");
+            connect();
+            while(c.connectedirc){
+                read();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void connect() throws IOException {
+        try {
+            c.gui.addText("Connecting...");
             sock = new Socket(server, port);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
@@ -48,11 +57,11 @@ public class IRCBridge {
             writer.write("JOIN " + channel + "\n");
             //writer.write("NS ID " + pass + "\n");
             writer.flush();
-            System.out.println("Succesfully connected to IRC Server: " + server + ".\n");
-            Timer timer = new Timer();
-
+            c.gui.addText(ChatColor.AQUA + "Succesfully connected to IRC Server: " + server + ".\n");
+            c.connectedirc = true;
         } catch (IOException ioe) {
-            System.out.println("[IOExc]: Error connecting to the server.");
+            c.connectedirc = false;
+            c.gui.addText("[IOExc]: Error connecting to the server.");
         }
     }
     
@@ -76,13 +85,13 @@ public class IRCBridge {
             if (line.split(" ").length >= 2 && line.split(" ")[0].equalsIgnoreCase("PING")) {
                 writer.write("PONG " + line.split(" ")[1] + "\n");
                 writer.flush();
-                System.out.println("[PING? PONG!]");
+                c.gui.addText("[PING? PONG!]");
             }
             else if (command2.equals("PRIVMSG") && line.split(" ")[2].startsWith("#")){
                 if(line.split(" ")[2].equalsIgnoreCase(channel)){
                     String messages2 = line.substring(line.indexOf(" :") + 2);
                     String text = "*irc " + sourceNick + ": " + messages2;
-                    System.out.println("Printed ingame: " + text);
+                    c.gui.addText("Printed ingame: " + text);
                 }
             }
             else if (command2.equals("PRIVMSG")){
@@ -90,7 +99,16 @@ public class IRCBridge {
                 writer.flush();
             }        
       } catch (IOException ioe) {
-            System.out.println("[IOExc]: Error connecting to the server.");
+            c.gui.addText(ChatColor.RED + "[IOExc]: Error connecting to the server.");
       }
+    }
+    
+    public void sendMessage(String dst, String msg){
+        try {
+            writer.write("PRIVMSG " + dst + " " + msg + "\n");
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -10,13 +10,13 @@ public class SoundEffect41 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        System.out.println("Playing sound: " + getString(c.in));
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readInt();
-        c.in.readFloat();
-        c.in.readByte();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        System.out.println("Playing sound: " + getString(buf));
+        buf.readInt();
+        buf.readInt();
+        buf.readInt();
+        buf.readFloat();
+        buf.readByte();
     }
 
 }

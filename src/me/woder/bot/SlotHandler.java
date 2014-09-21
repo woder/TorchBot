@@ -1,7 +1,8 @@
 package me.woder.bot;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+
+import me.woder.network.ByteArrayDataInputWrapper;
 
 public class SlotHandler {
     byte count;
@@ -10,18 +11,18 @@ public class SlotHandler {
     public SlotHandler(){
     }
     
-    public Slot processSlots(DataInputStream in, int slotnum) throws IOException{
+    public Slot processSlots(ByteArrayDataInputWrapper in, int slotnum) throws IOException{
          short bid = in.readShort();
          if(bid != -1){
              count = in.readByte();
              System.out.println("There is: " + count + " of item " + bid);
              damage = in.readShort();
-             short next = in.readShort();
+             byte next = in.readByte();
              System.out.println("Next is: " + next);
-              if(next != -1){
+             /*if(next != -1){
                   byte[] var2 = new byte[next];
-                  in.readFully(var2);
-              }
+                  in.readFully(var2, 0, next);
+             }*/
          }
          return new Slot(slotnum, bid, count, damage, (short)0);
      }

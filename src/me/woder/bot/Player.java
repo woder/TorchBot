@@ -1,5 +1,7 @@
 package me.woder.bot;
 
+import java.util.UUID;
+
 import me.woder.gui.RComponent;
 import me.woder.world.Location;
 import me.woder.world.World;
@@ -7,7 +9,8 @@ import me.woder.world.World;
 public class Player extends Entity{
     Client c;
     int eid;
-    String name, uuid;
+    String name;
+    UUID uuid;
     Slot[] equipement;
     double x, y, z;
     public int sx, sy, sz;
@@ -15,12 +18,12 @@ public class Player extends Entity{
     RComponent dot;
     double rx, ry, rz;
 
-    public Player(Client c, int eid, String name, String uuid, int x, int y, int z, byte yaw, byte pitch, short current) {        
+    public Player(Client c, int eid, String name, UUID uuid2, int x, int y, int z, byte yaw, byte pitch, short current) {        
         super(c);
         this.c = c;
         this.eid = eid;
         this.name = name;
-        this.uuid = uuid;
+        this.uuid = uuid2;
         this.sx = x;
         this.sy = y;
         this.sz = z;

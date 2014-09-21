@@ -10,9 +10,10 @@ public class ChatMessage02 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        String messages = getString(c.in);
-        c.chat.formatMessage(messages);       
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        String messages = getString(buf);
+        c.chat.formatMessage(messages);   
+        buf.readByte();
     }
 
 }

@@ -10,10 +10,12 @@ public class EntityLook22 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.in.readInt();
-        c.in.readByte();
-        c.in.readByte();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        Packet.readVarInt(buf); //entity id
+        buf.readByte();
+        buf.readByte();
+        buf.readBoolean();
+        //buf.readByte();
     }
 
 }

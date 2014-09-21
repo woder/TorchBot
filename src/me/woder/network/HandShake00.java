@@ -10,11 +10,11 @@ public class HandShake00 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.protocol = readVarInt(c.in);
-        getString(c.in);
-        c.in.readShort();
-        c.state = readVarInt(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        c.protocol = readVarInt(buf);
+        getString(buf);
+        buf.readShort();
+        c.state = readVarInt(buf);
     }
 
 }

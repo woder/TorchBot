@@ -1,6 +1,7 @@
 package me.woder.network;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import me.woder.bot.Client;
 import me.woder.event.Event;
@@ -11,24 +12,18 @@ public class SpawnPlayer12 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int eid = readVarInt(c.in);
-        String uuid = getString(c.in);
-        String playern = getString(c.in);
-        int datanumber = readVarInt(c.in);
-        for(int i = 0; i < datanumber; i++){
-            getString(c.in);
-            getString(c.in);
-            getString(c.in);
-        }
-        int x = c.in.readInt();
-        int y = c.in.readInt();
-        int z = c.in.readInt();
-        byte yaw = c.in.readByte();
-        byte pitch = c.in.readByte();
-        short currentitem = c.in.readShort();
-        c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid);
-        c.proc.readWatchableObjects(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        int eid = readVarInt(buf);
+        UUID uuid = Packet.readUUID(buf);
+        String playern = c.en.getNameUUID(uuid);
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        byte yaw = buf.readByte();
+        byte pitch = buf.readByte();
+        short currentitem = buf.readShort();
+        c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid); //TODO fix the playername issue
+        c.proc.readWatchableObjects(buf);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, yaw, pitch, currentitem}));
     }
 

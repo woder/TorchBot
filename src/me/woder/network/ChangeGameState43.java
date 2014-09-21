@@ -10,9 +10,9 @@ public class ChangeGameState43 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.in.readByte();
-        c.in.readFloat();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        buf.readByte();
+        buf.readFloat();
     }
 
 }

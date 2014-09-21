@@ -14,29 +14,25 @@ public class TeamPacket62 extends Packet{
 
     List<String> players = new ArrayList<String>();
     @Override
-    public void read(Client c, int len){
-      String teamname = getString(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+      String teamname = getString(buf);
       System.out.println("TEAM NAME: " + teamname);
-      try {
-        byte mode = c.in.readByte();
+        byte mode = buf.readByte();
         System.out.println("Mode: " + mode);
         if(mode == 0 || mode == 2){
-            String teamdis = getString(c.in);           
-            String prefix = getString(c.in);
-            String suffix = getString(c.in);
-            byte friendlyfire = c.in.readByte();
+            String teamdis = getString(buf);           
+            String prefix = getString(buf);
+            String suffix = getString(buf);
+            byte friendlyfire = buf.readByte();
             System.out.println("Team,pre,s,f: " + teamdis + "," + prefix + "," + suffix + "," + friendlyfire);
         }
         
-        if(mode == 0 || mode == 3 || mode == 4){
-            short number = c.in.readShort();
+        /*if(mode == 0 || mode == 3 || mode == 4){
+            short number = buf.readShort();
             System.out.println("LENGHT: " + number);
             for(int i = 0; i < number; i++){
-                players.add(getString(c.in));
+                players.add(getString(buf));
             }
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }      
+        }*/
     }
 }

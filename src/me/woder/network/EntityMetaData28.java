@@ -10,9 +10,9 @@ public class EntityMetaData28 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-       c.in.readInt();
-       c.proc.readWatchableObjects(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+       Packet.readVarInt(buf); //Entity id
+       c.proc.readWatchableObjects(buf);
     }
 
 }

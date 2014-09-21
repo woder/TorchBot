@@ -13,10 +13,13 @@ public class Statistics55 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        int count = readVarInt(c.in);
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        int count = readVarInt(buf);
+        System.out.println("Count: " + count);
         for(int i = 0; i < count; i++){
-            stats.put(getString(c.in), readVarInt(c.in));
+            String s = getString(buf);
+            System.out.println("S: " + s);
+            stats.put(s, readVarInt(buf));
         }
     }
 

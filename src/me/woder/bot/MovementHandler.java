@@ -69,7 +69,7 @@ public class MovementHandler {
              if(itr.hasNext()){
               Tile t = itr.next();
               Location loc = t.getLocation(start);
-              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY()+1, loc.getBlockZ()));             
+              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));             
              }else{
               this.cancel();
              }
@@ -135,13 +135,12 @@ public class MovementHandler {
         try{
          Packet.writeVarInt(buf, 6);
          buf.writeDouble(x);
-         buf.writeDouble(y-1.620);
          buf.writeDouble(y);
          buf.writeDouble(z);
          buf.writeFloat(c.yaw);
          buf.writeFloat(c.pitch);
          buf.writeBoolean(c.onground);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }
@@ -152,7 +151,7 @@ public class MovementHandler {
         try{
          Packet.writeVarInt(buf, 3);
          buf.writeBoolean(c.onground);
-         Packet.sendPacket(buf, c.out);
+         c.net.sendPacket(buf, c.out);
         }catch(IOException e){
           e.printStackTrace();
         }

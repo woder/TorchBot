@@ -14,12 +14,13 @@ public class SetSlot47 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        byte window = c.in.readByte();
-        short slo = c.in.readShort();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        byte window = buf.readByte();
+        short slo = buf.readShort();
         log(Level.FINEST,"Slot id is: " + slo);
+        System.out.println("Slot id is: " + slo);
         if(slo != -1){
-            Slot e = new SlotHandler().processSlots(c.in, slo);
+            Slot e = new SlotHandler().processSlots(buf, slo);
             c.invhandle.setSlot(e);
             c.ehandle.handleEvent(new Event("onSlotUpdate", new Object[] {window,slo,e.getId(),e.getCount(),e.getDamage()}));
         }

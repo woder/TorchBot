@@ -12,10 +12,12 @@ public class SpawnPos05 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        x = c.in.readInt();
-        y = c.in.readInt();
-        x = c.in.readInt();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        long val = buf.readLong();
+        x = (int) (val >> 38);
+        y = (int) (val << 26 >> 52);
+        z = (int) (val << 38 >> 38);
+        c.gui.addText("Loc: " + x + " " + y + " " + z);
     }
 
 }

@@ -11,10 +11,10 @@ public class PlayerAbilites57 extends Packet{
     }
     
     @Override
-    public void read(Client c, int len) throws IOException{
-        c.flags = c.in.readByte();
-        c.flyspeed = c.in.readFloat();
-        c.walkspeed = c.in.readFloat();
+    public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
+        c.flags = buf.readByte();
+        c.flyspeed = buf.readFloat();
+        c.walkspeed = buf.readFloat();
         c.ehandle.handleEvent(new Event("onPlayerAbilities", new Object[] {c.flags,c.flyspeed, c.walkspeed}));
     }
 
