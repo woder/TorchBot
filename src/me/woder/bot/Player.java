@@ -35,10 +35,10 @@ public class Player extends Entity{
         this.rx = (x - c.location.getX()) + 131;
         this.ry = y - c.location.getY();
         this.rz = (z - c.location.getZ()) + 116;
-        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Player " + name + "<br>Location: " + this.x + ", " + this.y + ", " + this.z +  "</html>", 1, c.gui.pradar);
+        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Player " + name + "<br>Location: " + this.x + ", " + this.y + ", " + this.z +  "</html>", 1, c.gui.pradar, name);
         c.gui.pradar.playerDot(dot);
         this.equipement = new Slot[5];
-        this.equipement[0] = new Slot(0, current, (byte)1, (short)0, (short)0);
+        this.equipement[0] = new Slot(0, current, (byte)1, (short)0, (byte)0);
     }
     
     @Override
@@ -84,9 +84,9 @@ public class Player extends Entity{
     
     @Override
     public void setRadarPos(Location l){
-        rx = (l.getX() - c.location.getX()) + 131;
+        rx = (l.getX() - c.location.getX()) + 126;
         ry = c.location.getY() - l.getY();
-        rz = (l.getZ() - c.location.getZ()) + 116;
+        rz = (l.getZ() - c.location.getZ()) + 111;
         //c.chat.sendMessage("relativepos: " + rx + "," + rz);
     }
     
@@ -97,7 +97,7 @@ public class Player extends Entity{
     
     @Override
     public void tickRadar() {
-        dot.moveDot((int)rx, (int)rz);    
+        dot.moveDot((int)rx, (int)rz, (int)x, (int)y, (int)z);    
         dot.text = "<html>Player " + name + "<br>Location: " + this.x + ", " + this.y + ", " + this.z +  "</html>";
         dot.repaint();
     }
@@ -115,6 +115,14 @@ public class Player extends Entity{
     @Override
     public Location getLocation(){
         return new Location(c.whandle.getWorld(), x, y, z);
+    }
+    
+    @Override
+    public boolean isHostile(){
+        if(c.friends.contains(name)){
+            return false;
+        }
+        return true;
     }
     
     public Location getLocationUnder(){

@@ -157,7 +157,7 @@ public class Packet {
         return result;
     }
     
-    public static void writeUUID(ByteArrayDataOutput outs, UUID u){
+    public static void writeUUID(ByteArrayDataOutput outs, UUID u){ //writes a UUID field
         outs.writeLong(u.getMostSignificantBits());
         outs.writeLong(u.getLeastSignificantBits());
     }

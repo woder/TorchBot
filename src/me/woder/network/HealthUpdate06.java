@@ -19,6 +19,9 @@ public class HealthUpdate06 extends Packet{
         c.food = Packet.readVarInt(buf);
         c.foodsat = buf.readFloat();
         c.ehandle.handleEvent(new Event("onHealthUpdate", new Object[] {c.health,c.food,c.foodsat}));
+        if(c.health < 1){
+            c.en.delAll();
+        }
     }  
 
 }

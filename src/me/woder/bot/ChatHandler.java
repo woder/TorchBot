@@ -62,7 +62,6 @@ public class ChatHandler {
     public String formatMessage(String message){
         String mess = "Something went wrong";
         String user = "Unknown";
-        System.out.println(message);
         try{
          JSON jsonr = JSONSerializer.toJSON(message);     
          if(!jsonr.isArray()){
@@ -116,7 +115,6 @@ public class ChatHandler {
             JSONObject ob = arr.getJSONObject(i);
             String key = ob.getString("color");
             String theText = ob.getString("text");
-            System.out.println("color: " + key + " text: " + theText);
             formated = formated + "§" + attributes.get(key) + theText;
            }else{
             formated = formated + "§0" + arr.getString(i);  
@@ -130,7 +128,6 @@ public class ChatHandler {
         }
         String username;
         if(delimiter != -1 && space != -1 && delimiter-space > -1){
-         System.out.println("index: " + space + " in2: " + delimiter);
          username = formated.substring(space, delimiter);
          username = ChatColor.stripColor(username.replace(":", ""));
         }else{
@@ -138,15 +135,12 @@ public class ChatHandler {
         }
         if(formated.contains(c.prefix)){
             String commande = formated.substring(formated.indexOf(c.prefix));
-            System.out.println(commande);
             int d = commande.length();
             if(commande.indexOf(" ") != -1){
               d = commande.indexOf(" ");
             }
             String command = commande.substring(0, d);
-            System.out.println(command);
             commande.trim();
-            c.gui.addText("Ya: " + commande + " o: " + commande.substring(d));
             c.chandle.processCommand(command.replace(c.prefix, ""), commande.substring(d).split(" "), username);
         }
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));

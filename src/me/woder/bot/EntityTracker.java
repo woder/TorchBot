@@ -1,7 +1,6 @@
 package me.woder.bot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 import com.google.common.collect.BiMap;
@@ -34,7 +33,6 @@ public class EntityTracker {
     public void addPlayer(int eid, World world, int x, int y, int z, byte pitch, byte yaw, short current, String name, UUID uuid){
        if(findEntityId(eid) == null){
         entities.add(new Player(c, eid, name, uuid, x, y, z, yaw, pitch, current));
-        //c.chat.sendMessage("Adding player's entity id: " + eid + " and... " + entities.size());
        }
     }
     
@@ -43,6 +41,10 @@ public class EntityTracker {
        if(e != null){
            entities.remove(e);
        }
+    }
+    
+    public void delAll() {      
+        entities.clear();
     }
     
     public void tickRadar(){
@@ -57,6 +59,7 @@ public class EntityTracker {
         for(Entity s : entities){
            if(s.getEntity() instanceof Player){
             Player a = (Player)s;
+            c.chat.sendMessage("Name is: " + a.getName());
             if(a.getName().equalsIgnoreCase(name)){
                 p = a;
                 break;
@@ -109,6 +112,6 @@ public class EntityTracker {
             }
         }
         return u;
-    }
+    }  
 
 }

@@ -40,11 +40,15 @@ public class Entity {
         this.rx = x - c.location.getX();
         this.ry = y - c.location.getY();
         this.rz = z - c.location.getZ();
-        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar);
+        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", getColour(), c.gui.pradar, "Entity");
         c.gui.pradar.playerDot(dot);
         this.equipement = new Slot[5];
     }
     
+    private int getColour() {
+        return MobTypes.findByType(type).isHostile()?2:3;
+    }
+
     public int getEntityId(){
         return entityid;
     }
@@ -58,7 +62,6 @@ public class Entity {
     }
     
     public void setLocation(Location l){
-        c.chat.sendMessage("Location was: " + this.x + " location was set to: " + l.getX());
         this.x = l.getX();
         this.y = l.getY();
         this.z = l.getZ();
@@ -73,7 +76,6 @@ public class Entity {
     }
     
     public void setLocationLookRelative(Location l, byte yaw, byte pitch){
-        c.chat.sendMessage("Location was: " + this.x + " location is being changed by: " + l.getX());
         this.x = x + l.getX();
         this.y = y + l.getY();
         this.z = z + l.getZ();
@@ -106,8 +108,16 @@ public class Entity {
     }
 
     public void tickRadar() {
-        dot.moveDot((int)rx, (int)rz);    
+        dot.moveDot((int)rx, (int)rz, (int)x, (int)y, (int)z);    
         dot.repaint();
+    }
+
+    public boolean isHostile() {
+        MobTypes m = MobTypes.findByType(type);
+        if(m != null){
+            return m.isHostile();
+        }
+        return true;
     }
 
 }

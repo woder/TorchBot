@@ -1,8 +1,6 @@
 package me.woder.network;
 
 import java.io.IOException;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 
 import me.woder.bot.Client;
 import me.woder.world.Chunk;

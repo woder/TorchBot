@@ -7,9 +7,9 @@ public class Slot {
     private short id;
     private byte count;
     private short damage;
-    short nbtlen;
+    byte nbtlen;
     
-    public Slot(int slotnum, short id, byte count, short damage, short nbtlen){
+    public Slot(int slotnum, short id, byte count, short damage, byte nbtlen){
         this.slotnum = slotnum;
         this.setId(id);
         this.setCount(count);
@@ -21,7 +21,7 @@ public class Slot {
         buf.writeShort(getId());
         buf.writeByte(getCount());
         buf.writeShort(getDamage());
-        buf.writeShort(nbtlen); //this does NOT support actual nbt at this current time       
+        buf.writeByte(nbtlen); //this does NOT support actual nbt at this current time       
     }
 
     public void setSlot(Slot slot) {

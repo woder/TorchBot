@@ -20,7 +20,6 @@ public class BlockChange35 extends Packet{
         int bid = readVarInt(buf);
         int block = (bid & 0xfff0) >> 4;
         int meta = (bid & 0xf);
-        c.gui.addText("Updating block at: " + x + " " + y + " " + z + " with: " + block + "  " + meta);
         c.whandle.getWorld().setBlock(x, y, z, block, meta);
         c.ehandle.handleEvent(new Event("onBlockChange", new Object[] {x,y,z,block,meta}));
     }

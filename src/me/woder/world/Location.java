@@ -21,6 +21,15 @@ public class Location {
         this.z = z;
     }
     
+    public boolean inRange(Location loc, double dist){
+        double dx = x - loc.getX();
+        double dy = y - loc.getY();
+        double dz = z - loc.getZ();
+        double result = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if(result<dist)return true; 
+        else return false;
+    }
+    
     public void setX(double x){
         this.x = x;
     }

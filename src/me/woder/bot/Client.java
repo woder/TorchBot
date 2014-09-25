@@ -68,6 +68,7 @@ public class Client {
     public SecretKey sharedkey;
     public Authenticator auth;
     public ServerPinger servping;
+    public ForceField force;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -117,6 +118,7 @@ public class Client {
     public float yaw;
     public float pitch;
     public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
+    public List<String> friends = new ArrayList<String>();
     public boolean ircenable = false;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
@@ -180,6 +182,7 @@ public class Client {
         servping.pingServer(servername, port);      
         ploader = new PluginLoader(this);
         ploader.loadPlugins();
+        gui.pradar.dbot.updateName(username);
     }
     
     public void startBot(String server, String port){
@@ -236,6 +239,7 @@ public class Client {
         invhandle = new InvHandler(this);
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
+        force = new ForceField(this);
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
@@ -246,7 +250,9 @@ public class Client {
            //mainloop
            net.readData();//Read data
            gui.tick();
+           gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
            en.tickRadar();
+           force.tick();
            if(chunksloaded){
              if(tick == 5){
                 tick = 0;
@@ -272,6 +278,17 @@ public class Client {
             in.close();
             clientSocket.close();
             this.state = 2;
+            threshold = 0;
+            chat = null;
+            ehandle = null;
+            proc = null;
+            chandle = null;
+            whandle = null;               
+            en = null;
+            world = null;
+            invhandle = null;
+            location = null;
+            move = null;
         } catch (IOException e) {
             gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());

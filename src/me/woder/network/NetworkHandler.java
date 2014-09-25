@@ -16,7 +16,6 @@ import me.woder.bot.Client;
 public class NetworkHandler {
     private Client c;
     private Logger log;
-    byte[] trash = new byte[1000000];
     HashMap<Integer, Packet> status = new HashMap<Integer, Packet>();
     HashMap<Integer, Packet> login = new HashMap<Integer, Packet>();
     HashMap<Integer, Packet> play = new HashMap<Integer, Packet>();
@@ -81,7 +80,7 @@ public class NetworkHandler {
         int plen = plen1-dlens[1];
         if(dlen == 0){ //this packet isn't compressed
            readUncompressed(plen);
-        }else{ //this packet is compressed ***BROKEN***
+        }else{ //this packet is compressed
            readCompressed(plen, dlen);
         }
       }else{ //We aren't currently compressing anything
@@ -134,21 +133,21 @@ public class NetworkHandler {
     }
     
     public void forwardPacket(int len, int type, ByteArrayDataInputWrapper buf) throws IOException{
-        log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
-        System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
+        //log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
+        //System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){
             Packet p = status.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);
             }
         }else if(c.state == 2){
             Packet p = login.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);         
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);         
             }
         }else{

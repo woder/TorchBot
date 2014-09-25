@@ -35,7 +35,7 @@ public class World {
         buf.writeByte(y);
         buf.writeInt(z);
         buf.writeByte(0);
-        new Slot(0,(short)1,(byte)1,(short)0,(short)0).sendSlot(buf);
+        new Slot(0,(short)1,(byte)1,(short)0,(byte)0).sendSlot(buf);
         buf.writeByte(1);
         buf.writeByte(1);
         buf.writeByte(1);
