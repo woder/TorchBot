@@ -22,7 +22,6 @@ public class Chunk {
     private int pbitmap;
     private int x;
     private int z;
-    private byte[] blocks;
     private int[] blockse;
     public List<Part> parts;
     public int blocknum;
@@ -74,12 +73,12 @@ public class Chunk {
                 int[] temp = new int[4096];
                 System.arraycopy(blockse, offset, temp, 0, 4096);
                 Part mySection = parts.get(current);
-                System.out.println("Part is: " + mySection.y);
                 mySection.blocks = temp;
                 offset += 4096;
                 current += 1;
             }
        }
+       blockse = null;
         
      }
     
@@ -110,7 +109,6 @@ public class Chunk {
         //the size of this chunk
         
         c.chunksloaded = true;
-        blocks = new byte[blocknum];
         byte[] temp;
         blockse = readUnsignedShorts(buf);
         System.out.println("Chunk size is: " + chunksize + " block num is: " + blocknum);

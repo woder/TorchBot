@@ -16,9 +16,10 @@ public class RComponent extends JComponent {
     private int x, y, w, h, type;
     private PRadar img;
     public String text;
+    public String name;
     Rectangle rect;
 
-    public RComponent(int x, int y, int w, int h, final String text, int type, PRadar img) {
+    public RComponent(int x, int y, int w, int h, final String text, int type, PRadar img, String name) {
        this.x = x;
        this.y = y;
        this.w = w;
@@ -26,17 +27,27 @@ public class RComponent extends JComponent {
        this.img = img;
        this.type = type;
        this.text = text;
+       this.name = name;
        rect = new Rectangle(x, y, w, h);
        
     }
     
-    public void moveDot(int x, int y){
+    public void moveDot(int x, int y, int ox, int oy, int oz){
         this.x = x;
         this.y = y;
+        updateText(name, ox, oy, oz);
         rect = new Rectangle(x, y, w, h);
         repaint();
     }
     
+    public void updateText(String name2, int ox, int oy, int oz) {
+        this.text = "<html>Player " + name2 + "<br>Location: " + ox + ", " + oy + ", " + oz + "</html>";
+    }
+    
+    public void updateName(String n){
+        this.name = n;
+    }
+
     public boolean isInside(Point e){
         return rect.contains(e.x, e.y);
     }

@@ -180,6 +180,7 @@ public class Client {
         servping.pingServer(servername, port);      
         ploader = new PluginLoader(this);
         ploader.loadPlugins();
+        gui.pradar.dbot.updateName(username);
     }
     
     public void startBot(String server, String port){
@@ -246,6 +247,7 @@ public class Client {
            //mainloop
            net.readData();//Read data
            gui.tick();
+           gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
            en.tickRadar();
            if(chunksloaded){
              if(tick == 5){
@@ -272,6 +274,17 @@ public class Client {
             in.close();
             clientSocket.close();
             this.state = 2;
+            threshold = 0;
+            chat = null;
+            ehandle = null;
+            proc = null;
+            chandle = null;
+            whandle = null;               
+            en = null;
+            world = null;
+            invhandle = null;
+            location = null;
+            move = null;
         } catch (IOException e) {
             gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());

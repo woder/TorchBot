@@ -40,7 +40,7 @@ public class Entity {
         this.rx = x - c.location.getX();
         this.ry = y - c.location.getY();
         this.rz = z - c.location.getZ();
-        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar);
+        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar, "Entity");
         c.gui.pradar.playerDot(dot);
         this.equipement = new Slot[5];
     }
@@ -106,7 +106,7 @@ public class Entity {
     }
 
     public void tickRadar() {
-        dot.moveDot((int)rx, (int)rz);    
+        dot.moveDot((int)rx, (int)rz, (int)x, (int)y, (int)z);    
         dot.repaint();
     }
 

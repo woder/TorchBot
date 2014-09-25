@@ -17,7 +17,7 @@ public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
     public BufferedImage background;
     public List<RComponent> radardots = new ArrayList<RComponent>();
-    public RComponent dbot = new RComponent(131,116,10,10,"<html>Player Unreal34<br>Location: 40, 10, 20</html>", 0, this);
+    public RComponent dbot = new RComponent(126,111,10,10,"<html></html>", 0, this, "");
 
     public PRadar() {
         background = new BufferedImage(266, 233, BufferedImage.TYPE_INT_ARGB);          
@@ -60,7 +60,6 @@ public class PRadar extends JPanel {
     
     public void moveDots(int x, int y){
         for(RComponent r : radardots){
-            r.moveDot(x, y);
             r.repaint();
         }
     }
@@ -83,8 +82,9 @@ public class PRadar extends JPanel {
         g2.drawLine(background.getWidth()-1, background.getHeight()-1, 0, background.getHeight()-1);
         g2.drawLine(0, background.getHeight(), 0, 0);
         int x = (getWidth() - background.getWidth()) / 2;
-        int y = (getHeight() - background.getHeight()) / 2;
+        int y = (getHeight() - background.getHeight()) / 2;       
         g2d.drawImage(background, x, y, this);
+        g2.dispose();
         g2d.dispose();
         background = new BufferedImage(262, 233, BufferedImage.TYPE_INT_ARGB);
     }

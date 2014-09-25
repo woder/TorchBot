@@ -47,7 +47,7 @@ public class CommandHandler {
                Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
                c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
                Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
-               c.move.runPathing(l, loc, 50);
+               c.move.runPathing(l, loc, 100);
              }else{
                c.chat.sendMessage(username + ": couldn't find a player by that name");
              }
@@ -55,8 +55,16 @@ public class CommandHandler {
                c.chat.sendMessage("Wrong amount of arguments provided!");
             }
         }else if(command.equalsIgnoreCase("holding")){
-            Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
-            c.chat.sendMessage("Holding: " + p.getHeldItem());
+          if(args.length > 1){
+            if(!ChatColor.stripColor(args[1]).equalsIgnoreCase(c.username)){
+               Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
+               c.chat.sendMessage("Holding: " + p.getHeldItem());
+            }else{
+               c.chat.sendMessage("Can't use this command on self!");
+            }
+          }else{
+              c.chat.sendMessage("Wrong amount of arguments provided!");
+          }
         }else if(command.equalsIgnoreCase("reload")){
             c.ploader.reloadPlugins();
         }else if(command.equalsIgnoreCase("export")){
@@ -68,7 +76,11 @@ public class CommandHandler {
                 c.chat.sendMessage("Slot " + s.slotnum + " cotains: " + s.getCount() + " of item " + s.getId());
             }
         }else if(command.equalsIgnoreCase("inv")){
-            c.invhandle.creativeSetSlot(Short.parseShort(args[1]), new Slot(Short.parseShort(args[1]), Short.parseShort(args[2]),(byte)1,(short)0,(short)-1));
+           if(args.length > 2){
+              c.invhandle.creativeSetSlot(Short.parseShort(args[1]), new Slot(Short.parseShort(args[1]), Short.parseShort(args[2]),(byte)1,(short)0,(byte)0));
+           }else{
+              c.chat.sendMessage("Wrong amount of arguments provided!"); 
+           }
         }else if(command.equalsIgnoreCase("select")){
             c.invhandle.selectSlot(Short.parseShort(args[1]));
         }else if(command.equalsIgnoreCase("place")){

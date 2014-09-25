@@ -24,7 +24,7 @@ public class SlotHandler {
                   in.readFully(var2, 0, next);
              }*/
          }
-         return new Slot(slotnum, bid, count, damage, (short)0);
+         return new Slot(slotnum, bid, count, damage, (byte)0);
      }
 
 }

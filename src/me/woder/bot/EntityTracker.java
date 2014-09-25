@@ -1,7 +1,6 @@
 package me.woder.bot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 import com.google.common.collect.BiMap;
