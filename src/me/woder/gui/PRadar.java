@@ -7,10 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
@@ -20,9 +19,7 @@ import me.woder.bot.Client;
 public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
     public BufferedImage background;
-    public List<RComponent> radardots = new ArrayList<RComponent>();
-    private List<RComponent> temp;
-    private Collection<RComponent> unmod;
+    public CopyOnWriteArrayList<RComponent> radardots = new CopyOnWriteArrayList<RComponent>();
     public RComponent dbot = new RComponent(126,111,10,10,"<html></html>", 0, this, "", 3);
     public Client c;
     public double viewPort = 10;
@@ -86,14 +83,16 @@ public class PRadar extends JPanel {
         g2.drawLine(0, background.getHeight(), 0, 0);
         int x = (getWidth() - background.getWidth()) / 2;
         int y = (getHeight() - background.getHeight()) / 2;    
-        temp = radardots; //Avoid concurrent modification
-        Collections.sort(temp);
-        unmod = Collections.unmodifiableCollection(temp);
-        for (RComponent r : unmod) {//TODO fix this, keeps throwing java.util.ConcurrentModificationException
+        Object[] array = radardots.toArray();
+        Arrays.sort(array);
+        for (Object d : array) {//TODO fix this, keeps throwing java.util.ConcurrentModificationException
+         if(d instanceof RComponent){
+          RComponent r = (RComponent) d;
           if(r.shouldPaint()){
             g2.setColor(r.color);
             g2.fillRect(r.x, r.y, r.w, r.h);
           }
+         }
         }
         g2d.drawImage(background, x, y, this);
         g2.dispose();

@@ -10,7 +10,7 @@ public class RComponent implements Comparable<RComponent>{
     int w;
     int h;
     int importance;
-    private int oy;
+    private int oy = 0;
     private PRadar img;
     public boolean destroyed;
     public String text;
@@ -62,7 +62,7 @@ public class RComponent implements Comparable<RComponent>{
         boolean should = false;
         if(name.equalsIgnoreCase(img.c.username))return true;
         if(destroyed)return false;
-        if(img.c.chunksloaded){
+        if(img.c.chunksloaded && img.c.location != null){
            int fy = oy - img.c.location.getBlockY();
            if(img.viewPort > Math.abs(fy)){
                should = true;
