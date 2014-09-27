@@ -1,43 +1,44 @@
 package me.woder.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import javax.swing.JComponent;
-
-public class RComponent extends JComponent {
-    private static final long serialVersionUID = 1L;
-    private static final int PREF_W = 10;
-    private static final int PREF_H = PREF_W;
-    private int x, y, w, h, type;
+public class RComponent implements Comparable<RComponent>{
+    int x;
+    int y;
+    int w;
+    int h;
+    int importance;
+    private int oy;
     private PRadar img;
+    public boolean destroyed;
     public String text;
     public String name;
+    Color color;
     Rectangle rect;
+    Color[] colors = {Color.ORANGE, Color.PINK, Color.RED, Color.BLUE};
 
-    public RComponent(int x, int y, int w, int h, final String text, int type, PRadar img, String name) {
+    public RComponent(int x, int y, int w, int h, final String text, int type, PRadar img, String name, int importance) {
        this.x = x;
        this.y = y;
        this.w = w;
        this.h = h;
        this.img = img;
-       this.type = type;
+       this.color = colors[type];
        this.text = text;
        this.name = name;
        rect = new Rectangle(x, y, w, h);
-       
+       this.importance = importance;
+       destroyed = false;
     }
     
     public void moveDot(int x, int y, int ox, int oy, int oz){
         this.x = x;
         this.y = y;
+        this.oy = oy;
         updateText(name, ox, oy, oz);
         rect = new Rectangle(x, y, w, h);
-        repaint();
     }
     
     public void updateText(String name2, int ox, int oy, int oz) {
@@ -51,28 +52,30 @@ public class RComponent extends JComponent {
     public boolean isInside(Point e){
         return rect.contains(e.x, e.y);
     }
-
-    @Override
-    public Dimension getPreferredSize() {
-       return new Dimension(PREF_W, PREF_H);
+    
+    public void destroy(){
+        this.destroyed = true;
+        img.radardots.remove(this);
+    }
+    
+    public boolean shouldPaint(){
+        boolean should = false;
+        if(name.equalsIgnoreCase(img.c.username))return true;
+        if(destroyed)return false;
+        if(img.c.chunksloaded){
+           int fy = oy - img.c.location.getBlockY();
+           if(img.viewPort > Math.abs(fy)){
+               should = true;
+           }
+        }else{
+           should = true;
+        }
+        return should;
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-       super.paintComponent(g);
-       Graphics2D g2 = img.background.createGraphics();
-       if(type == 0){
-        g2.setColor(Color.ORANGE);
-       }else if(type == 1){
-        g2.setColor(Color.PINK);
-       }else if(type == 2){
-        g2.setColor(Color.RED);  
-       }else if(type == 3){
-        g2.setColor(Color.BLUE);
-       }
-       g2.fillRect(x, y, w, h);
-       g2.dispose();
-       //img.repaint();
+    public int compareTo(RComponent r) {
+        return (this.importance - r.importance);
     }
 
  }

@@ -36,5 +36,24 @@ public class ForceField {
             }
         }
     }
+    
+    public void moved(Entity e){
+        if(c.location.inRange(e.getLocation(), 4.0)){      
+            if(e.isHostile()){
+                ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+                try {
+                    Packet.writeVarInt(buf, 2);
+                    Packet.writeVarInt(buf, e.getEntityId());
+                    Packet.writeVarInt(buf, 1);
+                    c.net.sendPacket(buf, c.out);
+                    buf = ByteStreams.newDataOutput();
+                    Packet.writeVarInt(buf, 10);
+                    c.net.sendPacket(buf, c.out);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }                                      
+            }
+        }
+    }
 
 }

@@ -26,7 +26,6 @@ public class EntityTracker {
     public void addEntity(int eid, World world, int x, int y, int z, int type, byte pitch, byte headpitch, byte yaw, int vx, int vy, int vz){
        if(findEntityId(eid) == null){
         entities.add(new Entity(c, eid, world, x, y, z, type, pitch, headpitch, yaw, vx, vy, vz));
-        //c.chat.sendMessage("Adding entity id: " + eid);
        }
     }
     
@@ -39,18 +38,18 @@ public class EntityTracker {
     public void delEntity(int eid) {
        Entity e = findEntityId(eid);
        if(e != null){
+           e.destroyRadar();
            entities.remove(e);
        }
     }
     
-    public void delAll() {      
-        entities.clear();
-    }
-    
-    public void tickRadar(){
+    public void delAll(){
         for(Entity e : entities){
-            e.tickRadar();
+            if(e != null){
+                e.destroyRadar();
+            }
         }
+        entities.clear();
         c.gui.pradar.repaint();
     }
     
@@ -59,7 +58,6 @@ public class EntityTracker {
         for(Entity s : entities){
            if(s.getEntity() instanceof Player){
             Player a = (Player)s;
-            c.chat.sendMessage("Name is: " + a.getName());
             if(a.getName().equalsIgnoreCase(name)){
                 p = a;
                 break;

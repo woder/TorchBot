@@ -8,18 +8,27 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 
+import me.woder.bot.Client;
+
 public class PRadar extends JPanel {
     private static final long serialVersionUID = 1L;
     public BufferedImage background;
     public List<RComponent> radardots = new ArrayList<RComponent>();
-    public RComponent dbot = new RComponent(126,111,10,10,"<html></html>", 0, this, "");
+    private List<RComponent> temp;
+    private Collection<RComponent> unmod;
+    public RComponent dbot = new RComponent(126,111,10,10,"<html></html>", 0, this, "", 3);
+    public Client c;
+    public double viewPort = 10;
 
-    public PRadar() {
+    public PRadar(Client c) {
+        this.c = c;
         background = new BufferedImage(266, 233, BufferedImage.TYPE_INT_ARGB);          
         playerDot(dbot);
         
@@ -54,14 +63,8 @@ public class PRadar extends JPanel {
     
     public void playerDot(RComponent comp){
         radardots.add(comp);
-        this.add(comp);
+        //this.add(comp);
         this.repaint();
-    }
-    
-    public void moveDots(int x, int y){
-        for(RComponent r : radardots){
-            r.repaint();
-        }
     }
 
     @Override
@@ -82,7 +85,16 @@ public class PRadar extends JPanel {
         g2.drawLine(background.getWidth()-1, background.getHeight()-1, 0, background.getHeight()-1);
         g2.drawLine(0, background.getHeight(), 0, 0);
         int x = (getWidth() - background.getWidth()) / 2;
-        int y = (getHeight() - background.getHeight()) / 2;       
+        int y = (getHeight() - background.getHeight()) / 2;    
+        temp = radardots; //Avoid concurrent modification
+        Collections.sort(temp);
+        unmod = Collections.unmodifiableCollection(temp);
+        for (RComponent r : unmod) {//TODO fix this, keeps throwing java.util.ConcurrentModificationException
+          if(r.shouldPaint()){
+            g2.setColor(r.color);
+            g2.fillRect(r.x, r.y, r.w, r.h);
+          }
+        }
         g2d.drawImage(background, x, y, this);
         g2.dispose();
         g2d.dispose();

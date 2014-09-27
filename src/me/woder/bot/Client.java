@@ -251,8 +251,6 @@ public class Client {
            net.readData();//Read data
            gui.tick();
            gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-           en.tickRadar();
-           force.tick();
            if(chunksloaded){
              if(tick == 5){
                 tick = 0;
