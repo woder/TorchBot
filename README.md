@@ -6,7 +6,7 @@ This program is listed under GPLv3 license.
 A bot for minecraft written in java
 
 THERE IS NOW A BUILD SERVER!
-Go to http://wltd.org:8080/ and select the TorchBot project, make sure to download the jar with dependencies
+Go to http://build.wltd.org/ and select the TorchBot project, make sure to download the jar with dependencies
 There will be a pre-compiled and setup version there for you :)
 
 So far it doesn't do much, but features are to come.
