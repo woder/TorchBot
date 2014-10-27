@@ -84,7 +84,25 @@ public class CommandHandler {
         }else if(command.equalsIgnoreCase("select")){
             c.invhandle.selectSlot(Short.parseShort(args[1]));
         }else if(command.equalsIgnoreCase("place")){
-            c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
+            //c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
+            c.whandle.getWorld().placeBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), 3);
+        }else if(command.equalsIgnoreCase("dig")){
+            c.whandle.getWorld().digBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), (byte)1);
+        }else if(command.equalsIgnoreCase("friends")){
+            if(args.length > 2){
+                if(args[1].equalsIgnoreCase("add")){
+                  if(!c.friends.contains(args[2])){
+                      c.friends.add(args[2]);
+                      c.chat.sendMessage("Added " + args[2] + " to the friendlist");
+                  }else{
+                      c.chat.sendMessage("Could not add because " + args[2] + " is already on the list");
+                  }
+                }else if(args[1].equalsIgnoreCase("delete")){
+                  if(c.friends.contains(args[2])){
+                      c.friends.remove(args[2]);
+                  }  
+                }
+            }
         }else{
             c.ehandle.handleCommand(command, args, username);
         }
@@ -127,6 +145,5 @@ public class CommandHandler {
         c.chat.sendMessage("Catagories are: op, fun, normal and plugin <Bot created by woder>");
       }
     }
-
 
 }

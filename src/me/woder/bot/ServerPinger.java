@@ -69,8 +69,8 @@ public class ServerPinger {
                    byte[] data = Base64.decode(images);
                    InputStream is = new ByteArrayInputStream(data);
                    ImageIcon test = new ImageIcon(data);
-                   //gui.favicon.setIcon(test);
-                   //gui.repaint();                
+                   gui.favicon.setIcon(test);
+                   gui.repaint();                
                 }
                 gui.addText("§5Game version: " + ver + "  " + text + " " + online + "/" + max);
             }

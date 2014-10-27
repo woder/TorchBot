@@ -26,28 +26,30 @@ public class EntityTracker {
     public void addEntity(int eid, World world, int x, int y, int z, int type, byte pitch, byte headpitch, byte yaw, int vx, int vy, int vz){
        if(findEntityId(eid) == null){
         entities.add(new Entity(c, eid, world, x, y, z, type, pitch, headpitch, yaw, vx, vy, vz));
-        //c.chat.sendMessage("Adding entity id: " + eid);
        }
     }
     
     public void addPlayer(int eid, World world, int x, int y, int z, byte pitch, byte yaw, short current, String name, UUID uuid){
        if(findEntityId(eid) == null){
         entities.add(new Player(c, eid, name, uuid, x, y, z, yaw, pitch, current));
-        //c.chat.sendMessage("Adding player's entity id: " + eid + " and... " + entities.size());
        }
     }
     
     public void delEntity(int eid) {
        Entity e = findEntityId(eid);
        if(e != null){
+           e.destroyRadar();
            entities.remove(e);
        }
     }
     
-    public void tickRadar(){
+    public void delAll(){
         for(Entity e : entities){
-            e.tickRadar();
+            if(e != null){
+                e.destroyRadar();
+            }
         }
+        entities.clear();
         c.gui.pradar.repaint();
     }
     
@@ -108,6 +110,6 @@ public class EntityTracker {
             }
         }
         return u;
-    }
+    }  
 
 }

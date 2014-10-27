@@ -137,17 +137,17 @@ public class NetworkHandler {
         //System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){
             Packet p = status.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);
             }
         }else if(c.state == 2){
             Packet p = login.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);         
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet");}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
                 p.read(c, len, buf);         
             }
         }else{

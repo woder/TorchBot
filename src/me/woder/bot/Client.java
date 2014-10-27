@@ -68,6 +68,7 @@ public class Client {
     public SecretKey sharedkey;
     public Authenticator auth;
     public ServerPinger servping;
+    public ForceField force;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -117,6 +118,7 @@ public class Client {
     public float yaw;
     public float pitch;
     public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
+    public List<String> friends = new ArrayList<String>();
     public boolean ircenable = false;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
@@ -237,6 +239,7 @@ public class Client {
         invhandle = new InvHandler(this);
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
+        force = new ForceField(this);
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
@@ -248,7 +251,6 @@ public class Client {
            net.readData();//Read data
            gui.tick();
            gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-           en.tickRadar();
            if(chunksloaded){
              if(tick == 5){
                 tick = 0;
@@ -256,9 +258,6 @@ public class Client {
              }
             move.tick();
             //move.sendOnGround();
-           }
-           if(tick == 5){
-               tick = 0;
            }
         }
          

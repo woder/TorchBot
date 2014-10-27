@@ -78,6 +78,37 @@ public class MovementHandler {
         timer.scheduleAtFixedRate(task, 0, 300);
     }
     
+    /**
+     * Causes the bot to attempt to go to a player's current location
+     * has a maximum range of 100 units
+     *
+     * @param  name the name of the player you want to go to
+     * @see goToLocation
+     */
+    public void goToPlayer(String name){
+        Player p = c.en.findPlayer(name);
+        if(p != null){
+          Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
+          Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
+          c.move.runPathing(l, loc, 100);
+        }
+    }
+    
+    /**
+     * Causes the bot to attempt to go to the specified location
+     * has a maximum range of 100 units
+     *
+     * @param x the x coord
+     * @param y the y coord
+     * @param z the z coord
+     * @see goToPlayer
+     */
+    public void goToLocation(int x, int y, int z){
+        Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
+        Location loc = new Location(c.whandle.getWorld(), x, y-1, z);
+        c.move.runPathing(l, loc, 100);
+    }  
+    
     public void applyGravity(){
         Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
         int id = block.getTypeId();

@@ -12,9 +12,10 @@ public class UpdateSign51 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-        int x = buf.readInt();
-        short y = buf.readShort();
-        int z = buf.readInt();
+        long val = buf.readLong();
+        int x = (int) (val >> 38);
+        int y = (int) (val << 26 >> 52);
+        int z = (int) (val << 38 >> 38);
         String l1 = getString(buf);
         String l2 = getString(buf);
         String l3 = getString(buf);

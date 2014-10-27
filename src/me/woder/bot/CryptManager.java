@@ -158,8 +158,7 @@ public class CryptManager
     /**
      * Encrypt or decrypt byte[] data using the specified key
      */
-    private static byte[] cipherOperation(int par0, Key par1Key, byte[] par2ArrayOfByte)
-    {
+    private static byte[] cipherOperation(int par0, Key par1Key, byte[] par2ArrayOfByte){
         try
         {
             return createTheCipherInstance(par0, par1Key.getAlgorithm(), par1Key).doFinal(par2ArrayOfByte);
@@ -180,10 +179,8 @@ public class CryptManager
     /**
      * Creates the Cipher Instance.
      */
-    private static Cipher createTheCipherInstance(int par0, String par1Str, Key par2Key)
-    {
-        try
-        {
+    private static Cipher createTheCipherInstance(int par0, String par1Str, Key par2Key){
+        try{
             Cipher var3 = Cipher.getInstance(par1Str);
             var3.init(par0, par2Key);
             return var3;
@@ -208,25 +205,21 @@ public class CryptManager
     /**
      * Create a new BufferedBlockCipher instance
      */
-    private static BufferedBlockCipher createBufferedBlockCipher(boolean par0, Key par1Key)
-    {
+    private static BufferedBlockCipher createBufferedBlockCipher(boolean par0, Key par1Key){
         BufferedBlockCipher var2 = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
         var2.init(par0, new ParametersWithIV(new KeyParameter(par1Key.getEncoded()), par1Key.getEncoded(), 0, 16));
         return var2;
     }
 
-    public static OutputStream encryptOuputStream(SecretKey par0SecretKey, OutputStream par1OutputStream)
-    {
+    public static OutputStream encryptOuputStream(SecretKey par0SecretKey, OutputStream par1OutputStream){
         return new CipherOutputStream(par1OutputStream, createBufferedBlockCipher(true, par0SecretKey));
     }
 
-    public static InputStream decryptInputStream(SecretKey par0SecretKey, InputStream par1InputStream)
-    {
+    public static InputStream decryptInputStream(SecretKey par0SecretKey, InputStream par1InputStream){
         return new CipherInputStream(par1InputStream, createBufferedBlockCipher(false, par0SecretKey));
     }
 
-    static
-    {
+    static{
         Security.addProvider(new BouncyCastleProvider());
     }
 }

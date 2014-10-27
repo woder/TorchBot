@@ -10,6 +10,7 @@ public class Entity {
     Slot[] equipement;
     RComponent dot;
     World world;
+    MobTypes typ;
     double x, y, z, rx, ry, rz;
     public int sx, sy, sz;
     int type;
@@ -31,6 +32,7 @@ public class Entity {
         this.y = y/32.0D;
         this.z = z/32.0D;
         this.type = type;
+        this.typ = MobTypes.findByType(type);
         this.pitch = pitch;
         this.headpitch = headpitch;
         this.yaw = yaw;
@@ -40,11 +42,15 @@ public class Entity {
         this.rx = x - c.location.getX();
         this.ry = y - c.location.getY();
         this.rz = z - c.location.getZ();
-        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", 0, c.gui.pradar, "Entity");
+        dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Entity " + typ.getFullName() + "<br>Location: " + rx + ", " + ry + ", " + rz +  "</html>", getColour(), c.gui.pradar, typ.getFullName(), 1);
         c.gui.pradar.playerDot(dot);
         this.equipement = new Slot[5];
     }
     
+    private int getColour() {
+        return MobTypes.findByType(type).isHostile()?2:3;
+    }
+
     public int getEntityId(){
         return entityid;
     }
@@ -58,28 +64,26 @@ public class Entity {
     }
     
     public void setLocation(Location l){
-        c.chat.sendMessage("Location was: " + this.x + " location was set to: " + l.getX());
         this.x = l.getX();
         this.y = l.getY();
         this.z = l.getZ();
-        setRadarPos(l);
+        moved(l);
     }
     
     public void setLocationRelative(World world, double x, double y, double z){
         this.x = this.x + x;
         this.y = this.y + y;
         this.z = this.z + z;
-        setRadarPos(new Location(world, this.x, this.y, this.z));
+        moved(new Location(world, this.x, this.y, this.z));
     }
     
     public void setLocationLookRelative(Location l, byte yaw, byte pitch){
-        c.chat.sendMessage("Location was: " + this.x + " location is being changed by: " + l.getX());
         this.x = x + l.getX();
         this.y = y + l.getY();
         this.z = z + l.getZ();
         this.yaw = yaw;
         this.pitch = pitch;
-        setRadarPos(new Location(c.whandle.getWorld(), x, y, z));
+        moved(new Location(c.whandle.getWorld(), x, y, z));
     }
     
     public void setLocationLook(Location l, byte yaw, byte pitch){
@@ -88,13 +92,19 @@ public class Entity {
         this.z = l.getZ();
         this.yaw = yaw;
         this.pitch = pitch;
-        setRadarPos(l);
+        moved(l);
     }
     
-    public void setRadarPos(Location l){
+    public void moved(Location l){
+        c.force.moved(this); //put this here because this gets called when he moves, no matter what
+        setRadarPosition(l);
+    }
+    
+    public void setRadarPosition(Location l){
         rx = (c.location.getX() - l.getX()) + 131;
         ry = c.location.getY() - l.getY();
         rz = (c.location.getZ() - l.getZ()) + 116;
+        tickRadar();
     }
     
     public Location getRadarPos(){
@@ -106,8 +116,22 @@ public class Entity {
     }
 
     public void tickRadar() {
-        dot.moveDot((int)rx, (int)rz, (int)x, (int)y, (int)z);    
-        dot.repaint();
+        dot.moveDot((int)rx, (int)rz, (int)x, (int)y, (int)z);
+        StringBuilder value = new StringBuilder("<html>");
+        value.append(typ.getFullName()).append("<br>Location: ").append(this.x).append(", ").append(this.y).append(", ").append(this.z).append("</html>");
+        dot.text = value.toString();
+    }
+    
+    public void destroyRadar(){
+        dot.destroy();
+    }
+
+    public boolean isHostile() {
+        MobTypes m = MobTypes.findByType(type);
+        if(m != null){
+            return m.isHostile();
+        }
+        return true;
     }
 
 }

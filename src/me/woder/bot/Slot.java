@@ -19,9 +19,11 @@ public class Slot {
 
     public void sendSlot(ByteArrayDataOutput buf) {
         buf.writeShort(getId());
-        buf.writeByte(getCount());
-        buf.writeShort(getDamage());
-        buf.writeByte(nbtlen); //this does NOT support actual nbt at this current time       
+        if(getId() > 0){ //only send if we actually have data
+         buf.writeByte(getCount());
+         buf.writeShort(getDamage());
+         buf.writeByte(nbtlen); //this does NOT support actual nbt at this current time       
+        }
     }
 
     public void setSlot(Slot slot) {

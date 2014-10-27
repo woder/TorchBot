@@ -61,69 +61,71 @@ public class ChatHandler {
     
     public String formatMessage(String message){
         String mess = "Something went wrong";
-        String user = "Unknown";
-        System.out.println(message);
         try{
          JSON jsonr = JSONSerializer.toJSON(message);     
          if(!jsonr.isArray()){
-           JSONObject json = (JSONObject) jsonr;
-           if(json.containsKey("with")){
-             mess = formatWith(json, mess, user);
-           }else if(json.containsKey("extra")){
-             mess = formatExtra(json);
-           }else{
-             mess = formatRaw(mess, json); 
-           }      
+          JSONObject json = (JSONObject) jsonr;
+          if(json.containsKey("translate")){
+           String key = json.getString("translate");
+           c.gui.addText(message);
+           if(key.equalsIgnoreCase("chat.type.text")){              
+               JSONArray arr = json.getJSONArray("with");
+               formatWith(json, arr);
+           }   
+          }else if(json.containsKey("extra")){
+               formatExtra(json);
+          }
          }else{
             //TODO add method to parse this
-            //jsonr = (JSONArray) jsonr;
          }
         }catch(JSONException ex){
            c.gui.addText("§4Invalid json received; string skipped");
            err.log(Level.WARNING, "MESSAGE: " + message + " IS NOT VALID JSON, SKIPPING STRING...");
+           ex.printStackTrace();
         }
         return mess;
     }
     
-    public String formatWith(JSONObject json, String mess, String user){
-        try{
-            JSONArray arr = json.getJSONArray("with");
-            if(arr.toArray().length > 1){
-             mess = arr.getString(1);
-             JSONObject te = arr.getJSONObject(0);
-             user = te.getString("text");
-            }
-            log.log(Level.FINEST,mess);
-            c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {user, mess}));
-            c.gui.addText("§0" + user + ": " + mess);     
-            String[] args = mess.split(" ");
-            if(mess.contains(c.prefix)){
-                c.chandle.processCommand(args[0].replace(c.prefix, ""), args, user);
-            }
-         }catch(JSONException e){
-             e.printStackTrace();
-             err.log(Level.SEVERE, "FORMATERROR: " + e.getMessage()  + " (" + e.getCause() + ")");
-             c.gui.addText("§4Formating error!");
-         }         
-        return mess;
-    }
-    
-    private String formatExtra(JSONObject json){
-        String formated = "";
-        JSONArray arr = json.getJSONArray("extra");
-        for (int i = 0; i < arr.size(); i++){
-           if(arr.get(i).toString().contains("{")){
-            JSONObject ob = arr.getJSONObject(i);
-            String key = ob.getString("color");
-            String theText = ob.getString("text");
-            System.out.println("color: " + key + " text: " + theText);
-            formated = formated + "§" + attributes.get(key) + theText;
-           }else{
-            formated = formated + "§0" + arr.getString(i);  
-           }
+    public void formatWith(JSONObject json, JSONArray arr){
+        JSONObject hoverevent = getHover(arr);
+        JSONObject value = hoverevent.getJSONObject("value");
+        String user = value.getString("name");
+        //String uuid = value.getString("id"); Maybe we can find a use for this later
+        String mess = arr.getString(1);
+        String formated = mess;
+        if(json.containsKey("color")){
+         String colour = json.getString("color");
+         formated = "§" + attributes.get(colour) + mess;
         }
         c.gui.addText(formated);
-        int delimiter = formated.indexOf(":"); //TODO replace with variable to make this interchangable
+        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {user, formated}));
+        getCommandText(mess, user);
+    }
+    
+    private void formatExtra(JSONObject json){
+        String formated = "";
+        JSONArray arr = json.getJSONArray("extra");
+        formated = formatColours(arr);
+        String username = getUsername(formated);
+        c.gui.addText(formated);
+        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
+        getCommandText(formated, username);
+    }
+    
+    public JSONObject getHover(JSONArray arr){
+        JSONObject ob = null;
+        for(int i = 0; i < arr.size(); i++){
+           JSONObject obj = arr.getJSONObject(i);
+           if(obj.containsKey("hoverEvent")){
+               ob = obj.getJSONObject("hoverEvent");
+               break;
+           }
+        }
+        return ob;
+    }
+    //Code to attempt to get the username
+    public String getUsername(String formated){
+        int delimiter = formated.indexOf(">"); //TODO replace with variable to make this interchangable
         int space = formated.indexOf(" ");
         if(delimiter != -1 && space != -1 && delimiter-space < 0){
            space = 0;
@@ -131,10 +133,15 @@ public class ChatHandler {
         String username;
         if(delimiter != -1 && space != -1 && delimiter-space > -1){
          username = formated.substring(space, delimiter);
-         username = ChatColor.stripColor(username.replace(":", ""));
+         username = ChatColor.stripColor(username.replaceAll("[:<>]", ""));
         }else{
          username = "Unknown";
-        }
+        }      
+        return username;
+    }
+    
+    //Code to get the command from the string then pass it onto the command handler
+    public void getCommandText(String formated, String username){
         if(formated.contains(c.prefix)){
             String commande = formated.substring(formated.indexOf(c.prefix));
             int d = commande.length();
@@ -144,29 +151,23 @@ public class ChatHandler {
             String command = commande.substring(0, d);
             commande.trim();
             c.chandle.processCommand(command.replace(c.prefix, ""), commande.substring(d).split(" "), username);
-        }
-        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
-        return formated;
+        }   
     }
     
-    public String formatRaw(String mess, JSONObject json){
-        try{
-            mess = json.getString("text");
-            log.log(Level.FINEST,mess);
-            c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {"Unknown", mess}));
-            String username = mess.substring(0, mess.indexOf(" "));
-            username = username.replace("[<>:\\[\\]]", "");
-            String[] args = mess.split(" ");
-            c.gui.addText("§0" + mess);       
-            if(mess.contains(c.prefix)){
-                c.chandle.processCommand(args[0].replace(c.prefix, ""), args, username);
+    //Code for getting all the colours together for multicoloured strings
+    public String formatColours(JSONArray arr){
+        String formated = "";
+        for (int i = 0; i < arr.size(); i++){
+            if(arr.get(i).toString().contains("{")){
+             JSONObject ob = arr.getJSONObject(i);
+             String key = ob.getString("color");
+             String theText = ob.getString("text");
+             formated = formated + "§" + attributes.get(key) + theText;
+            }else{
+             formated = formated + "§0" + arr.getString(i);  
             }
-         }catch(JSONException e){
-             e.printStackTrace();
-             err.log(Level.SEVERE, "FORMATERROR: " + e.getMessage()  + " (" + e.getCause() + ")");
-             c.gui.addText("§4Formating error!");
-         }         
-        return mess;
+        }
+        return formated;
     }
 
 }

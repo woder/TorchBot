@@ -25,7 +25,6 @@ public class Part {
     
     public Block getBlock(int x, int y, int z, int bx, int by, int bz){     
         int loc = x + (z * 16) + (y * 256);
-        System.out.println("x,y,z" + x + "," + y + "," + z);
         int block = ((blocks[loc] & 0xfff0) >> 4) & 0xffff;
         int meta = (blocks[loc] & 0xf) & 0xffff;
         //int block = blocks[loc];

@@ -178,7 +178,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_8 = new JButton("Test radar");
         
-        pradar = new PRadar();
+        pradar = new PRadar(c);
         
         favicon = new JLabel("");
         
