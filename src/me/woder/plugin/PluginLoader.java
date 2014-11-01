@@ -81,7 +81,7 @@ public class PluginLoader {
             System.out.println("event is: " + eventlist.toString());
             c.gui.addText("§3Plugin '" + result + "' registered events: " + eventlist);
             String[] events = eventlist.toString().split(",");
-            plugins.add(new Plugin(result.toString(), script, pcommands, pdescription, events));
+            plugins.add(new Plugin(result.toString(), scope, pcommands, pdescription, events));
             if(!started.equals(true)){
               c.gui.addText("§4Failed to load: '" + result + "'");
             }
