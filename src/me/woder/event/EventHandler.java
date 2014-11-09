@@ -51,9 +51,6 @@ public class EventHandler {
     
     public void handleCommand(String name, String[] args, String username){
         List<Plugin> pul = getPluginCommands(name);
-        for(String s : args){
-            c.gui.addText("S: " + s);
-        }
         for(int i = 0; i < pul.toArray().length; i++){
             try {
                 ScriptableObject scope = pul.get(i).scope;

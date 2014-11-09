@@ -54,11 +54,9 @@ public class Block {
     }
     
     public Block getRelative(int bx, int by, int bz){
-        System.out.println("Getting the block relative to: " + x + " ," + y + " ," + z + " looking at: " + (bx+x) + " , " + (y+by) +  " ," + (z+bz));
         Block b = world.getBlock(x+bx, y+by, z+bz);
         if(b == null){
             System.out.println("B is null, ending the world....");
-            System.exit(0);
         }
         return b;
     }

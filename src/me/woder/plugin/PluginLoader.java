@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.woder.bot.Client;
+import me.woder.network.Packet;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
 import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
 
@@ -55,7 +57,11 @@ public class PluginLoader {
          try {
             ScriptableObject scope = context.initStandardObjects();
             Object wrappedBot = Context.javaToJS(c, scope);
+            Object wrappedPacket = Context.javaToJS(Packet.class, scope);
+            Object wrappedByteStream = Context.javaToJS(ByteStreams.class, scope);
             ScriptableObject.putProperty(scope, "c", wrappedBot);
+            ScriptableObject.putProperty(scope, "Packet", wrappedPacket);
+            ScriptableObject.putProperty(scope, "ByteStreams", wrappedByteStream);
             context.evaluateString(scope, script, "script", 1, null);
             Function fct = (Function)scope.get("getName", scope);
             Object result = fct.call(context, scope, scope, null);      

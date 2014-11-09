@@ -1,11 +1,14 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.woder.network.Packet;
+import me.woder.plugin.Plugin;
 import me.woder.world.Block;
 import me.woder.world.Location;
 
@@ -18,28 +21,8 @@ public class CommandHandler {
     }
     
     public void processCommand(String command, String[] args, String username){
-        System.out.println("Command is: " + command);
         if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
-        }else if(command.equalsIgnoreCase("under")){
-            Block b = c.whandle.getWorld().getBlock(c.location).getRelative(0, -1, 0);
-            if (b != null) {
-                c.chat.sendMessage("Block is: " + b.getTypeId() + " and its meta data is: " + b.getMetaData());
-            } else {
-                c.chat.sendMessage("Failed :(");
-            }     
-        }else if(command.equalsIgnoreCase("version")){
-            c.chat.sendMessage(c.versioninfo);
-        }else if(command.equalsIgnoreCase("respawn")){
-            try {
-                ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-                Packet.writeVarInt(buf, 22);
-                buf.writeByte(0);
-                c.net.sendPacket(buf, c.out);
-                c.chat.sendMessage("Respawned!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }else if(command.equalsIgnoreCase("move")){
             if(args.length > 1){
              Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
@@ -65,8 +48,6 @@ public class CommandHandler {
           }else{
               c.chat.sendMessage("Wrong amount of arguments provided!");
           }
-        }else if(command.equalsIgnoreCase("reload")){
-            c.ploader.reloadPlugins();
         }else if(command.equalsIgnoreCase("export")){
             impor.processCommand(c, args);
         }else if(command.equalsIgnoreCase("import")){
@@ -93,9 +74,9 @@ public class CommandHandler {
                 if(args[1].equalsIgnoreCase("add")){
                   if(!c.friends.contains(args[2])){
                       c.friends.add(args[2]);
-                      c.chat.sendMessage("Added " + args[2] + " to the friendlist");
+                      c.chat.sendMessage("Added " + ChatColor.stripColor(args[2]) + " to the friendlist");
                   }else{
-                      c.chat.sendMessage("Could not add because " + args[2] + " is already on the list");
+                      c.chat.sendMessage("Could not add because " + ChatColor.stripColor(args[2]) + " is already on the list");
                   }
                 }else if(args[1].equalsIgnoreCase("delete")){
                   if(c.friends.contains(args[2])){
@@ -120,30 +101,47 @@ public class CommandHandler {
         }
     }
     
-    public void commandHelp(String[] messages, String sender){    
-        /*if (messages.length < 2){
-            sendMessage(channel, "Catagorys are: op, fun, normal and plugin <Bot created by woder>"); 
-        }else if (messages[1].equalsIgnoreCase("op")){
-            sendMessage(channel, "Commands are: mod, unmod, kick, kickban, unban");
-        }else if (messages[1].equalsIgnoreCase("normal")){
-            sendMessage(channel, "Commands are: echo, time, isup, mcping, haspaid, calc(not implemented yet)");
-        }else if (messages[1].equalsIgnoreCase("fun")){
-            sendMessage(channel, "Commands are: slap, roulette, eightball"); */
+    public void commandHelp(String[] messages, String sender){
       if(messages.length > 1){
-        if (messages[1].equalsIgnoreCase("plugin")){
+            List<String> helpl = new ArrayList<String>();
             String append = "";
-            for(int z = 0; z < c.cmds.length; z++){
-               if(z == 0){
-                append = c.cmds[z] + " - " + c.descriptions[z];
-               }else{
-                append += ", " + c.cmds[z] + " - " + c.descriptions[z];
-               }
-            }
-            c.chat.sendMessage(sender + ": " + append);
-        }     
+            if(messages[1].equalsIgnoreCase("core")){
+                c.chat.sendMessage("Hehehehehehe");
+            }else{               
+                pluginH(messages, append, helpl);
+            }          
       }else{
-        c.chat.sendMessage("Catagories are: op, fun, normal and plugin <Bot created by woder>");
+        c.chat.sendMessage("Command use: help <plugin name> **Note that \"core\" contains all core bot commands**");
+        try {
+            throw new IOException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
       }
+    }
+      
+    public void pluginH(String[] messages, String append, List<String> helpl){
+        for(Plugin p : c.ploader.plugins){
+            if(p.name.equalsIgnoreCase(ChatColor.stripColor(messages[1]))){
+               for(int z = 0; z < p.commands.size(); z++){
+                   if(z == 0){
+                       append = p.commands.get(z) + " - " + p.description.get(z);
+                   }else{
+                      String temp = ", " + p.commands.get(z) + " - " + p.description.get(z);
+                      if((append.length()+temp.length())<100){
+                        append += temp;
+                      }else{
+                        helpl.add(append);
+                        append = p.commands.get(z) + " - " + p.description.get(z);                          
+                      }
+                   }
+               }
+               helpl.add(append);
+               append = "";
+            }
+        }
+        c.chat.sendMessage("=====Help: " + ChatColor.stripColor(messages[1]) + "=====");
+        new DelayedMessageSender(c).delayedMessageSender(helpl, 1000, 1000); //The delay is there because a lot of servers have anti spam and even this delay isn't enough, increase as needed TODO: make configurab
     }
 
 }

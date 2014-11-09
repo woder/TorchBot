@@ -2,6 +2,9 @@ package me.woder.bot;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +62,17 @@ public class ChatHandler {
        }
     }
     
+    public void sendMessage(List<String> s, int delayed){
+        try{
+         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+         Packet.writeVarInt(buf, 1);
+         Packet.writeString(buf, s.get(delayed));
+         c.net.sendPacket(buf, c.out);
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+     }   
+    
     public String formatMessage(String message){
         String mess = "Something went wrong";
         try{
@@ -67,7 +81,6 @@ public class ChatHandler {
           JSONObject json = (JSONObject) jsonr;
           if(json.containsKey("translate")){
            String key = json.getString("translate");
-           c.gui.addText(message);
            if(key.equalsIgnoreCase("chat.type.text")){              
                JSONArray arr = json.getJSONArray("with");
                formatWith(json, arr);
@@ -97,7 +110,7 @@ public class ChatHandler {
          String colour = json.getString("color");
          formated = "§" + attributes.get(colour) + mess;
         }
-        c.gui.addText(formated);
+        c.gui.addText(user + ": " + formated);
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {user, formated}));
         getCommandText(mess, user);
     }

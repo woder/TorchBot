@@ -134,7 +134,7 @@ public class NetworkHandler {
     
     public void forwardPacket(int len, int type, ByteArrayDataInputWrapper buf) throws IOException{
         //log.log(Level.FINE, "Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
-        //System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
+        System.out.println("Reading packet id: " + type + " current state is: " + c.state + " packet length: " + len);
         if(c.state == 1){
             Packet p = status.get(type);
             if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
