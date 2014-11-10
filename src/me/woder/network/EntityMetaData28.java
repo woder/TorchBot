@@ -12,7 +12,7 @@ public class EntityMetaData28 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
        Packet.readVarInt(buf); //Entity id
-       //c.proc.readWatchableObjects(buf); //Removed because this seemed to be causing bugs, looking into it
+       //c.proc.readWatchableObjects(buf);
     }
 
 }
