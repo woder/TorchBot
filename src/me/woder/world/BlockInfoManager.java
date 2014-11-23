@@ -27,19 +27,23 @@ public class BlockInfoManager{
    private Map<Integer,String> BLOCK_NAME;
    private Map<Integer,Integer> HARDNESS;
    private Map<Integer,Integer> TOOL;
-   private final File f = new File("BlockInfo.txt");
+   private File f = new File("BlockInfo.txt");
    //TODO: add meta values support
    
    public BlockInfoManager() throws FileNotFoundException {
-      BLOCK_NAME = new HashMap<Integer,String>();//pass ID's size
-      HARDNESS = new HashMap<Integer,Integer>();//pass ID's size
-      TOOL = new HashMap<Integer,Integer>();//pass ID's size
+   
+      BLOCK_NAME = new HashMap<Integer,String>();
+      HARDNESS = new HashMap<Integer,Integer>();
+      TOOL = new HashMap<Integer,Integer>();
+      if (!f.exists()) {
+         throw new FileNotFoundException("BlockInfo.txt missing");
+      } 
       Scanner s = new Scanner(f);
-      int blockCount = s.nextInt();
+     // int blockCount = s.nextInt();
       
-      while(s.hasNextLine()) {
+      while(s.hasNext()) {
          int id = s.nextInt();
-         int hardness = s.nextInt();
+         int hardness =(int)(1000*s.nextDouble());
          String blockName = s.next();
          int tool = s.nextInt();
          BLOCK_NAME.put(id,blockName);
