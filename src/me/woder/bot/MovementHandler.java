@@ -51,7 +51,7 @@ public class MovementHandler {
             }
         } catch (InvalidPathException e) {
             //InvalidPathException will be thrown if start or end block is air
-            if(e.isStartNotSolid()){
+            if(e.isEndNotSolid()){
                 System.out.println("End block is not walkable");
                 c.chat.sendMessage("Unable to walk on the block you are standing on.");
             }

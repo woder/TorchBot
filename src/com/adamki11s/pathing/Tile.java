@@ -102,7 +102,7 @@ public class Tile {
             Tile currentParent = this.getParent(), currentTile = this;
             int gCost = 0;
             // follow path back to start
-            while ((currentParent = currentTile.getParent()) != null) {
+            while ((currentParent = currentTile.getParent()) != null) {//this probably shouldn't be a loop, stop at the end of the loop, and add the parent's gCost.
 
                 int dx = currentTile.getX() - currentParent.getX(), dy = currentTile.getY() - currentParent.getY(), dz = currentTile.getZ() - currentParent.getZ();
 
