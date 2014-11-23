@@ -185,15 +185,19 @@ public class BlockInfo {
       if(isValidTool(toolID)) {//add sword complexity
          if (tool==359) {//shears exception
             if (id==35) {
-               return (int)(0.24);
+               return (int)(1000*0.24);
             } else {
                return (int) (hardness*.1);
             }
          } else {
-            return (int)(3/(2*getToolLevel(toolID)));
+            return (int)(hardness*(3.0/(2.0*getToolLevel(toolID))));
          }
       } else {
-         return (int) (5/getToolLevel(toolID));
+         if(getToolType()==getToolType(toolID)) {
+            return (int) (hardness*(5.0/getToolLevel(toolID)));
+         } else {
+            return (int) (hardness*(5.0));
+         }
       }
    }
    
