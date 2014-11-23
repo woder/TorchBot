@@ -4,6 +4,10 @@ Clark Krusemark
 nuvasuper
 cdkrusemark@gmail.com
 
+This is the BlockInfo class.  It is used to return important information about a certain kind of block.
+It can return the name, id, tool advised/required (see toolID section), hardness of a block, and break time when using a specified tool.
+It can also be used without referencing a type of block to determine the type of a specified tool, or the "level" of a specified tool
+
 toolID codes include [-1,3]
 -1 indicates a hand
 0 is unused

@@ -2,7 +2,14 @@ package me.woder.world;
 import java.util.*;
 import java.io.*;
 /*
-reads in a plaintext file with all of the relevant block information
+Clark Krusemark
+22/11/2014 (dd/mm/yyyy)
+nuvasuper
+cdkrusemark@gmail.com
+
+this is the BlockInfoManager class.
+It reads in a plaintext file with all of the relevant block information(id, name, hardness, advised/required tool)
+
 tool is either the tool's item id, or a number [-2,3]
 -2 indicates we don't know what this block is
 -1 indicates no tool is nessessary, or the block is unbreakable, check hardness to verify.
@@ -12,6 +19,8 @@ tool is either the tool's item id, or a number [-2,3]
 3 indicates a axe assists, but is unnessissary
 
 hardness is a value from 50-0, or -1 if unbreakable, -2 if we don't know what this block is.
+
+The method you should be using is getInfo(id) to return a BlockInfo object.
 
 */
 public class BlockInfoManager{
