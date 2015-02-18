@@ -1,6 +1,7 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class CommandHandler {
            }else{
               c.chat.sendMessage("Wrong amount of arguments provided!"); 
            }
-        }else if(command.equalsIgnoreCase("select")){
+        }else if(command.equalsIgnoreCase("select")){    
             c.invhandle.selectSlot(Short.parseShort(args[1]));
         }else if(command.equalsIgnoreCase("place")){
             //c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
@@ -83,6 +84,16 @@ public class CommandHandler {
                       c.friends.remove(args[2]);
                   }  
                 }
+            }
+        }else if(command.equalsIgnoreCase("respawn")){
+        	try {
+                ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+                Packet.writeVarInt(buf, 22);
+                buf.writeByte(0);
+                c.net.sendPacket(buf, c.out);
+                c.chat.sendMessage("Respawned! YOU DERP FACE!!!!!!");
+            } catch (Exception e) {
+                c.gui.addText("Error respawning: " + e.getMessage());
             }
         }else{
             c.ehandle.handleCommand(command, args, username);

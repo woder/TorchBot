@@ -159,7 +159,12 @@ public class TorchGUI extends JPanel{
             }
         });
         
-        JButton btnNewButton_3 = new JButton("Place holder");
+        JButton btnNewButton_3 = new JButton("Authenticate");
+        btnNewButton_3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                c.reauth();
+            }
+        });
         
         JButton btnNewButton_4 = new JButton("Place holder");
         

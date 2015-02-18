@@ -127,35 +127,7 @@ public class Client {
     
     public void main(TorchGUI window){
         this.gui = window;
-        File f = new File("config.properties");
-        if(f.exists()){
-            Properties prop = new Properties();                
-            try {
-                prop.load(new FileInputStream("config.properties"));
-                username = prop.getProperty("username");
-                password = prop.getProperty("password");
-                servername = prop.getProperty("servername");
-                ircenable = Boolean.valueOf(prop.getProperty("irc"));
-                System.out.println(servername);
-                port = Integer.parseInt(prop.getProperty("port"));
-         
-            } catch (IOException ex) {
-                    ex.printStackTrace();
-            }
-        }else{
-            Properties prop = new Properties();             
-            try {
-                prop.setProperty("username", "unreal34");
-                prop.setProperty("password", "1234");
-                prop.setProperty("servername", "c.mcblocks.net");
-                prop.setProperty("port", "25565");
-                prop.setProperty("irc", "false");
-                prop.store(new FileOutputStream("config.properties"), null);
-         
-            } catch (IOException ex) {
-                    ex.printStackTrace();
-            }
-        }
+        reloadConfig();
         Handler fh = null, fn = null, fe = null;
         new File("logs").mkdir();
         try {
@@ -250,8 +222,9 @@ public class Client {
            //mainloop
            net.readData();//Read data
            gui.tick();
-           gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
            if(chunksloaded){
+        	 //Only do this if we have loaded chunks, *might* be null other wise
+        	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
              if(tick == 5){
                 tick = 0;
                 //move.applyGravity();//Apply gravity
@@ -289,8 +262,44 @@ public class Client {
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
         }        
     }
-      
     
+    public void reauth() { //The purpose of this is to reauthencate the user if the first one failed for some reason
+    	reloadConfig();
+    	auth.authPlayer(username, password);//use them to do important things
+	}
+    
+    public void reloadConfig(){
+    	File f = new File("config.properties");
+        if(f.exists()){
+            Properties prop = new Properties();                
+            try {
+                prop.load(new FileInputStream("config.properties"));
+                username = prop.getProperty("username");
+                password = prop.getProperty("password");
+                servername = prop.getProperty("servername");
+                ircenable = Boolean.valueOf(prop.getProperty("irc"));
+                System.out.println(servername);
+                port = Integer.parseInt(prop.getProperty("port"));
+         
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
+        }else{
+            Properties prop = new Properties();             
+            try {
+                prop.setProperty("username", "unreal34");
+                prop.setProperty("password", "1234");
+                prop.setProperty("servername", "c.mcblocks.net");
+                prop.setProperty("port", "25565");
+                prop.setProperty("irc", "false");
+                prop.store(new FileOutputStream("config.properties"), null);
+         
+            } catch (IOException ex) {
+                    ex.printStackTrace();
+            }
+        }
+    }
+        
     public void activateEncryption(){
         try {
             this.out.flush();

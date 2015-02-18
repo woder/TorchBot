@@ -82,13 +82,18 @@ public class EntityTracker {
             name = names.get(u);
         }else{
             String result = c.sendGetRequest("https://api.mojang.com/user/profiles/" + u.toString().replace("-", "") + "/names");
+            c.chat.sendMessage("Server responded: " + result);
             JSON jsonr = JSONSerializer.toJSON(result);
             if(jsonr.isArray()){
+            	c.chat.sendMessage("It was an array!");
                 JSONArray js = (JSONArray) jsonr;
-                Object o = js.get(0);
-                if(o instanceof String){
-                    name = (String) o;
-                    names.put(u, name);
+                Object s = js.get(0);
+                if(s instanceof JSONObject){
+                 JSONObject e = (JSONObject) s;
+                 String o = e.getString("name");
+                 c.chat.sendMessage("yeah it is" + o);
+                 name = o;
+                 names.put(u, o);
                 }
             }
         }
