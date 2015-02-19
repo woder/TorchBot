@@ -120,6 +120,7 @@ public class Client {
     public List<SlotHandler> inventory = new ArrayList<SlotHandler>();
     public List<String> friends = new ArrayList<String>();
     public boolean ircenable = false;
+    public boolean godmode = false;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
