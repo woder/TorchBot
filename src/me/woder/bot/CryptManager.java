@@ -34,6 +34,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+//code borrowed from minecraft's encryptor
 public class CryptManager
 {
     /** ISO_8859_1 */

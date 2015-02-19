@@ -38,6 +38,8 @@ public class CommandHandler {
             }else{
                c.chat.sendMessage("Wrong amount of arguments provided!");
             }
+        }else if(command.equalsIgnoreCase("whereareyou")){
+        	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
         }else if(command.equalsIgnoreCase("holding")){
           if(args.length > 1){
             if(!ChatColor.stripColor(args[1]).equalsIgnoreCase(c.username)){

@@ -20,6 +20,7 @@ import com.google.common.io.ByteStreams;
 
 public class MovementHandler {
     private Client c;
+    Tile next;
     
     public MovementHandler(Client c){
         this.c = c;
@@ -65,17 +66,53 @@ public class MovementHandler {
         Timer timer = new Timer();
         final Iterator<Tile> itr = tiles.iterator();
         TimerTask task = new TimerTask() {
-            public void run() {
+            public void run() {           
              if(itr.hasNext()){
-              Tile t = itr.next();
-              Location loc = t.getLocation(start);
-              calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));             
+              if(next != null){
+               Location loc = next.getLocation(start);
+               next = itr.next();
+               Location locs = next.getLocation(start);
+               double newYaw = 0, newPitch = 0;
+               double xDiff = locs.getX() - c.location.getX();
+			   double yDiff = locs.getY() - (c.location.getY() - 1);
+			   double zDiff = locs.getZ() - c.location.getZ();
+			   double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+			   double DistanceY = Math.sqrt(DistanceXZ * DistanceXZ + yDiff * yDiff);
+			   newYaw = Math.acos(xDiff / DistanceXZ) * 180 / Math.PI;
+			   newPitch = Math.acos(yDiff / DistanceY) * 180 / Math.PI - 90;
+			   if(zDiff < 0.0) {
+				 newYaw = newYaw + Math.abs(180 - newYaw) * 2;
+			   }	
+			   c.yaw = (float) newYaw;
+			   c.pitch = (float) newPitch;
+			   if(!itr.hasNext()){
+				   next = null;
+			   }
+               calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));       
+              }else{
+               Tile t = itr.next();
+               next = itr.next();
+               Location locs = next.getLocation(start);
+               double newYaw = 0, newPitch = 0;
+               double xDiff = locs.getX() - c.location.getX();
+			   double yDiff = locs.getY() - (c.location.getY() - 1);
+			   double zDiff = locs.getZ() - c.location.getZ();
+			   double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+			   double DistanceY = Math.sqrt(DistanceXZ * DistanceXZ + yDiff * yDiff);
+			   newYaw = Math.acos(xDiff / DistanceXZ) * 180 / Math.PI;
+			   newPitch = Math.acos(yDiff / DistanceY) * 180 / Math.PI - 90;
+			   if(zDiff < 0.0) {
+				 newYaw = newYaw + Math.abs(180 - newYaw) * 2;
+			   }	
+               Location loc = t.getLocation(start);
+               calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+              }
              }else{
               this.cancel();
              }
             }
         };
-        timer.scheduleAtFixedRate(task, 0, 300);
+        timer.scheduleAtFixedRate(task, 0, 150);
     }
     
     /**
@@ -135,6 +172,15 @@ public class MovementHandler {
         return new Location(c.whandle.getWorld(),rx,y,rz);
     }
     
+    /**Take the delta: deltax deltay deltaz
+    Divide the delta by the amount of smaller steps you want to make
+    Then apply the divided difference to the current position in increments and  most importantly when we are done we will move to the TARGET POSITION USING NO DELTAS
+
+
+    Note that the divided increments can be changed to allow for speed modifications, or the entire loop can be slowed, 
+    this is a question of preference although in order to standardize the walking speed it should probably be done via a 
+    timed loop to prevent slower PCs running slower than faster ones (it will mess up the timing on the for loop)**/
+    
     public boolean calcMovement(Location l){
         boolean canGo = false;
         //checks that the place we are going to is safe
@@ -142,9 +188,21 @@ public class MovementHandler {
             //now check if the head is safe
             if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
-                c.location.setX(l.getX()+getDeci(c.location.getX()));
-                c.location.setY(l.getY()+1+getDeci(c.location.getY()));
-                c.location.setZ(l.getZ()+getDeci(c.location.getZ()));
+            	int steps = 10; //the amount of steps to take
+            	double deltax = (l.getX() - c.location.getX())/steps;
+            	double deltay = (l.getY()+1 - c.location.getY())/(steps*0.5);
+            	double deltaz = (l.getZ() - c.location.getZ())/steps;
+            	while(--steps > 0){
+            		c.location.setX(c.location.getX() + deltax);
+            		c.location.setY(c.location.getY() + deltay);
+            		c.location.setZ(c.location.getZ() + deltaz);
+            		tick();
+            	}
+            	c.location.setX(l.getX());
+            	c.chat.sendMessage("");
+        		c.location.setY(l.getY()+1);// HAHAHAHAHAH WOW
+        		c.location.setZ(l.getZ());
+        		tick();
                 //c.chat.sendMessage("Location: " + l.getBlockX() + ", " + (l.getBlockY()+1) + "," + l.getBlockZ() + " " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
                 canGo = true;
             }
