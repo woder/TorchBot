@@ -188,6 +188,7 @@ public class MovementHandler {
             //now check if the head is safe
             if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
+<<<<<<< HEAD
             	int steps = 10; //the amount of steps to take
             	double deltax = (l.getX() - c.location.getX())/steps;
             	double deltay = (l.getY()+1 - c.location.getY())/(steps*0.5);
@@ -203,6 +204,29 @@ public class MovementHandler {
         		c.location.setY(l.getY()+1);// HAHAHAHAHAH WOW
         		c.location.setZ(l.getZ());
         		tick();
+=======
+                int stepdist = 10; // max milli blocks
+                double xdiff = l.getX() - c.location.getX();
+                double ydiff = l.getY() - c.location.getY();
+                double zdiff = l.getZ() - c.location.getZ();
+                double dist = Math.sqrt( xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
+                int steps = (int) ( ( dist - 1 ) / stepdist );
+                if( steps > 0 ){
+                   xdiff /= steps;
+                   ydiff /= steps;
+                   zdiff /= steps;
+                   while( --steps >= 0 ){
+                       c.location.setX(c.location.getX() + xdiff);
+                       c.location.setY(c.location.getY() + ydiff);
+                       c.location.setZ(c.location.getZ() + zdiff);
+                       //moveTo( (int) x0, (int) y0 );
+                   }
+                }
+                //moveTo( (int) x1, (int) y1 );
+                c.location.setX(l.getX());
+                c.location.setY(l.getY());
+                c.location.setZ(l.getZ());
+>>>>>>> origin/master
                 //c.chat.sendMessage("Location: " + l.getBlockX() + ", " + (l.getBlockY()+1) + "," + l.getBlockZ() + " " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
                 canGo = true;
             }
@@ -216,7 +240,9 @@ public class MovementHandler {
     }
     
    public void tick(){
+    if(!c.godmode){
       move(c.location.getX(), c.location.getY(), c.location.getZ());
+    }
    }
 
     public void move(double x, double y, double z) {

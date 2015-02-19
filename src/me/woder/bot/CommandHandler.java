@@ -38,8 +38,19 @@ public class CommandHandler {
             }else{
                c.chat.sendMessage("Wrong amount of arguments provided!");
             }
+<<<<<<< HEAD
         }else if(command.equalsIgnoreCase("whereareyou")){
         	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
+=======
+        }else if(command.equalsIgnoreCase("godmode")){
+            if(c.godmode){
+                c.godmode = false;
+                c.chat.sendMessage("God mode disabled");
+            }else{
+                c.godmode = true;
+                c.chat.sendMessage("God mode enabled");
+            }
+>>>>>>> origin/master
         }else if(command.equalsIgnoreCase("holding")){
           if(args.length > 1){
             if(!ChatColor.stripColor(args[1]).equalsIgnoreCase(c.username)){
@@ -72,15 +83,28 @@ public class CommandHandler {
             c.whandle.getWorld().placeBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), 3);
         }else if(command.equalsIgnoreCase("dig")){
             c.whandle.getWorld().digBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), (byte)1);
+        }else if(command.equalsIgnoreCase("respawn")){
+            try {
+                ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+                Packet.writeVarInt(buf, 22);
+                buf.writeByte(0);
+                c.net.sendPacket(buf, c.out);
+                c.chat.sendMessage("Respawned!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }    
         }else if(command.equalsIgnoreCase("friends")){
             if(args.length > 2){
                 if(args[1].equalsIgnoreCase("add")){
+                 if(args[2].equalsIgnoreCase("*")){
+                 }else{
                   if(!c.friends.contains(args[2])){
                       c.friends.add(args[2]);
                       c.chat.sendMessage("Added " + ChatColor.stripColor(args[2]) + " to the friendlist");
                   }else{
                       c.chat.sendMessage("Could not add because " + ChatColor.stripColor(args[2]) + " is already on the list");
                   }
+                 }
                 }else if(args[1].equalsIgnoreCase("delete")){
                   if(c.friends.contains(args[2])){
                       c.friends.remove(args[2]);
@@ -125,11 +149,6 @@ public class CommandHandler {
             }          
       }else{
         c.chat.sendMessage("Command use: help <plugin name> **Note that \"core\" contains all core bot commands**");
-        try {
-            throw new IOException();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
       }
     }
       
