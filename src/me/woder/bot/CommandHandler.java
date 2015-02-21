@@ -38,10 +38,8 @@ public class CommandHandler {
             }else{
                c.chat.sendMessage("Wrong amount of arguments provided!");
             }
-<<<<<<< HEAD
         }else if(command.equalsIgnoreCase("whereareyou")){
         	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
-=======
         }else if(command.equalsIgnoreCase("godmode")){
             if(c.godmode){
                 c.godmode = false;
@@ -50,7 +48,6 @@ public class CommandHandler {
                 c.godmode = true;
                 c.chat.sendMessage("God mode enabled");
             }
->>>>>>> origin/master
         }else if(command.equalsIgnoreCase("holding")){
           if(args.length > 1){
             if(!ChatColor.stripColor(args[1]).equalsIgnoreCase(c.username)){

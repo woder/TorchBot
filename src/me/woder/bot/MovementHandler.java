@@ -68,7 +68,11 @@ public class MovementHandler {
         TimerTask task = new TimerTask() {
             public void run() {           
              if(itr.hasNext()){
-              if(next != null){
+               Tile t = itr.next();
+               Location loc = t.getLocation(start);
+               c.gui.addText("Position is: " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ());
+               calcMovement(new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5));
+             /* if(next != null){
                Location loc = next.getLocation(start);
                next = itr.next();
                Location locs = next.getLocation(start);
@@ -106,7 +110,7 @@ public class MovementHandler {
 			   }	
                Location loc = t.getLocation(start);
                calcMovement(new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-              }
+              }*/
              }else{
               this.cancel();
              }
@@ -188,45 +192,22 @@ public class MovementHandler {
             //now check if the head is safe
             if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
                 //yay it seems clear, so now we can go there
-<<<<<<< HEAD
             	int steps = 10; //the amount of steps to take
-            	double deltax = (l.getX() - c.location.getX())/steps;
-            	double deltay = (l.getY()+1 - c.location.getY())/(steps*0.5);
+            	double deltax = (l.getX() - c.location.getX())/steps;  
+            	double deltay = (l.getY()+1 - c.location.getY());
             	double deltaz = (l.getZ() - c.location.getZ())/steps;
             	while(--steps > 0){
             		c.location.setX(c.location.getX() + deltax);
             		c.location.setY(c.location.getY() + deltay);
-            		c.location.setZ(c.location.getZ() + deltaz);
+            		c.location.setZ(c.location.getZ() + deltaz);          		
             		tick();
+            		c.gui.addText("Pos: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
             	}
             	c.location.setX(l.getX());
-            	c.chat.sendMessage("");
+            	c.gui.addText("Y was set to: " + l.getY());
         		c.location.setY(l.getY()+1);// HAHAHAHAHAH WOW
         		c.location.setZ(l.getZ());
         		tick();
-=======
-                int stepdist = 10; // max milli blocks
-                double xdiff = l.getX() - c.location.getX();
-                double ydiff = l.getY() - c.location.getY();
-                double zdiff = l.getZ() - c.location.getZ();
-                double dist = Math.sqrt( xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
-                int steps = (int) ( ( dist - 1 ) / stepdist );
-                if( steps > 0 ){
-                   xdiff /= steps;
-                   ydiff /= steps;
-                   zdiff /= steps;
-                   while( --steps >= 0 ){
-                       c.location.setX(c.location.getX() + xdiff);
-                       c.location.setY(c.location.getY() + ydiff);
-                       c.location.setZ(c.location.getZ() + zdiff);
-                       //moveTo( (int) x0, (int) y0 );
-                   }
-                }
-                //moveTo( (int) x1, (int) y1 );
-                c.location.setX(l.getX());
-                c.location.setY(l.getY());
-                c.location.setZ(l.getZ());
->>>>>>> origin/master
                 //c.chat.sendMessage("Location: " + l.getBlockX() + ", " + (l.getBlockY()+1) + "," + l.getBlockZ() + " " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
                 canGo = true;
             }
