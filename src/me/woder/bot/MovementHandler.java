@@ -150,21 +150,40 @@ public class MovementHandler {
         c.move.runPathing(l, loc, 100);
     }  
     
+    public double getDistance(){
+    	for(double i = c.location.getY(); i > 0; i--){
+        	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(i), (int)Math.floor(c.location.getZ()));
+        	if(!canBlockBeWalkedThrough(b.getTypeId())){
+        	   return i;
+        	}
+        }
+		return 0;
+    }
+    
     public void applyGravity(){
-        Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
-        int id = block.getTypeId();
+       double y = getDistance();
+       if(y != 0){
+        double steps = y*3; //the amount of steps to take
+    	double deltay = (c.location.getY() - y)/steps;
+    	c.gui.addText("Deltay was: " + deltay + " and distance was: " + y);
+        c.location.setY(c.location.getY() - deltay);       		
+    	tick();
+    	c.gui.addText("Pos: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
+		tick();
+       }
+    	//Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
+    	/*Block block = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()), (int)Math.floor(c.location.getZ()));
+    	Block under = block.getRelative(0, -1, 0);
+        int id = under.getTypeId();
         if(canBlockBeWalkedThrough(id)){
             //c.gui.addText("Data: " + c.location.getX() + ", " + Math.floor(c.location.getY()-2) + ", " + c.location.getZ());
-            c.location.setY(Math.floor(c.location.getY()-2));  
+        	System.out.println("Going down");
+            c.location.setY(c.location.getY()-2);  
             //c.gui.addText("Updated " + c.location.getY());
         }else{
-            if(block.getY() != c.location.getY()){
-               c.gui.addText("Location set to: " + c.location.getY() + " because " + c.location.getY() + " and " + block.getY());
-               c.location.setY(Math.floor(c.location.getY()));
-            }else{
-               c.gui.addText("Thats a lie..."); 
-            }
-        }
+        	System.out.println("We should not be moving");
+            //c.gui.addText("We should not move");
+        }*/
     }
     
     public Location getCenter(double x, double y, double z){

@@ -226,11 +226,11 @@ public class Client {
            if(chunksloaded){
         	 //Only do this if we have loaded chunks, *might* be null other wise
         	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-             if(tick == 5){
+             if(tick == 60){
                 tick = 0;
-                //move.applyGravity();//Apply gravity
+                move.applyGravity();//Apply gravity
              }
-            move.tick();
+             move.tick();
             //move.sendOnGround();
            }
         }
