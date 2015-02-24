@@ -130,7 +130,9 @@ public class World {
         thisblock = thisChunk.getBlock(l.getBlockX(),l.getBlockY(),l.getBlockZ());
        }
        
-       bim.addInfo(thisblock, false);
+       if (thisblock!=null) {
+           bim.addInfo(thisblock, false);
+       }
        return thisblock;
     }
     
@@ -152,8 +154,9 @@ public class World {
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(x,y,z);
        }
-       
+       if (thisblock!=null) {
        bim.addInfo(thisblock, false);
+       }
        return thisblock;
     }
     
