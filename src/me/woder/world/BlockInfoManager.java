@@ -3,7 +3,7 @@ import java.util.*;
 import java.io.*;
 /*
 Clark Krusemark
-22/11/2014 (dd/mm/yyyy)
+24/02/2015 (dd/mm/yyyy)
 nuvasuper
 cdkrusemark@gmail.com
 
@@ -27,8 +27,10 @@ public class BlockInfoManager{
    private Map<Integer,String> BLOCK_NAME;
    private Map<Integer,Integer> HARDNESS;
    private Map<Integer,Integer> TOOL;
+   //TODO: add metavalue support
+   //private Map<Integer,Map<Integer,String>> metaMap;
+   //private Map<Integer String> metavalueMap;
    private File f = new File("BlockInfo.txt");
-   //TODO: add meta values support
    
    public BlockInfoManager() throws FileNotFoundException {
    
@@ -40,8 +42,6 @@ public class BlockInfoManager{
          throw new FileNotFoundException("BlockInfo.txt missing from" + System.getProperty("user.dir"));
       } 
       Scanner s = new Scanner(f);
-     // int blockCount = s.nextInt();
-      
       while(s.hasNext()) {
          int id = s.nextInt();
          int hardness =(int)(1000*s.nextDouble());
@@ -53,12 +53,11 @@ public class BlockInfoManager{
       }      
       s.close();
    }
-   
+   //Obsolete
    public BlockInfo getInfo(int id) {
       if(!isValidBlock(id)) {
          throw new IllegalArgumentException("Given ID not found");
       }
-      
       String blockName = BLOCK_NAME.get(id);
       int hardness = HARDNESS.get(id);
       int tool = TOOL.get(id);
@@ -69,10 +68,16 @@ public class BlockInfoManager{
       return BLOCK_NAME.containsKey(id);
    }
    
-   public BlockInfo getInfo(Block b, boolean force) {
-      BlockInfo result = getInfo(b.getTypeId());
-      result.setMetadata(b.getMetaData(), force);//will update the block's hardness, and if (force) will update the name, abandoning the minecraft convention
-      return result;
+   //populates the Block given with the appropriate tool, name, and hardness.
+   public void addInfo(Block b, boolean force) {
+      //BlockInfo result = getInfo(b.getTypeId());
+	   int id = b.getTypeId();
+	   if(!isValidBlock(id)) {
+	         throw new IllegalArgumentException("Given ID not found");
+	      }
+	   String blockName = BLOCK_NAME.get(id);
+	   int hardness = HARDNESS.get(id);
+	   int tool = TOOL.get(id);
+	   b.addInfo(blockName, tool, hardness);
    }
-
 }

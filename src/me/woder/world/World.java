@@ -1,5 +1,15 @@
+/*
+ World class writted by woder, edited to include BlockInfoManager by nuvasuper
+ 24/02/2015 dd/mm/yy 
+ This was to allow the BlockInfoManager to be created as few times as possible,
+ and for world to give the blocks returned by getBlock(Location l) to already
+ have the appropriate hardness, tool, name, etc.
+ 
+ */
+
 package me.woder.world;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,9 +29,16 @@ public class World {
     public List<Chunk> chunklist = new ArrayList<Chunk>();
     public Import importer = new Import();
     Client c;
+    BlockInfoManager bim;
     
     public World(Client c){
         this.c = c;
+        try {
+			this.bim = new BlockInfoManager();
+		} catch (FileNotFoundException e) {
+			System.out.println("BlockManager couldn't find BlockInfo.txt, ending the world...");
+			e.printStackTrace();
+		}
     }
     
     public Import getImport(){
@@ -112,7 +129,9 @@ public class World {
         
         thisblock = thisChunk.getBlock(l.getBlockX(),l.getBlockY(),l.getBlockZ());
        }
-        return thisblock;
+       
+       bim.addInfo(thisblock, false);
+       return thisblock;
     }
     
     public Block getBlock(int x, int y, int z){
@@ -133,7 +152,9 @@ public class World {
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(x,y,z);
        }
-        return thisblock;
+       
+       bim.addInfo(thisblock, false);
+       return thisblock;
     }
     
     public void setBlock(int x, int y, int z, int id, int meta){
@@ -153,7 +174,5 @@ public class World {
         thisChunk.updateBlock(x, y, z, id, meta);
         c.chandle.impor.onBlockChange(new Event("onBlockChange", new Object[]{x,y,z,id,meta}), c);
       }
-    }
-    
-
+    }    
 }
