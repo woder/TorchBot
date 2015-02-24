@@ -213,24 +213,26 @@ public class Client {
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         force = new ForceField(this);
+        FPSCounter fps = new FPSCounter();
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
         }*/
-        int tick = 0;
+        long lastGrav = System.currentTimeMillis();
         while(running){
-           tick+= 1;
-           //mainloop
+           //mainloop/
            net.readData();//Read data
            gui.tick();
            if(chunksloaded){
         	 //Only do this if we have loaded chunks, *might* be null other wise
         	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-             if(tick == 60){
-                tick = 0;
+             if(System.currentTimeMillis() - lastGrav >= 500){
                 move.applyGravity();//Apply gravity
+                lastGrav = System.currentTimeMillis();
              }
              move.tick();
+             fps.tick();
+             System.out.println("FPS: " + fps.getFPS());
             //move.sendOnGround();
            }
         }
