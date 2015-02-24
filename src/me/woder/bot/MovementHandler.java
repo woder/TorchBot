@@ -21,6 +21,7 @@ import com.google.common.io.ByteStreams;
 public class MovementHandler {
     private Client c;
     Tile next;
+    double moveY = 0;
     
     public MovementHandler(Client c){
         this.c = c;
@@ -153,23 +154,27 @@ public class MovementHandler {
     public double getDistance(){
     	for(double i = c.location.getY(); i > 0; i--){
         	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(i), (int)Math.floor(c.location.getZ()));
-        	if(!canBlockBeWalkedThrough(b.getTypeId())){
+        	if(b != null){
+        	  if(!canBlockBeWalkedThrough(b.getTypeId())){
         	   return i;
+        	  }
         	}
         }
 		return 0;
     }
     
     public void applyGravity(){
-       double y = getDistance();
-       if(y != 0){
-        double steps = y*3; //the amount of steps to take
-    	double deltay = (c.location.getY() - y)/steps;
-    	c.gui.addText("Deltay was: " + deltay + " and distance was: " + y);
-        c.location.setY(c.location.getY() - deltay);       		
-    	tick();
-    	c.gui.addText("Pos: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
-		tick();
+       int y = (int) Math.ceil(getDistance());
+       if(moveY < 3.92){
+         moveY += 0.08;
+       }
+       double deltay = (c.location.getY() - y);
+       if(moveY < deltay){
+           c.location.setY(c.location.getY() - moveY);
+       }else{
+           c.location.setY(y);
+           moveY = 0;
+
        }
     	//Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
     	/*Block block = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()), (int)Math.floor(c.location.getZ()));
