@@ -36,7 +36,8 @@ public class BlockInfoManager{
       HARDNESS = new HashMap<Integer,Integer>();
       TOOL = new HashMap<Integer,Integer>();
       if (!f.exists()) {
-         throw new FileNotFoundException("BlockInfo.txt missing");
+    	  System.out.println("Working Directory = " + System.getProperty("user.dir"));
+         throw new FileNotFoundException("BlockInfo.txt missing from" + System.getProperty("user.dir"));
       } 
       Scanner s = new Scanner(f);
      // int blockCount = s.nextInt();
@@ -50,7 +51,9 @@ public class BlockInfoManager{
          HARDNESS.put(id,hardness);
          TOOL.put(id,tool);
       }      
+      s.close();
    }
+   
    public BlockInfo getInfo(int id) {
       if(!isValidBlock(id)) {
          throw new IllegalArgumentException("Given ID not found");
@@ -61,8 +64,15 @@ public class BlockInfoManager{
       int tool = TOOL.get(id);
       return new BlockInfo(id,blockName,hardness,tool);
    }
+   
    public boolean isValidBlock(int id) {
       return BLOCK_NAME.containsKey(id);
+   }
+   
+   public BlockInfo getInfo(Block b, boolean force) {
+      BlockInfo result = getInfo(b.getTypeId());
+      result.setMetadata(b.getMetaData(), force);//will update the block's hardness, and if (force) will update the name, abandoning the minecraft convention
+      return result;
    }
 
 }

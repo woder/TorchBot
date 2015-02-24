@@ -20,14 +20,19 @@ in the latter case, the tool type indicated isn't required but will shorten the 
 
 this class does not correctly handle sword breaking properly
 
-note: all stone slabs are considered the same, all wooden slabs are considered the same.  need metadata to differentiate.
-this also applies to varieties of stone, prismarine, red sandstone, 
-sandstone, monster egg, sponge, dirt, daylight detector, flower, 
+note: use setMetadata(metadata, true) to update the blockName to a more specific string, but abandon minecraft's naming convention.
 
-In some cases, this can alter the hardness value, and the breaking time.
-This will assume the highest hardness value possible for a given blockID.
-the cases in which the hardness value may be incorrect include: 
-block ID: 168 Prismarine variations
+Methods you should be using:
+getBlockName()
+getHardness()
+getID()
+getBreakTime(int toolId) returns the time in miliseconds that the given tool will take to break this block
+getTool() returns the *required* tool
+getBestTool() returns the *quickest* tool, note: currently returns relavant diamond tool, should gold be returned?
+isValidTool(int toolId)  returns if the given tool item id can be used to harvest this block
+
+getToolType() returns the kind of tool helps break this block
+getToolType(int toolId) returns the kind of tool that this tool item id is
 
 */
 
@@ -38,13 +43,14 @@ public class BlockInfo {
    private int tool;//TODO: create tool type enum?
    private int hardness;//if -1, block is unbreakable
    private int id;
+   private int metadata;
    
    //TODO: add meta values
    
    //if you just want one to check toolTypes or something.
    // -2 used for hardness and tool to differentiate between
    // unbreakable blocks (hardness==-1) and 
-   // blocks with (toolID== -1)
+   // blocks with (toolID== -1) ie: hand advised
    public BlockInfo() {
       this(-1,"unknown",-2,-2);
    }
@@ -59,9 +65,238 @@ public class BlockInfo {
    }
    
    //returns the name of the block as minecraft knows it
-   // will return wrong names for some blocks with metadata variations, especially flowers/plants
+   // will return general names for some blocks with metadata variations, especially flowers/plants, logs, slabs, planks, etc
    public String getBlockName() {
       return blockName;
+   }
+   
+   public void setMetadata(int metadata, boolean force) {
+      this.metadata= metadata;
+      if (id==168&&metadata==1) {//important prismarine brick case 
+         hardness=1200;
+      }
+      if (force) {
+         if(id==1) {//following commented cases do not use minecraft's naming convention, but provide more specific information
+            if(metadata==0) {
+               blockName="stone";
+            }else if (metadata==1) {
+               blockName="granite";
+            }else if (metadata==2) {
+               blockName="smooth_granite";
+            }else if (metadata==3) {
+               blockName="diorite";
+            }else if (metadata==4) {
+               blockName="smooth_diorite";
+            }else if (metadata==5) {
+               blockName="andesite";
+            }else if (metadata==6) {
+               blockName="smooth_andesite";
+            }
+         } else if(id==18) {
+            if(metadata%4==0) {
+               blockName="oak_leaves";
+            } else if (metadata%4==1) {
+               blockName="spruce_leaves";
+            } else if (metadata%4==2) {
+               blockName="birch_leaves";
+            } else if (metadata%4==3) {
+               blockName="jungle_leaves";
+            }
+            if (metadata/4==1) {
+               blockName=blockName+"_no_decay";
+            } else if (metadata/4==2) {
+               blockName=blockName+"_check_decay";
+            } else if (metadata/4==3) {
+               blockName=blockName+"_no_decay_and_check_decay";
+            }
+         } else if (id==161) {
+            if (metadata%2==0) {
+               blockName="acacia_leaves";
+            } else if (metadata%2==1) {
+               blockName="dark_oak_leaves";
+            }
+            if (metadata/2==1) {
+               blockName=blockName+"_no_decay";
+            } else if (metadata/2==2) {
+               blockName=blockName+"_check_decay";
+            } else if (metadata/2==4) {
+               blockName=blockName+"_no_decay_check_decay";
+            }
+         } else if (id==171||id==35) {
+            if (metadata==0) {
+               blockName="white_carpet";
+            } else if (metadata==1) {
+               blockName="orange_carpet";
+            } else if (metadata==2) {
+               blockName="magenta_carpet";
+            } else if (metadata==3) {
+               blockName="light_blue_carpet";
+            } else if (metadata==4) {
+               blockName="yellow_carpet";
+            } else if (metadata==5) {
+               blockName="lime_carpet";
+            } else if (metadata==6) {
+               blockName="pink_carpet";
+            } else if (metadata==7) {
+               blockName="gray_carpet";
+            } else if (metadata==8) {
+               blockName="light_gray_carpet";
+            } else if (metadata==9) {
+               blockName="cyan_carpet";
+            } else if (metadata==10) {
+               blockName="purple_carpet";
+            } else if (metadata==11) {
+               blockName="blue_carpet";
+            } else if (metadata==12) {
+               blockName="brown_carpet";
+            } else if (metadata==13) {
+               blockName="green_carpet";
+            } else if (metadata==14) {
+               blockName="red_carpet";
+            } else if (metadata==15) {
+               blockName="black_carpet";
+            }
+            if(id==35) {
+               blockName=blockName+"_wool";
+            } else {
+               blockName=blockName+"_carpet";
+            }
+         } else if (id==43) {
+            if (metadata==0) {
+               blockName="double_stone_slab";
+            } else if (metadata==1) {
+               blockName="double_sandstone_slab";
+            } else if (metadata==2) {
+               blockName="double_stone_wooden_slab";
+            } else if (metadata==3) {
+               blockName="double_cobblestone_slab";
+            } else if (metadata==4) {
+               blockName="double_bricks_slab";
+            } else if (metadata==5) {
+               blockName="double_stone_brick_slab";
+            } else if (metadata==6) {
+               blockName="double_nether_brick_slab";
+            } else if (metadata==7) {
+               blockName="double_quartz_slab";
+            } else if (metadata==8) {
+               blockName="full_stone_slab";
+            } else if (metadata==9) {
+               blockName="full_sandstone_slab";
+            } else if (metadata==10) {
+               blockName="tile_quartz_slab";
+            }
+         } else if (id==181) {
+            if (metadata==0) {
+               blockName="double_red_sandstone_slab";
+            } else {
+               blockName="full_red_sandstone_slab";
+            }
+         } else if (id==44) {
+            if (metadata==0) {
+               blockName="stone_slab";
+            } else if (metadata==1) {
+               blockName="sandstone_slab";
+            } else if (metadata==2) {
+               blockName="stone_wooden_slab";
+            } else if (metadata==3) {
+               blockName="cobblestone_slab";
+            } else if (metadata==4) {
+               blockName="bricks_slab";
+            } else if (metadata==5) {
+               blockName="stone_brick_slab";
+            } else if (metadata==6) {
+               blockName="nether_brick_slab";
+            } else if (metadata==7) {
+               blockName="quartz_slab";
+            } else if (metadata>=8) {
+               blockName="upper_"+blockName;
+            }
+         } else if (id==182) {
+            if (metadata==0) {
+               blockName="red_sandstone_slab";
+            } else {
+               blockName="upper_red_sandstone_slab";
+            }
+         } else if (id==125) {
+            if (metadata==0) {
+               blockName="double_oak_wood_slab";
+            } else if (metadata==1) {
+               blockName="double_spruce_wood_slab";
+            } else if (metadata==2) {
+               blockName="double_birch_wood_slab";
+            } else if (metadata==3) {
+               blockName="double_jungle_wood_slab";
+            } else if (metadata==4) {
+               blockName="double_acacia_wood_slab";
+            } else if (metadata==5) {
+               blockName="double_dark_oak_wood_slab";
+            }
+         } else if (id==126) {
+            if (metadata==0) {
+               blockName="oak_wood_slab";
+            } else if (metadata==1) {
+               blockName="spruce_wood_slab";
+            } else if (metadata==2) {
+               blockName="birch_wood_slab";
+            } else if (metadata==3) {
+               blockName="jungle_wood_slab";
+            } else if (metadata==4) {
+               blockName="acacia_wood_slab";
+            } else if (metadata==5) {
+               blockName="dark_oak_wood_slab";
+            } else if (metadata>=6) {
+               blockName="upper_"+blockName;
+            }
+         } else if (id==98) {
+            if (metadata==0) {
+               blockName="stone_brick";
+            } else if (metadata==1) {
+               blockName="mossy_stone_brick";
+            } else if (metadata==2) {
+               blockName="cracked_stone_brick";
+            } else if (metadata==3) {
+               blockName="chiseled_stone_brick";
+            }
+         } else if (id==168) {
+            if (metadata==0) {
+               blockName="prismarine";
+            } else if (metadata==1) {
+               blockName="prismarine_bricks";
+               hardness=1200;
+            } else if (metadata==2) {
+               blockName="dark_prismarine";
+            }
+         } else if (id==19) {
+            if (metadata==1) {
+               blockName="wet_sponge";
+            }
+         } else if (id==139) {
+            if (metadata==1) {
+               blockName="mossy_cobblestone_wall";
+            }
+         } else if(id==5) {
+            if (metadata==0) {
+               blockName="oak_wood_planks";
+            } else if (metadata==1) {
+               blockName="spruce_wood_planks";
+            } else if (metadata==2) {
+               blockName="birch_wood_planks";
+            } else if (metadata==3) {
+               blockName="jungle_wood_planks";
+            } else if (metadata==4) {
+               blockName="acacia_wood_planks";
+            } else if (metadata==5) {
+               blockName="dark_oak_planks";
+            }
+         } else if (id==3) {
+            if (metadata==1) {
+               blockName="coarse_dirt";
+            } else if (metadata==1) {
+               blockName="podzol";
+            }
+         }//remaining cases: logs, sandstone, red sandstone, non-solid grass, flower, monster egg, quartz, anvil
+         
+      }
    }
    
    //returns the id of the tool required for harvesting, or -1 if a specific tool isn't needed
@@ -76,6 +311,7 @@ public class BlockInfo {
 
    //pre: if you broke the tool id, throws IllegalStateException
    //returns the id of the most effective tool in terms of break time.
+   //TODO: shouldn't this be returning gold tools?  with the obsidian exception?
    public int getBestTool() {
       if (getToolType()==1) {//pick case, return diamond pick id
          return 278;
@@ -96,10 +332,10 @@ public class BlockInfo {
    
    //returns this block's toolID code (see header)
    public int getToolType() {
-      if (tool<=3) {//tool is already formatted as toolID code
+      if (tool<=3) {//tool is already formatted as toolID code, it is advised, but not required
          return tool;
       } else {
-         return getToolType(tool);
+         return getToolType(tool);//if a specific tool is required, we use this method to get its type.
       }
    }
    
@@ -171,7 +407,7 @@ public class BlockInfo {
          return 8;//diamond
       } else if (toolID==284||toolID==285||toolID==286) {
          return 12;//gold
-      } else {
+      } else {//note: shouldn't reach this case, as unrecognized tools are treated as hand.
          throw new IllegalArgumentException("tool id not recognized");
       }
    }
