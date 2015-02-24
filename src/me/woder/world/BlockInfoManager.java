@@ -53,16 +53,6 @@ public class BlockInfoManager{
       }      
       s.close();
    }
-   //Obsolete
-   public BlockInfo getInfo(int id) {
-      if(!isValidBlock(id)) {
-         throw new IllegalArgumentException("Given ID not found");
-      }
-      String blockName = BLOCK_NAME.get(id);
-      int hardness = HARDNESS.get(id);
-      int tool = TOOL.get(id);
-      return new BlockInfo(id,blockName,hardness,tool);
-   }
    
    public boolean isValidBlock(int id) {
       return BLOCK_NAME.containsKey(id);
