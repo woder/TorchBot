@@ -227,7 +227,7 @@ public class Client {
         	 //Only do this if we have loaded chunks, *might* be null other wise
         	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
              if(System.currentTimeMillis() - lastGrav >= 50){
-                move.applyGravity();//Apply gravity
+                //move.applyGravity();//Apply gravity
                 lastGrav = System.currentTimeMillis();
              }
              move.tick();

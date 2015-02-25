@@ -21,7 +21,7 @@ import com.google.common.io.ByteStreams;
 public class MovementHandler {
     private Client c;
     Tile next;
-    double moveY = 0;
+    double moveY = 0.4;
     
     public MovementHandler(Client c){
         this.c = c;
@@ -163,18 +163,29 @@ public class MovementHandler {
 		return 0;
     }
     
+    public boolean canFall(){
+    	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()-1), (int)Math.floor(c.location.getZ()));
+    	if(canBlockBeWalkedThrough(b.getTypeId())){
+    	   return true;
+    	}
+    	return false;
+    }
+    
     public void applyGravity(){
        int y = (int) Math.ceil(getDistance());
-       if(moveY < 3.92){
+       //c.chat.sendMessage("Y is: " + y + " and " + (c.location.getY() != y));
+       if(canFall() || c.location.getY() != y){ //Fix for him sometimes not falling all the way
+        if(moveY < 3.92){
          moveY += 0.08;
-       }
-       double deltay = (c.location.getY() - y);
-       if(moveY < deltay){
+        }
+        double deltay = (c.location.getY() - y);
+        if(moveY < deltay){
            c.location.setY(c.location.getY() - moveY);
-       }else{
+        }else{
            c.location.setY(y);
            moveY = 0;
 
+        }
        }
     	//Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
     	/*Block block = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()), (int)Math.floor(c.location.getZ()));
@@ -225,10 +236,8 @@ public class MovementHandler {
             		c.location.setY(c.location.getY() + deltay);
             		c.location.setZ(c.location.getZ() + deltaz);          		
             		tick();
-            		c.gui.addText("Pos: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
             	}
             	c.location.setX(l.getX());
-            	c.gui.addText("Y was set to: " + l.getY());
         		c.location.setY(l.getY()+1);// HAHAHAHAHAH WOW
         		c.location.setZ(l.getZ());
         		tick();

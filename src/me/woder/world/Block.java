@@ -198,6 +198,7 @@ public class Block {
     
     public Block getRelative(int bx, int by, int bz){
         Block b = world.getBlock(x+bx, y+by, z+bz);
+        System.out.println("Getting block at: " + (x+bx) + "," + (y+by) + "," + (z+bz));
         if(b == null){
             System.out.println("B is null, ending the world....");
         }

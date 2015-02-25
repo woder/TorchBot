@@ -276,9 +276,13 @@ public class AStar {
         Block b = l.getBlock();       
         int i = b.getTypeId();
         int d = 0;
-        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != d && !canBlockBeWalkedThrough(i)) {
+        System.out.println("The block ID was: " + i);
+        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != d && (!canBlockBeWalkedThrough(i))) {
             // make sure the blocks above are air or can be walked through
-            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0);
+        	System.out.println("Location is: " + b.getX() + " " + b.getY() + " " + b.getZ());
+        	System.out.println("ID1: " + b.getRelative(0, 1, 0).getTypeId() + " ID2: " + b.getRelative(0, 2, 0).getTypeId());
+        	System.out.println("But here: " + canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) + " and this is: " + (b.getRelative(0, 2, 0).getTypeId() == 0));
+            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0).getTypeId()));
         } else {
             return false;
         }

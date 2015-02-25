@@ -40,14 +40,15 @@ public class CommandHandler {
             }
         }else if(command.equalsIgnoreCase("whereareyou")){
         	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
-        }else if(command.equalsIgnoreCase("godmode")){
-            if(c.godmode){
-                c.godmode = false;
-                c.chat.sendMessage("God mode disabled");
-            }else{
-                c.godmode = true;
-                c.chat.sendMessage("God mode enabled");
-            }
+        }else if(command.equalsIgnoreCase("whatis")){
+        	if(args.length > 3){
+        		Block b = c.whandle.getWorld().getBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        	    if (b != null) {
+        	        c.chat.sendMessage("Block is: " + b.getTypeId() + " and its meta data is: " + b.getMetaData());
+        	    } else {
+        	        c.chat.sendMessage("Failed :(");
+        	    } 
+        	}
         }else if(command.equalsIgnoreCase("holding")){
           if(args.length > 1){
             if(!ChatColor.stripColor(args[1]).equalsIgnoreCase(c.username)){
