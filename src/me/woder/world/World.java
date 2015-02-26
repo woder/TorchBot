@@ -81,13 +81,19 @@ public class World {
          buf = ByteStreams.newDataOutput();
          Packet.writeVarInt(buf, 10);
          c.net.sendPacket(buf, c.out);
-         if(c.gamemode == 1){
+         Block thisBlock = this.getBlock(x,y,z);
+         if (thisBlock!=null){
+         short slot = c.invhandle.currentSlot;
+         int tool = c.invhandle.inventory.get(slot).getId();
+         int breakTime = thisBlock.getBreakTime(tool);
+         if(breakTime>=0) {
              timer.schedule(new TimerTask(){
-               public void run() {
-                 delayedDig(pos, face);
-                 timer.cancel(); //Terminate the timer thread
-             }
-             }, 1000);
+                 public void run() {
+                   delayedDig(pos, face);
+                   timer.cancel(); //Terminate the timer thread
+                 }
+             }, breakTime);
+         }
          }
         } catch (IOException e) {
          // TODO Auto-generated catch block
