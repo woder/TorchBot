@@ -8,7 +8,9 @@ import java.util.TimerTask;
 
 import me.woder.network.Packet;
 import me.woder.world.Block;
+import me.woder.world.CollisionLibrary;
 import me.woder.world.Location;
+import me.woder.world.Vector;
 
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.AStar.InvalidPathException;
@@ -21,7 +23,7 @@ import com.google.common.io.ByteStreams;
 public class MovementHandler {
     private Client c;
     Tile next;
-    double moveY = 0.4;
+    double moveY = 0.96;
     
     public MovementHandler(Client c){
         this.c = c;
@@ -151,55 +153,44 @@ public class MovementHandler {
         c.move.runPathing(l, loc, 100);
     }  
     
-    public double getDistance(){
-    	for(double i = c.location.getY(); i > 0; i--){
+    public Block getSolidBlock(){
+    	for(double i = c.location.getY(); i > 0; i-=0.1){
         	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(i), (int)Math.floor(c.location.getZ()));
         	if(b != null){
-        	  if(!canBlockBeWalkedThrough(b.getTypeId())){
-        	   return i;
+        	  if(b.getBoundBox().isSolid()){
+        	   return b;
         	  }
         	}
         }
-		return 0;
-    }
-    
-    public boolean canFall(){
-    	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()-1), (int)Math.floor(c.location.getZ()));
-    	if(canBlockBeWalkedThrough(b.getTypeId())){
-    	   return true;
-    	}
-    	return false;
+		return null;
     }
     
     public void applyGravity(){
-       int y = (int) Math.ceil(getDistance());
-       //c.chat.sendMessage("Y is: " + y + " and " + (c.location.getY() != y));
-       if(canFall() || c.location.getY() != y){ //Fix for him sometimes not falling all the way
-        if(moveY < 3.92){
-         moveY += 0.08;
-        }
-        double deltay = (c.location.getY() - y);
-        if(moveY < deltay){
-           c.location.setY(c.location.getY() - moveY);
+       Block solid = getSolidBlock();
+       if(solid != null){
+    	int y = solid.getY();
+        //c.chat.sendMessage("Y is: " + y + " and " + (c.location.getY() != y));
+        if(!CollisionLibrary.doesOverlap(c.boundbox, solid.getBoundBox())){ //If he hasn't hit something yet then continue
+         if(moveY < 3.92){
+           moveY += 0.08; 
+         }
+         //Test to see if moving will cause us to collide, if it does shift us back on track
+         if(!CollisionLibrary.willOverlap(c.boundbox, solid.getBoundBox(), c.boundbox.centre.x, c.location.getY()-moveY, c.boundbox.centre.z)){
+          c.chat.sendMessage("Detected that we are not on land! " + y);
+          c.onground = false;
+          c.location.setY(c.location.getY() - (moveY));
+         }else{
+          moveY = 0.96;
+          c.location.setY(y+1);
+          c.onground = true;
+         }
         }else{
-           c.location.setY(y);
-           moveY = 0;
-
+           moveY = 0.96;
+           c.location.setY(y+1);
+           c.onground = true;
+           //c.chat.sendMessage("We collide and are now at: " + c.location.getY());
         }
        }
-    	//Block block = c.whandle.getWorld().getBlock(c.location).getRelative(0, -2, 0);
-    	/*Block block = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(c.location.getY()), (int)Math.floor(c.location.getZ()));
-    	Block under = block.getRelative(0, -1, 0);
-        int id = under.getTypeId();
-        if(canBlockBeWalkedThrough(id)){
-            //c.gui.addText("Data: " + c.location.getX() + ", " + Math.floor(c.location.getY()-2) + ", " + c.location.getZ());
-        	System.out.println("Going down");
-            c.location.setY(c.location.getY()-2);  
-            //c.gui.addText("Updated " + c.location.getY());
-        }else{
-        	System.out.println("We should not be moving");
-            //c.gui.addText("We should not move");
-        }*/
     }
     
     public Location getCenter(double x, double y, double z){
@@ -223,9 +214,9 @@ public class MovementHandler {
     public boolean calcMovement(Location l){
         boolean canGo = false;
         //checks that the place we are going to is safe
-        if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 1, 0).getTypeId())){//start by checking if we can go there
+        if(!l.getBlock().getRelative(0, 1, 0).getBoundBox().isSolid()){//start by checking if we can go there
             //now check if the head is safe
-            if(canBlockBeWalkedThrough(l.getBlock().getRelative(0, 2, 0).getTypeId())){
+            if(!l.getBlock().getRelative(0, 2, 0).getBoundBox().isSolid()){
                 //yay it seems clear, so now we can go there
             	int steps = 10; //the amount of steps to take
             	double deltax = (l.getX() - c.location.getX())/steps;  
@@ -248,15 +239,9 @@ public class MovementHandler {
         return canGo;
     }
     
-    private boolean canBlockBeWalkedThrough(int id) {
-        return (id == 0 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
-                || id == 76 || id == 78);
-    }
-    
    public void tick(){
-    if(!c.godmode){
+      c.boundbox.update(new Vector(c.location.getX(), c.location.getY()+0.9, c.location.getZ()));
       move(c.location.getX(), c.location.getY(), c.location.getZ());
-    }
    }
 
     public void move(double x, double y, double z) {

@@ -43,6 +43,7 @@ import me.woder.network.ByteArrayDataInputWrapper;
 import me.woder.network.NetworkHandler;
 import me.woder.network.Packet;
 import me.woder.plugin.PluginLoader;
+import me.woder.world.AABB;
 import me.woder.world.Location;
 import me.woder.world.World;
 import me.woder.world.WorldHandler;
@@ -121,6 +122,7 @@ public class Client {
     public List<String> friends = new ArrayList<String>();
     public boolean ircenable = false;
     public boolean godmode = false;
+    public AABB boundbox;
     //Credits to umby24 for the help, Thinkofdeath for help and SirCmpwn for Craft.net
     Logger netlog = Logger.getLogger("me.woder.network");
     Logger chatlog = Logger.getLogger("me.woder.chat");
@@ -214,6 +216,7 @@ public class Client {
         move = new MovementHandler(this);
         force = new ForceField(this);
         FPSCounter fps = new FPSCounter();
+        boundbox = new AABB(0.6, 1.8);
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
@@ -226,8 +229,8 @@ public class Client {
            if(chunksloaded){
         	 //Only do this if we have loaded chunks, *might* be null other wise
         	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-             if(System.currentTimeMillis() - lastGrav >= 50){
-                //move.applyGravity();//Apply gravity
+             if(System.currentTimeMillis() - lastGrav >= 25){
+                move.applyGravity();//Apply gravity
                 lastGrav = System.currentTimeMillis();
              }
              move.tick();

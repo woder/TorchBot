@@ -26,6 +26,7 @@ public class Block {
     private int z;
     private int metadata;
     private World world;
+    private AABB boundbox;
     
     private String blockName;
     private int tool;
@@ -37,11 +38,19 @@ public class Block {
         this.y = y;
         this.z = z;
         this.world = world;
+        boundbox = new AABB(1,1);
+        boundbox.update(new Vector(this.x+0.5,this.y+0.5,this.z+0.5));
+        boundbox.solid = !canBlockBeWalkedThrough(id);
     }
     
     public Block(World world, int x, int y, int z, int id, int metadata){
         this(world, x, y, z, id);
         this.metadata = metadata;
+    }
+    
+    private boolean canBlockBeWalkedThrough(int id) {
+        return (id == 0 || id == 6 || id == 7 || id == 8 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
+                || id == 76 || id == 78);
     }
     
     public int getMetaData(){
@@ -70,6 +79,10 @@ public class Block {
     
     public Integer getZ(){
         return z;
+    }
+    
+    public AABB getBoundBox(){
+    	return this.boundbox;
     }
     
     public Integer getHardness() {
@@ -198,7 +211,6 @@ public class Block {
     
     public Block getRelative(int bx, int by, int bz){
         Block b = world.getBlock(x+bx, y+by, z+bz);
-        System.out.println("Getting block at: " + (x+bx) + "," + (y+by) + "," + (z+bz));
         if(b == null){
             System.out.println("B is null, ending the world....");
         }
