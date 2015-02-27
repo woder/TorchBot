@@ -43,6 +43,7 @@ public class Slot {
     }
 
     public short getId() {
+    	//System.out.println("got the ID, its "+id+"at slot"+slotnum);
         return id;
     }
 

@@ -47,7 +47,6 @@ public class World {
     
     public void placeBlock(int x, int y, int z, int id){
        ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
-       c.chat.sendMessage("How?: " + x + ", " + y + ", " + z);
        try {
         long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | (long)(z & 0x3FFFFFF);
         Packet.writeVarInt(buf, 8);
@@ -70,30 +69,30 @@ public class World {
     public void digBlock(int x, int y, int z, final byte face){
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         final Timer timer = new Timer();
-        c.chat.sendMessage("How?: " + x + ", " + y + ", " + z);
         try {
          final long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | (long)(z & 0x3FFFFFF);
-         Packet.writeVarInt(buf, 7);
-         buf.writeByte(0);
-         buf.writeLong(pos);
-         buf.writeByte(1);
-         c.net.sendPacket(buf, c.out);
-         buf = ByteStreams.newDataOutput();
-         Packet.writeVarInt(buf, 10);
-         c.net.sendPacket(buf, c.out);
          Block thisBlock = this.getBlock(x,y,z);
          if (thisBlock!=null){
-         short slot = c.invhandle.currentSlot;
-         int tool = c.invhandle.inventory.get(slot).getId();
-         int breakTime = thisBlock.getBreakTime(tool);
-         if(breakTime>=0) {
-             timer.schedule(new TimerTask(){
-                 public void run() {
-                   delayedDig(pos, face);
-                   timer.cancel(); //Terminate the timer thread
-                 }
-             }, breakTime);
-         }
+             Packet.writeVarInt(buf, 7);
+             buf.writeByte(0);
+             buf.writeLong(pos);
+             buf.writeByte(1);
+             c.net.sendPacket(buf, c.out);
+             buf = ByteStreams.newDataOutput();
+             Packet.writeVarInt(buf, 10);
+             c.net.sendPacket(buf, c.out);
+             int slot = c.invhandle.currentSlot;
+             int tool = c.invhandle.inventory.get(slot).getId();
+             //System.out.println("HEY got the id its "+tool);
+             int breakTime = thisBlock.getBreakTime(tool);
+             if(breakTime>=0) {
+                 timer.schedule(new TimerTask(){
+                   public void run() {
+                     delayedDig(pos, face);
+                     timer.cancel(); //Terminate the timer thread
+                   }
+             	 }, breakTime);
+          	 }
          }
         } catch (IOException e) {
          // TODO Auto-generated catch block

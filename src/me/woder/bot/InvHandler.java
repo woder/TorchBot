@@ -12,11 +12,12 @@ import com.google.common.io.ByteStreams;
 public class InvHandler {
     Client c;
     public List<Slot> inventory = new ArrayList<Slot>();
-    public short currentSlot;
+    public int currentSlot;
     
     public InvHandler(Client c){
         this.c = c;
-        currentSlot=0;
+        currentSlot = 36;
+        //this.selectSlot((short)0);
     }
     
     public void creativeSetSlot(short id, Slot slot){
@@ -34,7 +35,7 @@ public class InvHandler {
     public void selectSlot(short id){
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         try {
-         currentSlot = id;
+         currentSlot = (int)id+36;
          Packet.writeVarInt(buf, 9);
          buf.writeShort(id);
          c.net.sendPacket(buf, c.out);

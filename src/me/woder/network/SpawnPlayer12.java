@@ -22,7 +22,7 @@ public class SpawnPlayer12 extends Packet{
         byte yaw = buf.readByte();
         byte pitch = buf.readByte();
         short currentitem = buf.readShort();
-        c.chat.sendMessage("New player " + playern);
+        //c.chat.sendMessage("New player " + playern);
         c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid); //TODO fix the playername issue
         c.proc.readWatchableObjects(buf);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, yaw, pitch, currentitem}));

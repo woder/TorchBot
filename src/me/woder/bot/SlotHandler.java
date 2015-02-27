@@ -15,10 +15,10 @@ public class SlotHandler {
          short bid = in.readShort();
          if(bid != -1){
              count = in.readByte();
-             System.out.println("There is: " + count + " of item " + bid);
+             //System.out.println("There is: " + count + " of item " + bid);
              damage = in.readShort();
              byte next = in.readByte();
-             System.out.println("Next is: " + next);
+             //System.out.println("Next is: " + next);
              /*if(next != -1){
                   byte[] var2 = new byte[next];
                   in.readFully(var2, 0, next);

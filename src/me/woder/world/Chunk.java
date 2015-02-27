@@ -111,7 +111,7 @@ public class Chunk {
         c.chunksloaded = true;
         byte[] temp;
         blockse = readUnsignedShorts(buf);
-        System.out.println("Chunk size is: " + chunksize + " block num is: " + blocknum);
+        //System.out.println("Chunk size is: " + chunksize + " block num is: " + blocknum);
         temp = new byte[chunksize - (blocknum*2)];
         buf.readFully(temp, 0, temp.length);
         //System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);

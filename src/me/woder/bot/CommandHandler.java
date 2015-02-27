@@ -125,13 +125,16 @@ public class CommandHandler {
     }
     
     public void processConsoleCommand(String message){
-        if(message.startsWith("-")){
-            String[] s = message.split(" ");
-            if(s[0].equalsIgnoreCase("isend")){
-               c.irc.sendMessage(s[1], s[2]);
-               c.gui.addText(message);
+    	if(message.contains(c.prefix)){
+            String commande = message.substring(message.indexOf(c.prefix));
+            int d = commande.length();
+            if(commande.indexOf(" ") != -1){
+              d = commande.indexOf(" ");
             }
-        }else{
+            String command = commande.substring(0, d);
+            commande.trim();
+            this.processCommand(command.replace(c.prefix, ""), commande.substring(d).split(" "), "self");
+        }   else{
             c.chat.sendMessage(message);         
         }
     }
