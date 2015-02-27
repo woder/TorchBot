@@ -16,13 +16,16 @@ import me.woder.world.Location;
 public class CommandHandler {
     Client c;
     public ImportCommand impor = new ImportCommand();
+    private List<String> approvedUsers = new ArrayList<String>();
     
     public CommandHandler(Client c){
         this.c = c;
     }
     
     public void processCommand(String command, String[] args, String username){
-        if(command.equalsIgnoreCase("help")){
+        if (!hasPermisssion(command, username)) {
+        	c.chat.sendMessage(username+" does not have permission for "+command);
+        }else if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
         }else if(command.equalsIgnoreCase("move")){
             if(args.length > 1){
@@ -119,11 +122,20 @@ public class CommandHandler {
             } catch (Exception e) {
                 c.gui.addText("Error respawning: " + e.getMessage());
             }
+        } else if (command.equalsIgnoreCase("setuserperms")) {
+        	boolean perms;
+        	if (args[2].equals("true")) {
+        		perms = true;
+        	} else {
+        		perms = false;
+        	}
+        	setUserPerms(args[1],perms);
         }else{
             c.ehandle.handleCommand(command, args, username);
         }
     }
     
+    //Console commands will assign a username of "self" to the command.
     public void processConsoleCommand(String message){
     	if(message.contains(c.prefix)){
             String commande = message.substring(message.indexOf(c.prefix));
@@ -151,6 +163,32 @@ public class CommandHandler {
       }else{
         c.chat.sendMessage("Command use: help <plugin name> **Note that \"core\" contains all core bot commands**");
       }
+    }
+    
+    public boolean hasPermisssion(String command, String username) {
+    	if (username.equals("self")) {
+    		return true;
+    	} else if (approvedUsers.contains(username)) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    public void setUserPerms(String username, boolean bool) {
+    	if (approvedUsers.contains(username)) {
+    		if (bool) {
+    			c.chat.sendMessage("User already has permissions");
+    		} else {
+    			approvedUsers.remove(username);
+    		}
+    	} else {
+    		if (bool) {
+    			approvedUsers.add(username);
+    		} else {
+    			c.chat.sendMessage("User did not have permissions");
+    		}
+    	}
     }
       
     public void pluginH(String[] messages, String append, List<String> helpl){

@@ -277,6 +277,7 @@ public class TorchGUI extends JPanel{
         c.stopBot();
     }
     
+    //Console commands will assign a username of "self" to the command.
     public void processCommand(String text){
         c.chandle.processConsoleCommand(text);
         textField.setText("");
