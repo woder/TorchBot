@@ -52,7 +52,7 @@ public class World {
         Packet.writeVarInt(buf, 8);
         buf.writeLong(pos);
         buf.writeByte(1);
-        new Slot(0,(short)1,(byte)1,(short)0,(byte)0).sendSlot(buf);
+        new Slot(0,(short)id,(byte)1,(short)0,(byte)0).sendSlot(buf);
         buf.writeByte(0);
         buf.writeByte(0);
         buf.writeByte(0);

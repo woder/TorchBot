@@ -80,10 +80,12 @@ public class CommandHandler {
         }else if(command.equalsIgnoreCase("select")){    
             c.invhandle.selectSlot(Short.parseShort(args[1]));
         }else if(command.equalsIgnoreCase("place")){
-            //c.whandle.getWorld().placeBlock(c.location.getBlockX()+2, c.location.getBlockY()-1, c.location.getBlockZ(), 3);
-            c.whandle.getWorld().placeBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), 3);
+            //The minus one on the Y axis is to correct for the fact that you place a block on a given face, so to place at y=2 you would actually send y=1
+            Block b = c.whandle.getWorld().getBlock(c.location).getRelative(Integer.parseInt(args[1]), (Integer.parseInt(args[2])-1), Integer.parseInt(args[3]));
+            c.whandle.getWorld().placeBlock(b.getX(), b.getY(), b.getZ(), 3);
         }else if(command.equalsIgnoreCase("dig")){
-            c.whandle.getWorld().digBlock(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), (byte)1);
+            Block b = c.whandle.getWorld().getBlock(c.location).getRelative(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            c.whandle.getWorld().digBlock(b.getX(), b.getY(), b.getZ(), (byte)1);
         }else if(command.equalsIgnoreCase("respawn")){
             try {
                 ByteArrayDataOutput buf = ByteStreams.newDataOutput();
