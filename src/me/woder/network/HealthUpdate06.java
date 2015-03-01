@@ -2,6 +2,9 @@ package me.woder.network;
 
 import java.io.IOException;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
 import me.woder.bot.Client;
 import me.woder.event.Event;
 
@@ -22,6 +25,15 @@ public class HealthUpdate06 extends Packet{
         if(c.health < 1){
            //we died
            c.en.delAll();
+           try {
+               ByteArrayDataOutput bufs = ByteStreams.newDataOutput();
+               Packet.writeVarInt(bufs, 22);
+               bufs.writeByte(0);
+               c.net.sendPacket(bufs, c.out);
+               c.chat.sendMessage("Respawned!");
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
         }
     }  
 
