@@ -22,7 +22,6 @@ import me.woder.world.Location;
 public class CommandHandler {
     Client c;
     public ImportCommand impor = new ImportCommand();
-    private List<String> approvedUsers = new ArrayList<String>();
     private File f = new File("Permissions.txt");
     private Map<String,List<String>> commandPerms;
     private Map<String, String> userPerms;
@@ -36,7 +35,7 @@ public class CommandHandler {
         Scanner s = new Scanner(f);
         commandPerms = new TreeMap<String, List<String>>();
         userPerms = new TreeMap<String, String>();
-        while(s.hasNextInt()) {
+        while(s.hasNextLine()) {
         	commandPerms.put(s.nextLine(), Arrays.asList(s.nextLine().split(" ")));
         }
         s.close();
@@ -184,17 +183,19 @@ public class CommandHandler {
     }
     
     public boolean hasPermisssion(String command, String username) {
+    	if (username.equals("self")) {
+    		return true;
+    	}
     	String permLevel = userPerms.get(username);
-    	List<String> commands = commandPerms.get(permLevel);
+    	List<String> commands = null;
+    	if (permLevel!=null) {
+    		 commands = commandPerms.get(permLevel);
+    	}
     	boolean hasCommand = false;
     	if (commands!=null) {
     		hasCommand = commands.contains(command);
     	}
-    	if (username.equals("self")||hasCommand) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    	return hasCommand;
     }
     
     public void setUserPerms(String username, String permsLevel) {
