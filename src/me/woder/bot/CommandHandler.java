@@ -1,9 +1,15 @@
 package me.woder.bot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -17,14 +23,28 @@ public class CommandHandler {
     Client c;
     public ImportCommand impor = new ImportCommand();
     private List<String> approvedUsers = new ArrayList<String>();
+    private File f = new File("Permissions.txt");
+    private Map<String,List<String>> commandPerms;
+    private Map<String, String> userPerms;
     
-    public CommandHandler(Client c){
+    public CommandHandler(Client c) throws FileNotFoundException{
+    	if (!f.exists()) {
+      	  System.out.println("Working Directory = " + System.getProperty("user.dir"));
+           throw new FileNotFoundException("Permissions.txt missing from" + System.getProperty("user.dir"));
+        } 
         this.c = c;
+        Scanner s = new Scanner(f);
+        commandPerms = new TreeMap<String, List<String>>();
+        userPerms = new TreeMap<String, String>();
+        while(s.hasNextInt()) {
+        	commandPerms.put(s.nextLine(), Arrays.asList(s.nextLine().split(" ")));
+        }
+        s.close();
     }
     
     public void processCommand(String command, String[] args, String username){
         if (!hasPermisssion(command, username)) {
-        	c.chat.sendMessage(username+" does not have permission for "+command);
+        	//c.chat.sendMessage(username+" does not have permission for "+command);
         }else if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
         }else if(command.equalsIgnoreCase("move")){
@@ -125,14 +145,10 @@ public class CommandHandler {
                 c.gui.addText("Error respawning: " + e.getMessage());
             }
         } else if (command.equalsIgnoreCase("setuserperms")) {
-        	boolean perms;
-        	if (args[2].equals("true")) {
-        		perms = true;
-        	} else {
-        		perms = false;
-        	}
-        	setUserPerms(args[1],perms);
-        }else{
+        	setUserPerms(args[1],args[2]);
+        } else if (command.equalsIgnoreCase("removeuserperms")) {
+        	removeUserPerms(args[1]);
+        } else{
             c.ehandle.handleCommand(command, args, username);
         }
     }
@@ -168,29 +184,24 @@ public class CommandHandler {
     }
     
     public boolean hasPermisssion(String command, String username) {
-    	if (username.equals("self")) {
-    		return true;
-    	} else if (approvedUsers.contains(username)) {
+    	String permLevel = userPerms.get(username);
+    	List<String> commands = commandPerms.get(permLevel);
+    	boolean hasCommand = false;
+    	if (commands!=null) {
+    		hasCommand = commands.contains(command);
+    	}
+    	if (username.equals("self")||hasCommand) {
     		return true;
     	} else {
     		return false;
     	}
     }
     
-    public void setUserPerms(String username, boolean bool) {
-    	if (approvedUsers.contains(username)) {
-    		if (bool) {
-    			c.chat.sendMessage("User already has permissions");
-    		} else {
-    			approvedUsers.remove(username);
-    		}
-    	} else {
-    		if (bool) {
-    			approvedUsers.add(username);
-    		} else {
-    			c.chat.sendMessage("User did not have permissions");
-    		}
-    	}
+    public void setUserPerms(String username, String permsLevel) {
+    	userPerms.put(username, permsLevel);
+    }
+    public void removeUserPerms(String username) {
+    	userPerms.remove(username);
     }
       
     public void pluginH(String[] messages, String append, List<String> helpl){
