@@ -49,7 +49,7 @@ public class Block {
     }
     
     private boolean canBlockBeWalkedThrough(int id) {
-        return (id == 0 || id == 6 || id == 7 || id == 8 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
+        return (id == 0 || id == 6 || id == 8 || id == 9 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
                 || id == 76 || id == 78);
     }
     

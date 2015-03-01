@@ -229,12 +229,12 @@ public class Client {
            if(chunksloaded){
         	 //Only do this if we have loaded chunks, *might* be null other wise
         	 gui.pradar.dbot.updateText(username, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-             if(System.currentTimeMillis() - lastGrav >= 25){
+             if(System.currentTimeMillis() - lastGrav >= 20){
                 move.applyGravity();//Apply gravity
                 lastGrav = System.currentTimeMillis();
+                move.tick();
              }
-             move.tick();
-             fps.tick();
+             //fps.tick();
              //System.out.println("FPS: " + fps.getFPS());
             //move.sendOnGround();
            }

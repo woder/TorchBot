@@ -1,7 +1,10 @@
 package me.woder.bot;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -161,34 +164,34 @@ public class MovementHandler {
         	   return b;
         	  }
         	}
+        	if(i > 300000){
+        	    break;
+        	}
         }
 		return null;
     }
     
     public void applyGravity(){
-       Block solid = getSolidBlock();
-       if(solid != null){
-    	int y = solid.getY();
-        //c.chat.sendMessage("Y is: " + y + " and " + (c.location.getY() != y));
+       Block solid = getSolidBlock();//Get the first solid block under the bot, this could be very far away
+       if(solid != null){ //Make sure that the block isn't null
+    	int y = solid.getY(); //Get the Y for that block
         if(!CollisionLibrary.doesOverlap(c.boundbox, solid.getBoundBox())){ //If he hasn't hit something yet then continue
-         if(moveY < 3.92){
-           moveY += 0.08; 
+         if(moveY < 3.92){//if we haven't hit our terminal velocity
+           moveY += 0.16;//increase our speed
          }
          //Test to see if moving will cause us to collide, if it does shift us back on track
          if(!CollisionLibrary.willOverlap(c.boundbox, solid.getBoundBox(), c.boundbox.centre.x, c.location.getY()-moveY, c.boundbox.centre.z)){
-          c.chat.sendMessage("Detected that we are not on land! " + y);
-          c.onground = false;
-          c.location.setY(c.location.getY() - (moveY));
+          c.onground = false;//make sure the server knows we know we aren't on the ground
+          c.location.setY(c.location.getY() - (moveY));//move downwards
          }else{
-          moveY = 0.96;
-          c.location.setY(y+1);
-          c.onground = true;
+          moveY = 0.96;//reset our acceleration
+          c.location.setY(y+1);//place us 1 block above the solid block (this will always be some non solid block that we can stand in)
+          c.onground = true;//and let the server know that we know that we are on the ground
          }
-        }else{
-           moveY = 0.96;
-           c.location.setY(y+1);
-           c.onground = true;
-           //c.chat.sendMessage("We collide and are now at: " + c.location.getY());
+        }else{//if we do overlap
+           moveY = 0.96;//reset the acceleration
+           c.location.setY(y+1);//place us 1 block above the solid block (this will always be some non solid block that we can stand in)
+           c.onground = true;//and let the server know that we know that we on the ground
         }
        }
     }
