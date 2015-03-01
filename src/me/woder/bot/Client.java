@@ -109,7 +109,7 @@ public class Client {
     public String accesstoken;
     public String clienttoken;
     public String profile;
-    public String version = "0.3";
+    public String version = "1.0";
     public String versioninfo = "TorchBot version " + version + " by woder";
     public File[] plugins = null;
     public String[] cmds = null;

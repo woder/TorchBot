@@ -42,7 +42,7 @@ public class CommandHandler {
     }
     
     public void processCommand(String command, String[] args, String username){
-        if (!hasPermisssion(command, username)) {
+        if (false/*!hasPermisssion(command, username)*/) {
         	//c.chat.sendMessage(username+" does not have permission for "+command);
         }else if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
@@ -200,9 +200,11 @@ public class CommandHandler {
     
     public void setUserPerms(String username, String permsLevel) {
     	userPerms.put(username, permsLevel);
+    	c.chat.sendMessage("User " + username + " granted permission level " + permsLevel);
     }
     public void removeUserPerms(String username) {
     	userPerms.remove(username);
+    	c.chat.sendMessage("Revoked all permissions for " + username);
     }
       
     public void pluginH(String[] messages, String append, List<String> helpl){
