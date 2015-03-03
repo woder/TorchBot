@@ -49,5 +49,8 @@ c.ploader.reloadPlugins();
 
 //the function below is REQUIRED!!!
 function getCommand(){ //this is the function that registers the commands that your plugin will need. The format of these commands is nameofcommand;description,nameofcommand;description and so on, its important to note that there is no space between the delimiters (the commas and the semi colons) as placing a space there will cause errors
-return "under;Prints information about the block under the bot,version;Returns the version of the bot,reload;Reloads all plugins,respawn;Respawns the bot";
+c.perms.register(1, "under");
+c.perms.register(0, "version");
+c.perms.register(1, "reload");
+return "under;Prints information about the block under the bot,version;Returns the version of the bot,reload;Reloads all plugins";
 }
