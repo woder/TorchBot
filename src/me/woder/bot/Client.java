@@ -70,6 +70,7 @@ public class Client {
     public Authenticator auth;
     public ServerPinger servping;
     public ForceField force;
+    public Perms perms;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -149,12 +150,14 @@ public class Client {
         Logger.getLogger("me.woder.chat").setLevel(Level.FINEST);
         Logger.getLogger("me.woder.error").setLevel(Level.FINEST);
         prefix = "!";
-        gui.addText("§3Welcome to TorchBot " + version + ", press the connect button to connect to the server defined in config");
-        gui.addText("§3 or press the change server button to login to a new server.");   
+        gui.addText(ChatColor.DARK_AQUA + "Welcome to TorchBot " + version + ", press the connect button to connect to the server defined in config");
+        System.out.println("Welcome to TorchBot " + version + ", press the connect button to connect to the server defined in config");
+        gui.addText(ChatColor.DARK_AQUA + "or press the change server button to login to a new server.");   
         auth = new Authenticator(this);//declare our new objects
         servping = new ServerPinger(this);
         auth.authPlayer(username, password);//use them to do important things
         servping.pingServer(servername, port);      
+        perms = new Perms(this); //this must be done before the plugins are enabled
         ploader = new PluginLoader(this);
         ploader.loadPlugins();
         gui.pradar.dbot.updateName(username);
@@ -178,7 +181,7 @@ public class Client {
         try{
           // open a socket
         System.out.println("Attempting to connect to: " + servername + " on " + port);
-        gui.addText("§3Attempting to connect to: " + servername + " on " + port);
+        gui.addText(ChatColor.DARK_AQUA + "Attempting to connect to: " + servername + " on " + port);
         clientSocket = new Socket(servername, port);
         out = new DataOutputStream(clientSocket.getOutputStream());
         in = new DataInputStream(clientSocket.getInputStream());
@@ -263,8 +266,10 @@ public class Client {
             invhandle = null;
             location = null;
             move = null;
+            perms = null;
+            net = null;
         } catch (IOException e) {
-            gui.addText("§4Unable to disconnect! Weird error.. (check network log)");
+            gui.addText(ChatColor.DARK_RED + "Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
         }        
     }

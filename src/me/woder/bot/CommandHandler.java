@@ -22,27 +22,13 @@ import me.woder.world.Location;
 public class CommandHandler {
     Client c;
     public ImportCommand impor = new ImportCommand();
-    private File f = new File("Permissions.txt");
-    private Map<String,List<String>> commandPerms;
-    private Map<String, String> userPerms;
     
-    public CommandHandler(Client c) throws FileNotFoundException{
-    	if (!f.exists()) {
-      	  System.out.println("Working Directory = " + System.getProperty("user.dir"));
-           throw new FileNotFoundException("Permissions.txt missing from" + System.getProperty("user.dir"));
-        } 
+    public CommandHandler(Client c){
         this.c = c;
-        Scanner s = new Scanner(f);
-        commandPerms = new TreeMap<String, List<String>>();
-        userPerms = new TreeMap<String, String>();
-        while(s.hasNextLine()) {
-        	commandPerms.put(s.nextLine(), Arrays.asList(s.nextLine().split(" ")));
-        }
-        s.close();
     }
     
     public void processCommand(String command, String[] args, String username){
-        if (false/*!hasPermisssion(command, username)*/) {
+        if (!c.perms.hasPermisssion(command, username)) {
         	//c.chat.sendMessage(username+" does not have permission for "+command);
         }else if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
@@ -144,8 +130,9 @@ public class CommandHandler {
                 c.gui.addText("Error respawning: " + e.getMessage());
             }
         } else if (command.equalsIgnoreCase("setuserperms")) {
-        	setUserPerms(args[1],args[2]);
+        	c.perms.setUserPerms(args[1],args[2]);
         } else if (command.equalsIgnoreCase("removeuserperms")) {
+<<<<<<< HEAD
         	removeUserPerms(args[1]);
         } else if (command.equalsIgnoreCase("swapSlots")) {
         	if ((Integer.parseInt(args[1])>44||Integer.parseInt(args[2])>44)) {
@@ -160,6 +147,10 @@ public class CommandHandler {
         	c.invhandle.sendSlot(slot1);//TODO: make sendSlot an actual method in InvHandler
         	c.invhandle.sendSlot(slot2);
         }else{
+=======
+        	c.perms.removeUserPerms(args[1]);
+        } else{
+>>>>>>> origin/master
             c.ehandle.handleCommand(command, args, username);
         }
     }
@@ -192,31 +183,6 @@ public class CommandHandler {
       }else{
         c.chat.sendMessage("Command use: help <plugin name> **Note that \"core\" contains all core bot commands**");
       }
-    }
-    
-    public boolean hasPermisssion(String command, String username) {
-    	if (username.equals("self")) {
-    		return true;
-    	}
-    	String permLevel = userPerms.get(username);
-    	List<String> commands = null;
-    	if (permLevel!=null) {
-    		 commands = commandPerms.get(permLevel);
-    	}
-    	boolean hasCommand = false;
-    	if (commands!=null) {
-    		hasCommand = commands.contains(command);
-    	}
-    	return hasCommand;
-    }
-    
-    public void setUserPerms(String username, String permsLevel) {
-    	userPerms.put(username, permsLevel);
-    	c.chat.sendMessage("User " + username + " granted permission level " + permsLevel);
-    }
-    public void removeUserPerms(String username) {
-    	userPerms.remove(username);
-    	c.chat.sendMessage("Revoked all permissions for " + username);
     }
       
     public void pluginH(String[] messages, String append, List<String> helpl){
