@@ -58,5 +58,13 @@ public class Slot {
     public void setCount(byte count) {
         this.count = count;
     }
+    
+    public int getNum() {
+    	return slotnum;
+    }
+    
+    public void setNum(int num) {
+    	slotnum=num;
+    }
 
 }

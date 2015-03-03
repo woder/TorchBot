@@ -215,3 +215,5 @@ pip-log.txt
 .mr.developer.cfg
 /target/
 config.properties
+src/me/nuvasuper/
+logs/

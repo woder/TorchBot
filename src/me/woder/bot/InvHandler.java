@@ -32,6 +32,8 @@ public class InvHandler {
         }
     }
     
+    //pre: id is from 0-8
+    //post: sets the active hotkey slot to the given id, and stores the current slot as an inventory location to currentSlot.
     public void selectSlot(short id){
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         try {
@@ -54,6 +56,16 @@ public class InvHandler {
         }
         if(!found){
            inventory.add(slot);
+        }
+    }
+    
+    public void sendSlot(Slot slot) {//TODO: make sendSlot an actual method in InvHandler
+    	boolean found = false;
+        for(Slot s : inventory){
+            //do something
+        }
+        if(!found){
+           //do something else
         }
     }
 
