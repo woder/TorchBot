@@ -1,15 +1,10 @@
 package me.woder.bot;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Map;
-import java.util.TreeMap;
+
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -132,8 +127,7 @@ public class CommandHandler {
         } else if (command.equalsIgnoreCase("setuserperms")) {
         	c.perms.setUserPerms(args[1],args[2]);
         } else if (command.equalsIgnoreCase("removeuserperms")) {
-<<<<<<< HEAD
-        	removeUserPerms(args[1]);
+        	c.perms.removeUserPerms(args[1]);
         } else if (command.equalsIgnoreCase("swapSlots")) {
         	if ((Integer.parseInt(args[1])>44||Integer.parseInt(args[2])>44)) {
         		c.chat.sendMessage("invalid inventory ids");
@@ -146,11 +140,7 @@ public class CommandHandler {
         	slot2.setNum(temp);
         	c.invhandle.sendSlot(slot1);//TODO: make sendSlot an actual method in InvHandler
         	c.invhandle.sendSlot(slot2);
-        }else{
-=======
-        	c.perms.removeUserPerms(args[1]);
         } else{
->>>>>>> origin/master
             c.ehandle.handleCommand(command, args, username);
         }
     }
