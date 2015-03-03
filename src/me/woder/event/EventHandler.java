@@ -12,7 +12,6 @@ import me.woder.plugin.Plugin;
 
 public class EventHandler {
     Client c;
-    Context context;
     /* Event list so far
      * onSpawnPlayer String playername, String uuid, int x, int y, int z, byte yaw, byte pitch, short currentitem
      * onSignUpdate int x, int y, int z, String line1, String line2, String line3, String line4
@@ -31,12 +30,13 @@ public class EventHandler {
     
     public EventHandler(Client c){
         this.c = c;
-        context = Context.enter();
     }
     
     public void handleEvent(Event event){
-        List<Plugin> pul = getPluginEvents(event);        
-        for(int i = 0; i < pul.toArray().length; i++){
+        List<Plugin> pul = getPluginEvents(event);    
+        Context context = Context.enter();
+        try {
+         for(int i = 0; i < pul.toArray().length; i++){
             try {
                ScriptableObject scope = pul.get(i).scope;
                Function fct = (Function)scope.get(event.type, scope);
@@ -46,12 +46,17 @@ public class EventHandler {
             } catch (IllegalArgumentException e) {
                 c.gui.addText("§3Warning: Wrong amount of argument error encountered while trying to pass " + event.type + " to " + pul.get(i).getName() + "\n" + e.getMessage());
             }
+         }
+        }finally{
+            Context.exit();
         }
     }
     
     public void handleCommand(String name, String[] args, String username){
         List<Plugin> pul = getPluginCommands(name);
-        for(int i = 0; i < pul.toArray().length; i++){
+        Context context = Context.enter();
+        try{
+         for(int i = 0; i < pul.toArray().length; i++){
             try {
                 ScriptableObject scope = pul.get(i).scope;
                 Function fct = (Function)scope.get(name, scope);
@@ -61,6 +66,9 @@ public class EventHandler {
              } catch (IllegalArgumentException e) {
                  c.gui.addText("§3Warning: Wrong amount of argument error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
              }
+         }
+        }finally{
+            Context.exit();
         }
     }
     

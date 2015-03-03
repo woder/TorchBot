@@ -49,10 +49,7 @@ public class TorchGUI extends JPanel{
     JTextPane chat;
     JTextArea status;
     JLabel news;
-    String text = "i have written source code for scrolling text messages from "+  
-            "right to left using applets,but the requirement is that the text should be "+  
-            "scrolled from bottom of the page and it has start from corner of window "+  
-            "applet.Please,can anyone suggest me on how to do this. ";      
+    String text = "Check out the Torchbot website at torchbot.net! and don't forget to visit torchbot.net/forum!";      
     
     final StyleContext cont = StyleContext.getDefaultStyleContext();
     final AttributeSet black = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, new Color(0,0,0));
