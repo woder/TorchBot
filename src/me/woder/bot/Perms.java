@@ -60,7 +60,7 @@ public class Perms {
     public boolean register(int level, String command){
         boolean result = false;
         List<String> commands = commandPerms.get(level);
-        if(commands != null){
+        if(commands != null && !commands.contains(commands)){
             commands.add(command);
             result = true;
         }
