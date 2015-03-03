@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -168,8 +169,8 @@ public class Client {
        try{
          this.port = Integer.parseInt(port);
        }catch(NumberFormatException e){
-         netlog.log(Level.SEVERE, "§4Port was not an integer!");
-         gui.addText("§4Port was not an integer!");
+         netlog.log(Level.SEVERE, "Port was not an integer!");
+         gui.addText(ChatColor.DARK_RED + "Port was not an integer!");
        }
        startBot();
     }
@@ -218,12 +219,13 @@ public class Client {
         location = new Location(world, 0, 0, 0);
         move = new MovementHandler(this);
         force = new ForceField(this);
-        FPSCounter fps = new FPSCounter();
         boundbox = new AABB(0.6, 1.8);
+        
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
         }*/
+        
         long lastGrav = System.currentTimeMillis();
         while(running){
            //mainloop/
@@ -243,13 +245,16 @@ public class Client {
            }
         }
          
-      }catch (Exception e){
-          e.printStackTrace();
+      }catch(IOException e){
+          stopBot();
+          gui.addText(ChatColor.DARK_RED + "IOException: " + e.getMessage());
       }
     }
     
     public void stopBot(){
+       if(running){
         try {
+            gui.addText(ChatColor.DARK_RED + "Disconnected from server.");
             running = false;
             out.close();
             in.close();
@@ -266,12 +271,14 @@ public class Client {
             invhandle = null;
             location = null;
             move = null;
-            perms = null;
             net = null;
         } catch (IOException e) {
             gui.addText(ChatColor.DARK_RED + "Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
         }        
+       }else{
+           gui.addText(ChatColor.DARK_RED + "Can not disconect when not connected to anything!");
+       }
     }
     
     public void reauth() { //The purpose of this is to reauthencate the user if the first one failed for some reason
