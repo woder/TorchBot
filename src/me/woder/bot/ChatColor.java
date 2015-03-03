@@ -106,7 +106,6 @@ public enum ChatColor {
     private final int intCode;
     private final char code;
     private final boolean isFormat;
-    private final String toString;
     
     private ChatColor(char code, int intCode) {
         this(code, intCode, false);
@@ -116,7 +115,10 @@ public enum ChatColor {
         this.code = code;
         this.intCode = intCode;
         this.isFormat = isFormat;
-        this.toString = new String(new char[] {COLOR_CHAR, code});
+    }
+    
+    public String toString(){
+        return new String(new char[] {COLOR_CHAR, code});
     }
     
     public static String stripColor(final String input) {
