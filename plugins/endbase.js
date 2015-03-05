@@ -36,12 +36,21 @@ function bridge(command) {
         ifx = parseInt(0);
         ifz = parseInt(0);
         i = parseInt(0);
+        face = parseInt(1);
     if (dir == "x") {
         ifx = parseInt(1);
-    } else {
+        face = parseInt(5);
+    } else if (dir =="z") {
         ifz = parseInt(1);
+        face = parseInt(3);
+    } else if (dir =="-x") {
+    	ifx = parseInt(-1);
+    	face = parseInt(4);
+    } else {
+    	ifz = parseInt(-1);
+    	face = parseInt(2);
     }
-    var initial = new Packages.me.woder.world.Location(c.location.world,parseInt(c.location.getBlockX()) + parseInt(ifx), c.location.getBlockY() - 1, parseInt(c.location.getBlockZ()) + parseInt(ifz)),
+    var initial = new Packages.me.woder.world.Location(c.location.world,parseInt(c.location.getBlockX())+parseInt(ifx), c.location.getBlockY() - 1, parseInt(c.location.getBlockZ())+parseInt(ifz)),
    //find initial placement position
         count = parseInt(c.invhandle.inventory.get(c.invhandle.currentSlot).getCount()),
         id = parseInt(c.invhandle.inventory.get(c.invhandle.currentSlot).getId());
@@ -85,7 +94,9 @@ function bridge(command) {
 
 })()
 	//stuff we stole behind us
-    
+    var myBlock = c.whandle.getWorld().getBlock(parseInt(c.location.getBlockX()), parseInt(c.location.getBlockY()-1), parseInt(c.location.getBlockZ()));
+    var breakTime =   parseInt(myBlock.getBreakTime(id));
+    c.chat.sendMessage("Breaktime = "+breakTime);
     var ourID = setInterval(
        function placemovedig() {
            //c.chat.sendMessage("step= "+i);
@@ -109,7 +120,7 @@ function bridge(command) {
            }
            c.chandle.processConsoleCommand("!dig " + (ifx * -3) + " -1 " + (ifz * -3));
            i++;
-    }, 1000);
+    }, breakTime);
     setTimeout(function() {clearInterval(ourID);},length*parseInt(1000)+parseInt(1));
 }
 
