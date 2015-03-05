@@ -49,7 +49,7 @@ public class TorchGUI extends JPanel{
     JTextPane chat;
     JTextArea status;
     JLabel news;
-    String text = "Check out the Torchbot website at torchbot.net! and don't forget to visit torchbot.net/forum!";      
+    String text = "Check out the Torchbot website at torchbot.net! and don't forget to visit torchbot.net/forum! ";      
     
     final StyleContext cont = StyleContext.getDefaultStyleContext();
     final AttributeSet black = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, new Color(0,0,0));

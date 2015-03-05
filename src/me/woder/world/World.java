@@ -46,12 +46,16 @@ public class World {
     }
     
     public void placeBlock(int x, int y, int z, int id){
+        placeBlock(x, y, z, id, 1);
+    }
+    
+    public void placeBlock(int x, int y, int z, int id, int face){
        ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
        try {
         long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | (long)(z & 0x3FFFFFF);
         Packet.writeVarInt(buf, 8);
         buf.writeLong(pos);
-        buf.writeByte(1);
+        buf.writeByte(face);
         new Slot(0,(short)id,(byte)1,(short)0,(byte)0).sendSlot(buf);
         buf.writeByte(0);
         buf.writeByte(0);
