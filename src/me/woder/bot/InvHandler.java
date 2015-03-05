@@ -68,5 +68,14 @@ public class InvHandler {
            //do something else
         }
     }
+    
+    public Slot getItem(short id) {
+    	for(Slot s: inventory) {
+    		if (s.getId()==id) {
+    			return s;
+    		}
+    	}
+    	return null;
+    }
 
 }

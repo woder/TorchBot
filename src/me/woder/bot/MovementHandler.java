@@ -45,7 +45,7 @@ public class MovementHandler {
             case SUCCESS : 
                 //Path was successful. Do something here.
                 moveAlong(start, route);
-                c.chat.sendMessage("Path was found! :D");
+                //c.chat.sendMessage("Path was found! :D");
                 break;
             case NO_PATH :
                 //No path found, throw error.
