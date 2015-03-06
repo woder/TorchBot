@@ -1,4 +1,4 @@
 0
 whereareyou whatis holding inv
 1
-help move whereareyou whatis holding export impoct list inv select place dig respawn friends setuserperms
+help move whereareyou whatis holding export impoct list inv select place dig respawn friends setuserperms removeuserperms swap

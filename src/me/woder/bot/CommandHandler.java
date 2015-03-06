@@ -128,18 +128,8 @@ public class CommandHandler {
         	c.perms.setUserPerms(args[1],args[2]);
         } else if (command.equalsIgnoreCase("removeuserperms")) {
         	c.perms.removeUserPerms(args[1]);
-        } else if (command.equalsIgnoreCase("swapSlots")) {
-        	if ((Integer.parseInt(args[1])>44||Integer.parseInt(args[2])>44)) {
-        		c.chat.sendMessage("invalid inventory ids");
-        	}
-        	Slot slot1 = c.invhandle.inventory.get(Integer.parseInt(args[1]));
-        	Slot slot2 = c.invhandle.inventory.get(Integer.parseInt(args[2]));
-        	c.chat.sendMessage("swapping slots " + slot1.getNum()+ " and " + slot2.getNum() + " with items " + slot1.getId() + " and " + slot2.getId());
-        	int temp = slot1.getNum();
-        	slot1.setNum(slot2.getNum());
-        	slot2.setNum(temp);
-        	c.invhandle.sendSlot(slot1);//TODO: make sendSlot an actual method in InvHandler
-        	c.invhandle.sendSlot(slot2);
+        } else if (command.equalsIgnoreCase("swap")) {
+        	c.invhandle.swapSlots(Integer.parseInt(args[1]),Integer.parseInt(args[2]));
         } else{
             c.ehandle.handleCommand(command, args, username);
         }

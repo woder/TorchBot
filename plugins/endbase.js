@@ -105,7 +105,7 @@ function bridge(command) {
            //place block in front
            count--;
            if (!(count > 0)) {
-               if (!getBlocks(id)) {
+               if (!c.invhandle.swapTo(id)) {
                    i = length;
                }
            }
@@ -128,11 +128,10 @@ function bridge(command) {
 
 function test(command) {
     var a = parseInt(command[1]);
-    var b = parseInt(command[2])
+    //var b = parseInt(command[2]);
     
-    c.chat.sendMessage("test1");
-    c.chat.sendMessage(1+a);
-    c.chat.sendMessage(1+b);
+    c.invhandle.swapTo(a);
+    
 }
 
 //the function below is REQUIRED!!!

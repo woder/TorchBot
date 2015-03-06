@@ -66,5 +66,9 @@ public class Slot {
     public void setNum(int num) {
     	slotnum=num;
     }
+    
+    public byte getNbtlen() {
+    	return nbtlen;
+    }
 
 }
