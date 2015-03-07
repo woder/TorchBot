@@ -297,7 +297,7 @@ public class TorchGUI extends JPanel{
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = String.valueOf(text) + "\n";
         //Legacy code, color method seems to have changed :( #notwiththishackdoe
-        if(text.contains(Character.toString(ChatColor.COLOR_CHAR))){
+        if(text.contains("§")){
           addSym(text);
         }else{
           addCom(text);
@@ -315,7 +315,7 @@ public class TorchGUI extends JPanel{
     }
     
     private void addSym(String text){
-        String[] lines = text.split(Character.toString(ChatColor.COLOR_CHAR));
+        String[] lines = text.split("§");
 
         for (int i = 1; i < lines.length; i++){
             String line = lines[i];

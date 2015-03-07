@@ -5,6 +5,9 @@
   <version>1.0.0</version>
   <name>TorchBot</name>
   <description>A bot for minecraft</description>
+  <properties>
+   <project.build.sourceEncoding>ANSI</project.build.sourceEncoding>
+  </properties>
   <build>
     <sourceDirectory>src</sourceDirectory>
 	<defaultGoal>install</defaultGoal>
