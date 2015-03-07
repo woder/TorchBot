@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import me.woder.bot.ChatColor;
 import me.woder.bot.Client;
 import me.woder.bot.ThreadMainLoop;
 
@@ -296,7 +297,7 @@ public class TorchGUI extends JPanel{
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = String.valueOf(text) + "\n";
         //Legacy code, color method seems to have changed :( #notwiththishackdoe
-        if(text.contains("§")){
+        if(text.contains(Character.toString(ChatColor.COLOR_CHAR))){
           addSym(text);
         }else{
           addCom(text);

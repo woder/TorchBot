@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,10 @@ public class Perms {
         try{
           if(!f.exists()) {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
-                throw new FileNotFoundException("Permissions.txt missing from" + System.getProperty("user.dir"));
+            File copy = new File("PermissionsCopy.txt");
+            if(copy.exists()){
+               Files.copy(copy.toPath(), f.toPath());
+            }
           }
           Scanner s = new Scanner(f);
           commandPerms = new TreeMap<Integer, List<String>>();
@@ -51,9 +55,11 @@ public class Perms {
               sc.close();
           }
         }catch(FileNotFoundException e){
-            e.printStackTrace();
+            c.gui.addText("Warning: Permissions file could not be found");
         }catch(NumberFormatException e){
             c.gui.addText("Warning: Incorect file syntax (what should be a numer was unparsable)");
+        } catch (IOException e) {
+            c.gui.addText("Fatal IO error: " + e.getMessage());
         }
     }
     

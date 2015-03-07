@@ -9,7 +9,6 @@
 
 package me.woder.world;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,9 +34,9 @@ public class World {
         this.c = c;
         try {
 			this.bim = new BlockInfoManager();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			System.out.println("BlockManager couldn't find BlockInfo.txt, ending the world...");
-			e.printStackTrace();
+			c.error.displayError(e.getMessage(), "IOException", e.getCause().getMessage());
 		}
     }
     

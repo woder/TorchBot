@@ -1,6 +1,7 @@
 package me.woder.world;
 import java.util.*;
 import java.io.*;
+import java.nio.file.Files;
 /*
 Clark Krusemark
 24/02/2015 (dd/mm/yyyy)
@@ -32,14 +33,17 @@ public class BlockInfoManager{
    //private Map<Integer String> metavalueMap;
    private File f = new File("BlockInfo.txt");
    
-   public BlockInfoManager() throws FileNotFoundException {
+   public BlockInfoManager() throws IOException {
    
       BLOCK_NAME = new HashMap<Integer,String>();
       HARDNESS = new HashMap<Integer,Integer>();
       TOOL = new HashMap<Integer,Integer>();
       if (!f.exists()) {
-    	  System.out.println("Working Directory = " + System.getProperty("user.dir"));
-         throw new FileNotFoundException("BlockInfo.txt missing from" + System.getProperty("user.dir"));
+    	 System.out.println("Working Directory = " + System.getProperty("user.dir"));
+    	 File copy = new File("BlockInfoCopy.txt");
+         if(copy.exists()){
+            Files.copy(copy.toPath(), f.toPath());
+         }
       } 
       Scanner s = new Scanner(f);
       while(s.hasNext()) {

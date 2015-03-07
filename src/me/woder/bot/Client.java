@@ -72,6 +72,7 @@ public class Client {
     public ServerPinger servping;
     public ForceField force;
     public Perms perms;
+    public ErrorManager error;
     Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
@@ -220,7 +221,7 @@ public class Client {
         move = new MovementHandler(this);
         force = new ForceField(this);
         boundbox = new AABB(0.6, 1.8);
-        
+        error = new ErrorManager(this);
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
@@ -247,7 +248,7 @@ public class Client {
          
       }catch(IOException e){
           stopBot();
-          gui.addText(ChatColor.DARK_RED + "IOException: " + e.getMessage());
+          error.displayError(e.getMessage(), "IOException", e.getCause().getMessage());
       }
     }
     
@@ -273,6 +274,7 @@ public class Client {
             move = null;
             net = null;
         } catch (IOException e) {
+            error.displayError(e.getMessage(), "IOException", e.getCause().getMessage());
             gui.addText(ChatColor.DARK_RED + "Unable to disconnect! Weird error.. (check network log)");
             netlog.log(Level.SEVERE, "UNABLE TO DISCONNECT: " + e.getMessage());
         }        
