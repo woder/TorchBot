@@ -8,6 +8,16 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
 	<defaultGoal>install</defaultGoal>
+	<resources>
+          <resource>
+            <directory>src</directory>
+            <filtering>false</filtering>
+            <includes>
+              <include>BlockInfoCopy.txt</include>
+              <include>PermissionsCopy.txt</include>
+            </includes>
+          </resource>
+        </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
