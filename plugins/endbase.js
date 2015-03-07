@@ -29,7 +29,7 @@ function getBlocks(id) {
     return false;
 }
 
-function bridge(command) {
+function bridge(command) { 
 //    "use strict";
     var dir = command[2];
         length = parseInt(command[1], 10);
@@ -50,14 +50,12 @@ function bridge(command) {
     	ifz = parseInt(-1);
     	face = parseInt(2);
     }
-    var initial = new Packages.me.woder.world.Location(c.location.world,parseInt(c.location.getBlockX())+parseInt(ifx), c.location.getBlockY() - 1, parseInt(c.location.getBlockZ())+parseInt(ifz)),
+    //use ifx ifz for displacement? no?
+    var initial = new Packages.me.woder.world.Location(c.location.world,parseInt(c.location.getBlockX()), c.location.getBlockY()-parseInt(1), parseInt(c.location.getBlockZ())),
    //find initial placement position
         count = parseInt(c.invhandle.inventory.get(c.invhandle.currentSlot).getCount()),
         id = parseInt(c.invhandle.inventory.get(c.invhandle.currentSlot).getId());
-    if (count < 5) {
-        c.chat.sendMessage("not enough blocks in hand");
-        return;
-    }
+    c.chat.sendMessage("count: "+count); 
     
     //stuff we stole in front of us
 	var setTimeout,
@@ -101,12 +99,18 @@ function bridge(command) {
        function placemovedig() {
            //c.chat.sendMessage("step= "+i);
            var b = c.whandle.getWorld().getBlock(parseInt(ifx * i) + parseInt(initial.getX()), initial.getY(), parseInt(initial.getZ()) + parseInt(ifz * i));
-           c.whandle.getWorld().placeBlock(b.getX(), b.getY(), b.getZ(), 3);
+           c.whandle.getWorld().placeBlock(b.getX(), b.getY(), b.getZ(), 3, face);
            //place block in front
            count--;
            if (!(count > 0)) {
-               if (!c.invhandle.swapTo(id)) {
-                   i = length;
+               c.chat.sendMessage("out of blocks: count ="+count);
+               var goMore = parseInt(c.invhandle.swapTo(id));
+               if (goMore>0) {
+                   count = goMore;
+                   c.chat.sendMessage("continuing");
+               } else {
+                   c.chat.sendMessage("aborting");
+                   clearInterval(ourID);
                }
            }
            if (i!=0) {
@@ -126,11 +130,8 @@ function bridge(command) {
 
 
 
-function test(command) {
-    var a = parseInt(command[1]);
-    //var b = parseInt(command[2]);
-    
-    c.invhandle.swapTo(a);
+function test(args) {
+	c.invhandle.swapTo(args[1]);
     
 }
 

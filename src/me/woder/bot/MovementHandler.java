@@ -45,22 +45,22 @@ public class MovementHandler {
             case SUCCESS : 
                 //Path was successful. Do something here.
                 moveAlong(start, route);
-                //c.chat.sendMessage("Path was found! :D");
+                System.out.println("Path was found! :D");
                 break;
             case NO_PATH :
                 //No path found, throw error.
                 System.out.println("No path found!");
-                c.chat.sendMessage("No path was found :(");
+                //c.chat.sendMessage("No path was found :(");
                 break;
              default:
-                c.chat.sendMessage("Well... appearently we didn't find a path and we did... at the same time");
+                //c.chat.sendMessage("Well... appearently we didn't find a path and we did... at the same time");
                 break;
             }
         } catch (InvalidPathException e) {
             //InvalidPathException will be thrown if start or end block is air
             if(e.isEndNotSolid()){
-                System.out.println("End block is not walkable");
-                c.chat.sendMessage("Unable to walk on the block you are standing on.");
+                //System.out.println("End block is not walkable");
+                //c.chat.sendMessage("Unable to walk on the block you are standing on.");
             }
             if(e.isStartNotSolid()){
                 System.out.println("Start block is not walkable");

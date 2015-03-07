@@ -32,14 +32,14 @@ public class CommandHandler {
              Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
              if(p != null){
                Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
-               c.chat.sendMessage("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
+               System.out.println("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
                Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
                c.move.runPathing(l, loc, 100);
              }else{
-               c.chat.sendMessage(username + ": couldn't find a player by that name");
+               //c.chat.sendMessage(username + ": couldn't find a player by that name");
              }
             }else{
-               c.chat.sendMessage("Wrong amount of arguments provided!");
+               //c.chat.sendMessage("Wrong amount of arguments provided!");
             }
         }else if(command.equalsIgnoreCase("whereareyou")){
         	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());
@@ -92,7 +92,7 @@ public class CommandHandler {
                 Packet.writeVarInt(buf, 22);
                 buf.writeByte(0);
                 c.net.sendPacket(buf, c.out);
-                c.chat.sendMessage("Respawned!");
+                //c.chat.sendMessage("Respawned!");
             } catch (IOException e) {
                 e.printStackTrace();
             }    
@@ -103,9 +103,9 @@ public class CommandHandler {
                  }else{
                   if(!c.friends.contains(args[2])){
                       c.friends.add(args[2]);
-                      c.chat.sendMessage("Added " + ChatColor.stripColor(args[2]) + " to the friendlist");
+                      System.out.println("Added " + ChatColor.stripColor(args[2]) + " to the friendlist");
                   }else{
-                      c.chat.sendMessage("Could not add because " + ChatColor.stripColor(args[2]) + " is already on the list");
+                      System.out.println("Could not add because " + ChatColor.stripColor(args[2]) + " is already on the list");
                   }
                  }
                 }else if(args[1].equalsIgnoreCase("delete")){

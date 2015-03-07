@@ -80,14 +80,16 @@ public class InvHandler {
     	return null;
     }
     
-    public boolean swapTo(short id) {
+    public int swapTo(short id) {
     	Slot item = getItem(id);
     	if (item!=null) {
+    		c.chat.sendMessage("found "+item.getCount()+" of "+item.getId()+"moving to slot "+currentSlot);
     		swapSlots(currentSlot, item.getNum());
-    		return true;
+    		return item.getCount();
     	} else {
-    		return false;
+    		return -1;
     	}
+    	
     }
     
     public void swapSlots(final int a, final int b) {
@@ -95,7 +97,8 @@ public class InvHandler {
     		System.out.println("Passed slots do not exist");
     		return;
     	}
-    	//c.chat.sendMessage("swapping slots "+a+" and "+b);
+    	System.out.println("swapping slots "+a+" and "+b);
+    	
     	int delay = 100;
     	final Timer timer = new Timer();
     	Slot originalA = c.invhandle.inventory.get(a);
@@ -105,7 +108,7 @@ public class InvHandler {
     			originalA.getCount(),originalA.getDamage(),originalA.getNbtlen());//the location of B, with the contents of A
     	final Slot slotA = new Slot(originalA.getNum(),originalB.getId(),
     			originalB.getCount(),originalB.getDamage(),originalB.getNbtlen());//the location of A, with the contents of B
-    	
+    	System.out.println("original contents: "+originalA.getId()+","+originalB.getId());
     	timer.schedule(new TimerTask(){
             public void run() {
             	clickSlot(a);//pick up contents of a
@@ -135,6 +138,9 @@ public class InvHandler {
             	timer.cancel();
             }
         }, delay*4);
+    	
+    	
+    	System.out.println("new contents: "+inventory.get(a).getId()+","+inventory.get(b).getId());
     	//pray to Notch that we don't need to handle or send confirmations
     }
     
