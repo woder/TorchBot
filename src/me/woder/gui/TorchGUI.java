@@ -315,7 +315,7 @@ public class TorchGUI extends JPanel{
     }
     
     private void addSym(String text){
-        String[] lines = text.split("§");
+        String[] lines = text.split(Character.toString(ChatColor.COLOR_CHAR));
 
         for (int i = 1; i < lines.length; i++){
             String line = lines[i];
