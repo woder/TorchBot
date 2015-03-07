@@ -90,6 +90,54 @@ public class InvHandler {
     	}
     }
     
+    public void swapSlots(final int a, final int b) {
+    	if(inventory.get(a)==null||inventory.get(b)==null) {
+    		System.out.println("Passed slots do not exist");
+    		return;
+    	}
+    	//c.chat.sendMessage("swapping slots "+a+" and "+b);
+    	int delay = 100;
+    	final Timer timer = new Timer();
+    	Slot originalA = c.invhandle.inventory.get(a);
+    	Slot originalB = c.invhandle.inventory.get(b);
+    	final Slot emptyA = new Slot(originalA.getNum(),(short)-1,(byte)0,(short)0,(byte)0);//the location of A, with no contents
+    	final Slot slotB = new Slot(originalB.getNum(),originalA.getId(),
+    			originalA.getCount(),originalA.getDamage(),originalA.getNbtlen());//the location of B, with the contents of A
+    	final Slot slotA = new Slot(originalA.getNum(),originalB.getId(),
+    			originalB.getCount(),originalB.getDamage(),originalB.getNbtlen());//the location of A, with the contents of B
+    	
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	clickSlot(a);//pick up contents of a
+            	setSlot(emptyA);
+            }
+        }, delay);
+    	
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	clickSlot(b);//pick up B's contents ,set down A's contents in B's location
+            	setSlot(slotB);
+            	            	
+            }
+        }, delay*2);
+    	
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	clickSlot(a);//set down B's contents in A's original location
+            	setSlot(slotA);
+            	
+            }
+        }, delay*3);
+    	
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	closeInventory(); 
+            	timer.cancel();
+            }
+        }, delay*4);
+    	//pray to Notch that we don't need to handle or send confirmations
+    }
+    
     public void clickSlot(int num) {
     	ByteArrayDataOutput buf = ByteStreams.newDataOutput();   
     	Slot s = inventory.get(num);
@@ -121,47 +169,6 @@ public class InvHandler {
         }
     }
     
-    public void swapSlots(final int a, final int b) {
-    	if(inventory.get(a)==null||inventory.get(b)==null) {
-    		System.out.println("Passed slots do not exist");
-    		return;
-    	}
-    	c.chat.sendMessage("swapping slots "+a+" and "+b);
-    	int delay = 100;
-    	final Timer timer = new Timer();
-    	final Slot slotB = new Slot(c.invhandle.inventory.get(b).getNum(),c.invhandle.inventory.get(a).getId(),
-    			c.invhandle.inventory.get(a).getCount(),c.invhandle.inventory.get(a).getDamage(),c.invhandle.inventory.get(a).getNbtlen());
-    	final Slot slotA = new Slot(c.invhandle.inventory.get(a).getNum(),c.invhandle.inventory.get(b).getId(),
-    			c.invhandle.inventory.get(b).getCount(),c.invhandle.inventory.get(b).getDamage(),c.invhandle.inventory.get(b).getNbtlen());
-    	
-    	timer.schedule(new TimerTask(){
-            public void run() {
-            	clickSlot(a);//pick up contents of a
-            }
-        }, delay);
-    	
-    	timer.schedule(new TimerTask(){
-            public void run() {
-            	clickSlot(b);//pick up B
-            	            	
-            }
-        }, delay*2);
-    	
-    	timer.schedule(new TimerTask(){
-            public void run() {
-            	clickSlot(a);//set down B
-            }
-        }, delay*3);
-    	
-    	timer.schedule(new TimerTask(){
-            public void run() {
-            	setSlot(slotB);
-            	setSlot(slotA);
-            	closeInventory(); 
-            	timer.cancel();
-            }
-        }, delay*4);
-    	//pray to Notch that we don't need to handle or send confirmations
-    }
+    
 
 }
