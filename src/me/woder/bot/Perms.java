@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,8 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
 
 public class Perms {
     Client c;
@@ -30,10 +33,8 @@ public class Perms {
         try{
           if(!f.exists()) {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            File copy = new File("PermissionsCopy.txt");
-            if(copy.exists()){
-               Files.copy(copy.toPath(), f.toPath());
-            }
+            URL inputUrl = getClass().getResource("/PermissionsCopy.txt");
+            FileUtils.copyURLToFile(inputUrl, f);
           }
           Scanner s = new Scanner(f);
           commandPerms = new TreeMap<Integer, List<String>>();

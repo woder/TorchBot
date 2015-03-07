@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.woder.bot.ChatColor;
 import me.woder.bot.Client;
 import me.woder.network.Packet;
 
@@ -79,29 +80,29 @@ public class PluginLoader {
                pcommands.add(tmp[0]);
                pdescription.add(tmp[1]);
               }else{
-                 c.gui.addText("§4Warning: missing command description in plugin " + result + "!" );
+                 c.gui.addText(ChatColor.DARK_RED + "Warning: missing command description in plugin " + result + "!" );
               }
             }
             Function getevent = (Function)scope.get("getListener", scope);
             Object eventlist = getevent.call(context, scope, scope, null);
             System.out.println("event is: " + eventlist.toString());
-            c.gui.addText("§3Plugin '" + result + "' registered events: " + eventlist);
+            c.gui.addText(ChatColor.AQUA + "Plugin '" + result + "' registered events: " + eventlist);
             String[] events = eventlist.toString().split(",");
             plugins.add(new Plugin(result.toString(), scope, pcommands, pdescription, events));
             if(!started.equals(true)){
-              c.gui.addText("§4Failed to load: '" + result + "'");
+              c.gui.addText(ChatColor.DARK_RED + "Failed to load: '" + result + "'");
             }
          }catch (Exception e){
             //We failed to load some plugin, we don't want to crash due to this so lets do this
-             c.gui.addText("§4**WARNING***");
-             c.gui.addText("§4Failed to load some plugin! (" + e.getMessage() + " caused by: " + e.getCause() + ")");
+             c.gui.addText(ChatColor.DARK_RED + "**WARNING***");
+             c.gui.addText(ChatColor.DARK_RED + "Failed to load some plugin! (" + e.getMessage() + " caused by: " + e.getCause() + ")");
              e.printStackTrace();
          }finally{
             Context.exit();
          }
         }
        }else{
-            c.gui.addText("§4Warning: Could not find directory \"plugins\", does it exist?"); 
+            c.gui.addText(ChatColor.DARK_RED + "Warning: Could not find directory \"plugins\", does it exist?"); 
        }
          
          c.cmds = commands.toArray(new String[commands.size()]);

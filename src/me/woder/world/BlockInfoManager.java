@@ -1,7 +1,10 @@
 package me.woder.world;
 import java.util.*;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
+
+import org.apache.commons.io.FileUtils;
 /*
 Clark Krusemark
 24/02/2015 (dd/mm/yyyy)
@@ -40,10 +43,8 @@ public class BlockInfoManager{
       TOOL = new HashMap<Integer,Integer>();
       if (!f.exists()) {
     	 System.out.println("Working Directory = " + System.getProperty("user.dir"));
-    	 File copy = new File("BlockInfoCopy.txt");
-         if(copy.exists()){
-            Files.copy(copy.toPath(), f.toPath());
-         }
+    	 URL inputUrl = getClass().getResource("/BlockInfoCopy.txt");
+         FileUtils.copyURLToFile(inputUrl, f);
       } 
       Scanner s = new Scanner(f);
       while(s.hasNext()) {
