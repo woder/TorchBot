@@ -47,6 +47,10 @@ public class InvHandler {
     //pre: id is from 0-8
     //post: sets the active hotkey slot to the given id, and stores the current slot as an inventory location to currentSlot.
     public void selectSlot(short id){
+    	if (id<0||id>8) {
+    		System.out.println("Invalid hotbar slot!");
+    		return;
+    	}
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         try {
          currentSlot = (int)id+36;
@@ -58,7 +62,7 @@ public class InvHandler {
         }
     }
     
-    public void setSlot(Slot slot){
+    public void setSlot(Slot slot){ 
         boolean found = false;
         for(Slot s : inventory){
             if(s.slotnum == slot.slotnum){
@@ -81,18 +85,28 @@ public class InvHandler {
     }
     
     public int swapTo(short id) {
+    	Slot mySlot = inventory.get(currentSlot);
+    	if (mySlot.getId()==id) {
+    		System.out.println("CurrentSlot already contains "+id);
+    		return mySlot.getCount();
+    	}
     	Slot item = getItem(id);
     	if (item!=null) {
     		c.chat.sendMessage("found "+item.getCount()+" of "+item.getId()+"moving to slot "+currentSlot);
     		swapSlots(currentSlot, item.getNum());
     		return item.getCount();
     	} else {
+    		System.out.println(id+" not found");
     		return -1;
     	}
     	
     }
     
     public void swapSlots(final int a, final int b) {
+    	if (a==b) {
+    		System.out.println("Passed slots are identical reference");
+    		return;
+    	}
     	if(inventory.get(a)==null||inventory.get(b)==null) {
     		System.out.println("Passed slots do not exist");
     		return;
@@ -111,14 +125,14 @@ public class InvHandler {
     	System.out.println("original contents: "+originalA.getId()+","+originalB.getId());
     	timer.schedule(new TimerTask(){
             public void run() {
-            	clickSlot(a);//pick up contents of a
+            	leftClickSlot(a);//pick up contents of a
             	setSlot(emptyA);
             }
         }, delay);
     	
     	timer.schedule(new TimerTask(){
             public void run() {
-            	clickSlot(b);//pick up B's contents ,set down A's contents in B's location
+            	leftClickSlot(b);//pick up B's contents ,set down A's contents in B's location
             	setSlot(slotB);
             	            	
             }
@@ -126,7 +140,7 @@ public class InvHandler {
     	
     	timer.schedule(new TimerTask(){
             public void run() {
-            	clickSlot(a);//set down B's contents in A's original location
+            	leftClickSlot(a);//set down B's contents in A's original location
             	setSlot(slotA);
             	
             }
@@ -144,8 +158,9 @@ public class InvHandler {
     	//pray to Notch that we don't need to handle or send confirmations
     }
     
-    public void clickSlot(int num) {
-    	ByteArrayDataOutput buf = ByteStreams.newDataOutput();   
+    public void leftClickSlot(int num) {
+    	click((byte)0,(short)num,(byte)0,(byte)0);
+    	/*ByteArrayDataOutput buf = ByteStreams.newDataOutput();   
     	Slot s = inventory.get(num);
         try {
          //write the clicking info
@@ -161,7 +176,36 @@ public class InvHandler {
          c.net.sendPacket(buf, c.out);
         } catch (IOException e) {
          e.printStackTrace();
+        }*/
+    }
+    
+    public void click(byte windowID, short num, byte button, byte mode) {
+    	ByteArrayDataOutput buf = ByteStreams.newDataOutput();   
+    	Slot s;
+    	if (num>0&&num<=44) {
+    		s = inventory.get(num);
+    	} else {
+    		s = new Slot(-999,(short)-1,(byte)0,(short)0,(byte)0);
+    	}
+        try {
+         //write the clicking info
+         Packet.writeVarInt(buf, 14);
+         buf.writeByte(windowID);
+         buf.writeShort(num);
+         buf.writeByte(button);
+         buf.writeShort(actionNumber);
+         actionNumber++;
+         buf.writeByte(mode);
+         //write the slot structure we have
+         s.sendSlot(buf);
+         c.net.sendPacket(buf, c.out);
+        } catch (IOException e) {
+         e.printStackTrace();
         }
+    }
+    
+    public void clickOutside() {
+    	click((byte)0,(short)-999,(byte)0,(byte)4);
     }
     
     public void closeInventory() {
@@ -173,6 +217,33 @@ public class InvHandler {
         } catch (IOException e) {
          e.printStackTrace();
         }
+    }
+    
+    public void drop(final int slot) {
+    	if (inventory.get(slot).getId()==-1) {
+    		System.out.println("Nothing found in passed slot");
+    	} else {
+    		c.chat.sendMessage("dropping");
+    	}
+    	int delay = 100;
+    	final Timer timer = new Timer();
+    	final Slot empty = new Slot(slot, (short)-1, (byte) 0, (short) 0, (byte) 0);
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	leftClickSlot(slot);
+            	setSlot(empty);
+            }
+        }, delay);
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	clickOutside();
+            }
+        }, delay*2);
+    	timer.schedule(new TimerTask(){
+            public void run() {
+            	closeInventory();
+            }
+        }, delay*3);
     }
     
     
