@@ -73,7 +73,7 @@ public class Client {
     public ForceField force;
     public Perms perms;
     public ErrorManager error;
-    Socket clientSocket;
+    public Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
@@ -248,7 +248,7 @@ public class Client {
          
       }catch(IOException e){
           stopBot();
-          error.displayError(e.getMessage(), "IOException", e.getCause().getMessage());
+          error.displayError(e.getMessage(), "IOException", "Something");
       }
     }
     

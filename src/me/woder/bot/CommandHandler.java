@@ -3,12 +3,14 @@ package me.woder.bot;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import me.woder.json.UUIDResponse;
 import me.woder.network.Packet;
 import me.woder.plugin.Plugin;
 import me.woder.world.Block;
@@ -40,6 +42,21 @@ public class CommandHandler {
              }
             }else{
                //c.chat.sendMessage("Wrong amount of arguments provided!");
+            }
+        }else if(command.equalsIgnoreCase("othername")){
+            if(args.length > 0){
+                c.chat.sendMessage("Looking up previous names for: " + ChatColor.stripColor(args[1]));
+                List<UUIDResponse> names = c.en.getNamesUUID(c.en.getUUIDName(ChatColor.stripColor(args[1])));
+                List<String> namli = new ArrayList<String>();
+                for(UUIDResponse s : names){
+                   if(s.getChangedTo() != null){
+                       Date time = new Date(Long.parseLong(s.getChangedTo()));
+                       namli.add(s.getName() + " changed at " + time.toString());
+                   }else{
+                       namli.add(s.getName());
+                   }
+                }
+                new DelayedMessageSender(c).delayedMessageSender(namli, 0, 1000);
             }
         }else if(command.equalsIgnoreCase("whereareyou")){
         	c.chat.sendMessage("I am at: " + c.location.getX() + ", " + c.location.getY() + ", " + c.location.getZ());

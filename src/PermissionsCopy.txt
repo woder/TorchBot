@@ -1,4 +1,4 @@
 0
 whereareyou whatis holding inv
 1
-help move whereareyou whatis holding export import list inv select place dig respawn friends setuserperms removeuserperms swap
+help move whereareyou whatis holding export import list inv select place dig respawn friends setuserperms removeuserperms swap othername

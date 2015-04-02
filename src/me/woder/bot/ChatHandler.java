@@ -94,7 +94,6 @@ public class ChatHandler {
         }catch(JSONException ex){
            c.gui.addText("§4Invalid json received; string skipped");
            err.log(Level.WARNING, "MESSAGE: " + message + " IS NOT VALID JSON, SKIPPING STRING...");
-           ex.printStackTrace();
         }
         return mess;
     }

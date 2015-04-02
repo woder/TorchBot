@@ -1,22 +1,29 @@
 package me.woder.bot;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 
 import net.sf.json.JSON;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import me.woder.json.UUIDResponse;
 import me.woder.world.World;
 
 public class EntityTracker {    
     Client c;
     ArrayList<Entity> entities;
     HashBiMap<UUID, String> names = HashBiMap.create();
+    Multimap<UUID, UUIDResponse> namess = HashMultimap.create();
 
     public EntityTracker(Client c){
         this.c = c;
@@ -82,19 +89,35 @@ public class EntityTracker {
             name = names.get(u);
         }else{
             String result = c.sendGetRequest("https://api.mojang.com/user/profiles/" + u.toString().replace("-", "") + "/names");
-            JSON jsonr = JSONSerializer.toJSON(result);
-            if(jsonr.isArray()){
-                JSONArray js = (JSONArray) jsonr;
-                Object s = js.get(0);
-                if(s instanceof JSONObject){
-                 JSONObject e = (JSONObject) s;
-                 String o = e.getString("name");
-                 name = o;
-                 names.put(u, o);
-                }
-            }
+            Gson gson = new Gson();
+            UUIDResponse[] response = gson.fromJson(result, UUIDResponse[].class);
+            String o = response[response.length-1].getName();
+            name = o;
+            names.put(u, o);
+                          
+            
         }
         return name;
+    }
+    
+    //Please note that we should probably make this cache last only like 5 minutes max incase changes are made
+    
+    public List<UUIDResponse> getNamesUUID(UUID u){
+        Collection<UUIDResponse> namee = new ArrayList<UUIDResponse>();
+        if(namess.containsKey(u)){
+            namee = namess.get(u);
+        }else{
+            String result = c.sendGetRequest("https://api.mojang.com/user/profiles/" + u.toString().replace("-", "") + "/names");
+            Gson gson = new Gson();
+            UUIDResponse[] response = gson.fromJson(result, UUIDResponse[].class);
+            for(int i = 0; i < response.length; i++){
+                namee.add(response[i]);
+                namess.put(u, response[i]);
+            }                         
+            
+        }
+        List<UUIDResponse> list = new ArrayList<UUIDResponse>(namee);
+        return list;
     }
     
     public UUID getUUIDName(String name){
@@ -107,7 +130,7 @@ public class EntityTracker {
             JSON jsonr = JSONSerializer.toJSON(result);
             if(!jsonr.isArray()){
                 JSONObject js = (JSONObject) jsonr;
-                u = UUID.fromString(js.getString("id"));
+                u = new UUID(new BigInteger(js.getString("id").substring(0, 16), 16).longValue(),new BigInteger(js.getString("id").substring(16), 16).longValue());               
                 names.put(u, name);
             }
         }
