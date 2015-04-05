@@ -77,6 +77,8 @@ public class Client {
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
+    public String usernameformat;
+    public String usernameprefix;
     public byte gamemode;
     String leveltype;
     public Location location;
@@ -300,7 +302,8 @@ public class Client {
                 ircenable = Boolean.valueOf(prop.getProperty("irc"));
                 System.out.println(servername);
                 port = Integer.parseInt(prop.getProperty("port"));
-         
+                usernameformat = prop.getProperty("usernameformat");
+                usernameprefix = prop.getProperty("usernameprefix");
             } catch (IOException ex) {
                     ex.printStackTrace();
             }
@@ -312,6 +315,8 @@ public class Client {
                 prop.setProperty("servername", "c.mcblocks.net");
                 prop.setProperty("port", "25565");
                 prop.setProperty("irc", "false");
+                prop.setProperty("usernameformat", "<§u§>");
+                prop.setProperty("usernameprefix", "§[§]");
                 prop.store(new FileOutputStream("config.properties"), null);
          
             } catch (IOException ex) {

@@ -3,15 +3,21 @@ package me.woder.bot;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import me.woder.event.Event;
+import me.woder.json.ChatMessage;
+import me.woder.json.ChatMessageDe;
+import me.woder.json.ChatMessageDezerializer;
+import me.woder.json.With;
+import me.woder.json.Node;
 import me.woder.network.Packet;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -75,6 +81,49 @@ public class ChatHandler {
     
     public String formatMessage(String message){
         String mess = "Something went wrong";
+        String username = "Unknown";
+        String formated = "";
+        
+        c.gui.addText(message);
+        Gson gson = null;
+        if(message.contains("\"with\":[")){
+           gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class, new ChatMessageDezerializer()).create();
+        }else if(message.contains("\"extra\":[")){
+           gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class, new ChatMessageDe()).create();
+        }else{
+           gson = new Gson();
+        }
+        if(message.length() < 5)return "";
+        ChatMessage mws = gson.fromJson(message, ChatMessage.class);
+        //ChatMessage mws = new Gson().fromJson(message, ChatMessage.class);
+        if(!mws.getWith().isEmpty()){
+         List<Object> withs = mws.getWith();
+         ChatMessage with = ((With) withs.get(0)).getNonNull(mws);
+         username = with.getText();
+         with.setText("<" + username + "> " + withs.get(1));
+         c.gui.addText(with.getText());
+        }else if(!mws.getExtra().isEmpty()){
+            //String messag = "§" + attributes.get(mws.getColor()) + mws.getText();
+            String messag = "";
+            for(int i = 0; i < mws.getExtra().size(); i++){     
+               Object j = mws.getExtra().get(i);
+               if(j instanceof String){
+                  messag += j;
+               }else{
+                  messag += "§" + attributes.get(((Node) mws.getExtra().get(i)).getColor()) + ((Node) mws.getExtra().get(i)).getText();
+               }
+            }
+            c.gui.addText(messag);
+        }
+        
+        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
+        getCommandText(formated, username);
+        
+        return mess;
+    }
+    /*public String formatMessage(String message){
+        String mess = "Something went wrong";
+        c.gui.addText(message);
         try{
          JSON jsonr = JSONSerializer.toJSON(message);     
          if(!jsonr.isArray()){
@@ -96,7 +145,7 @@ public class ChatHandler {
            err.log(Level.WARNING, "MESSAGE: " + message + " IS NOT VALID JSON, SKIPPING STRING...");
         }
         return mess;
-    }
+    }*/
     
     public void formatWith(JSONObject json, JSONArray arr){
         JSONObject hoverevent = getHover(arr);
