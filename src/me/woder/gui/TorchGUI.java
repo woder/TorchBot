@@ -120,6 +120,7 @@ public class TorchGUI extends JPanel{
         textField = new JTextField();
         textField.setColumns(10);
         textField.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 processCommand(textField.getText());
             }
@@ -130,6 +131,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton = new JButton("Send");
         btnNewButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 processCommand(textField.getText());
             }
@@ -139,6 +141,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_1 = new JButton("Connect");
         btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 String s = JOptionPane.showInputDialog(null,"Enter server name and port, seperated by a ';' (Leave blank for server in config)", "Connect to a server", JOptionPane.PLAIN_MESSAGE);
                 if ((s != null) && (s.length() > 0)) {
@@ -152,6 +155,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_2 = new JButton("Disconnect");
         btnNewButton_2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 stopB();
             }
@@ -159,6 +163,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_3 = new JButton("Authenticate");
         btnNewButton_3.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 c.reauth();
             }
@@ -172,6 +177,7 @@ public class TorchGUI extends JPanel{
         
         JButton btnNewButton_7 = new JButton("Move one");
         btnNewButton_7.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent arg0) {
                 //c.move.move(c.location.getX()+1, c.location.getY(), c.location.getZ());     
                 c.location.setX(c.location.getX()+1);
@@ -285,6 +291,7 @@ public class TorchGUI extends JPanel{
       Timer tmr = new Timer();  
       tmr.scheduleAtFixedRate(new TimerTask()  
       {  
+        @Override
         public void run()  
         {  
           text = new StringBuffer(text.substring(1)).append(text.substring(0,1)).toString();  

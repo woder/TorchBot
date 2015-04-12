@@ -25,6 +25,7 @@ public class PluginLoader {
     Client c;
     
     class JsFilter implements FilenameFilter {
+        @Override
         public boolean accept(File dir, String name) {
             return (name.endsWith(".js"));
         }

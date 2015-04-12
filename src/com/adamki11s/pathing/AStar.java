@@ -199,7 +199,7 @@ public class AStar {
 
                     if (x != 0 && z != 0 && (y == 0 || y == 1)) {
                         // check to stop jumping through diagonal blocks
-                        Tile xOff = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ()), current), zOff = new Tile((short) (current.getX()),
+                        Tile xOff = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (current.getZ()), current), zOff = new Tile((current.getX()),
                                 (short) (current.getY() + y), (short) (current.getZ() + z), current);
                         if (!this.isTileWalkable(xOff) && !this.isTileWalkable(zOff)) {
                             continue;

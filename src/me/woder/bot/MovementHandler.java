@@ -69,6 +69,7 @@ public class MovementHandler {
         Timer timer = new Timer();
         final Iterator<Tile> itr = tiles.iterator();
         TimerTask task = new TimerTask() {
+            @Override
             public void run() {           
              if(itr.hasNext()){
                Tile t = itr.next();

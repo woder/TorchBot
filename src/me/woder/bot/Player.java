@@ -90,6 +90,7 @@ public class Player extends Entity{
         setRadarPosition(l);
     }
     
+    @Override
     public void setRadarPosition(Location l){
         rx = (c.location.getX() - l.getX()) + 131;
         ry = c.location.getY() - l.getY();

@@ -15,6 +15,7 @@ public class DelayedMessageSender {
     public void delayedMessageSender(final List<String> s, long delay, long period){
         final Timer timer = new Timer();
         timer.schedule(new TimerTask(){
+            @Override
             public void run() {
              if(delayed < s.size()){
               c.chat.sendMessage(s, delayed);

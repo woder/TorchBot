@@ -33,6 +33,7 @@ public class IRCBridge extends Thread{
     public IRCBridge(Client c) {
         this.c = c;
     }
+    @Override
     public void run(){
         try {
             connect();

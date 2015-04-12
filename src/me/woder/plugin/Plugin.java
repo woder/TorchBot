@@ -3,7 +3,6 @@ package me.woder.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
 public class Plugin {

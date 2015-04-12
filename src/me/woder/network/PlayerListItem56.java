@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import me.woder.bot.Client;
-import me.woder.bot.Player;
 import me.woder.playerlist.PlayerL;
 import me.woder.playerlist.Property;
 

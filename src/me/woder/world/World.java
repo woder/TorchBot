@@ -51,7 +51,7 @@ public class World {
     public void placeBlock(int x, int y, int z, int id, int face){
        ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
        try {
-        long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | (long)(z & 0x3FFFFFF);
+        long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | z & 0x3FFFFFF;
         Packet.writeVarInt(buf, 8);
         buf.writeLong(pos);
         buf.writeByte(face);
@@ -73,7 +73,7 @@ public class World {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         final Timer timer = new Timer();
         try {
-         final long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | (long)(z & 0x3FFFFFF);
+         final long pos = ((long)(x & 0x3FFFFFF) << 38) | ((long)(y & 0xFFF) << 26) | z & 0x3FFFFFF;
          Block thisBlock = this.getBlock(x,y,z);
          if (thisBlock!=null){
              Packet.writeVarInt(buf, 7);
@@ -90,7 +90,8 @@ public class World {
              int breakTime = thisBlock.getBreakTime(tool);
              if(breakTime>=0) {
                  timer.schedule(new TimerTask(){
-                   public void run() {
+                   @Override
+                public void run() {
                      delayedDig(pos, face);
                      timer.cancel(); //Terminate the timer thread
                    }

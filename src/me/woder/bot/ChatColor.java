@@ -117,6 +117,7 @@ public enum ChatColor {
         this.isFormat = isFormat;
     }
     
+    @Override
     public String toString(){
         return new String(new char[] {COLOR_CHAR, code});
     }

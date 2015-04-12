@@ -53,7 +53,7 @@ public class InvHandler {
     	}
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();    
         try {
-         currentSlot = (int)id+36;
+         currentSlot = id+36;
          Packet.writeVarInt(buf, 9);
          buf.writeShort(id);
          c.net.sendPacket(buf, c.out);
@@ -124,6 +124,7 @@ public class InvHandler {
     			originalB.getCount(),originalB.getDamage(),originalB.getNbtlen());//the location of A, with the contents of B
     	System.out.println("original contents: "+originalA.getId()+","+originalB.getId());
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	leftClickSlot(a);//pick up contents of a
             	setSlot(emptyA);
@@ -131,6 +132,7 @@ public class InvHandler {
         }, delay);
     	
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	leftClickSlot(b);//pick up B's contents ,set down A's contents in B's location
             	setSlot(slotB);
@@ -139,6 +141,7 @@ public class InvHandler {
         }, delay*2);
     	
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	leftClickSlot(a);//set down B's contents in A's original location
             	setSlot(slotA);
@@ -147,6 +150,7 @@ public class InvHandler {
         }, delay*3);
     	
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	closeInventory(); 
             	timer.cancel();
@@ -229,17 +233,20 @@ public class InvHandler {
     	final Timer timer = new Timer();
     	final Slot empty = new Slot(slot, (short)-1, (byte) 0, (short) 0, (byte) 0);
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	leftClickSlot(slot);
             	setSlot(empty);
             }
         }, delay);
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	clickOutside();
             }
         }, delay*2);
     	timer.schedule(new TimerTask(){
+            @Override
             public void run() {
             	closeInventory();
             }
