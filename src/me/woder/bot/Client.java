@@ -24,6 +24,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -43,6 +44,7 @@ import me.woder.irc.IRCBridge;
 import me.woder.network.ByteArrayDataInputWrapper;
 import me.woder.network.NetworkHandler;
 import me.woder.network.Packet;
+import me.woder.playerlist.PlayerList;
 import me.woder.plugin.PluginLoader;
 import me.woder.world.AABB;
 import me.woder.world.Location;
@@ -73,12 +75,12 @@ public class Client {
     public ForceField force;
     public Perms perms;
     public ErrorManager error;
+    public PlayerList plist;
     public Socket clientSocket;
     boolean isInputBeingDecrypted;
     boolean isOutputEncrypted;
     public String prefix;
-    public String usernameformat;
-    public String usernameprefix;
+    public String chatdelimiter;
     public byte gamemode;
     String leveltype;
     public Location location;
@@ -103,6 +105,7 @@ public class Client {
     public double stance;
     public String username;
     int port;
+    public UUID uuid;
     String servername;
     String sessionId;
     public int protocol;
@@ -224,6 +227,7 @@ public class Client {
         force = new ForceField(this);
         boundbox = new AABB(0.6, 1.8);
         error = new ErrorManager(this);
+        plist = new PlayerList(this);
         /*irc = new IRCBridge(this);
         if(ircenable){
            irc.start();
@@ -302,8 +306,7 @@ public class Client {
                 ircenable = Boolean.valueOf(prop.getProperty("irc"));
                 System.out.println(servername);
                 port = Integer.parseInt(prop.getProperty("port"));
-                usernameformat = prop.getProperty("usernameformat");
-                usernameprefix = prop.getProperty("usernameprefix");
+                chatdelimiter = prop.getProperty("chatdelimiter");
             } catch (IOException ex) {
                     ex.printStackTrace();
             }
@@ -315,8 +318,7 @@ public class Client {
                 prop.setProperty("servername", "c.mcblocks.net");
                 prop.setProperty("port", "25565");
                 prop.setProperty("irc", "false");
-                prop.setProperty("usernameformat", "<§u§>");
-                prop.setProperty("usernameprefix", "§[§]");
+                prop.setProperty("chatdelimiter", ":");
                 prop.store(new FileOutputStream("config.properties"), null);
          
             } catch (IOException ex) {

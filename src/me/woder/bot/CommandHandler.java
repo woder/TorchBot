@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -12,6 +14,7 @@ import com.google.common.io.ByteStreams;
 
 import me.woder.json.UUIDResponse;
 import me.woder.network.Packet;
+import me.woder.playerlist.PlayerL;
 import me.woder.plugin.Plugin;
 import me.woder.world.Block;
 import me.woder.world.Location;
@@ -26,6 +29,7 @@ public class CommandHandler {
     
     public void processCommand(String command, String[] args, String username){
         if (!c.perms.hasPermisssion(command, username)) {
+            System.out.println("Sorry " + username + " you don't have perms");
         	//c.chat.sendMessage(username+" does not have permission for "+command);
         }else if(command.equalsIgnoreCase("help")){
             commandHelp(args, username); 
@@ -42,6 +46,10 @@ public class CommandHandler {
              }
             }else{
                //c.chat.sendMessage("Wrong amount of arguments provided!");
+            }
+        }else if(command.equalsIgnoreCase("lists")){
+            for(Entry<UUID, PlayerL> ps : c.plist.players.entrySet()){
+                c.chat.sendMessage("I am: " + ps.getValue().getDisplayname());
             }
         }else if(command.equalsIgnoreCase("othername")){
             if(args.length > 0){
@@ -142,9 +150,9 @@ public class CommandHandler {
                 c.gui.addText("Error respawning: " + e.getMessage());
             }
         } else if (command.equalsIgnoreCase("setuserperms")) {
-        	c.perms.setUserPerms(args[1],args[2]);
+        	c.perms.setUserPerms(ChatColor.stripColor(args[1]),args[2]);
         } else if (command.equalsIgnoreCase("removeuserperms")) {
-        	c.perms.removeUserPerms(args[1]);
+        	c.perms.removeUserPerms(ChatColor.stripColor(args[1]));
         } else if (command.equalsIgnoreCase("swap")) {
         	c.invhandle.swapSlots(Integer.parseInt(args[1]),Integer.parseInt(args[2]));
         } else{

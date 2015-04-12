@@ -3,9 +3,13 @@ package me.woder.bot;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -19,6 +23,7 @@ import me.woder.json.ChatMessageDezerializer;
 import me.woder.json.With;
 import me.woder.json.Node;
 import me.woder.network.Packet;
+import me.woder.playerlist.PlayerL;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -83,8 +88,7 @@ public class ChatHandler {
         String mess = "Something went wrong";
         String username = "Unknown";
         String formated = "";
-        
-        c.gui.addText(message);
+       
         Gson gson = null;
         if(message.contains("\"with\":[")){
            gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class, new ChatMessageDezerializer()).create();
@@ -101,24 +105,28 @@ public class ChatHandler {
          ChatMessage with = ((With) withs.get(0)).getNonNull(mws);
          username = with.getText();
          with.setText("<" + username + "> " + withs.get(1));
-         c.gui.addText(with.getText());
+         formated = with.getText();
         }else if(!mws.getExtra().isEmpty()){
             //String messag = "§" + attributes.get(mws.getColor()) + mws.getText();
             String messag = "";
+            String userb = "";
             for(int i = 0; i < mws.getExtra().size(); i++){     
                Object j = mws.getExtra().get(i);
                if(j instanceof String){
                   messag += j;
+                  userb += j;
                }else{
                   messag += "§" + attributes.get(((Node) mws.getExtra().get(i)).getColor()) + ((Node) mws.getExtra().get(i)).getText();
+                  userb += ((Node) mws.getExtra().get(i)).getText();
                }
             }
-            c.gui.addText(messag);
+            username = getUsername(userb);
+            formated = messag;
         }
         
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
-        getCommandText(formated, username);
-        
+        getCommandText(formated, username);    
+        c.gui.addText(formated);
         return mess;
     }
     /*public String formatMessage(String message){
@@ -146,60 +154,31 @@ public class ChatHandler {
         }
         return mess;
     }*/
+
+    //Code to attempt to get the username
     
-    public void formatWith(JSONObject json, JSONArray arr){
-        JSONObject hoverevent = getHover(arr);
-        JSONObject value = hoverevent.getJSONObject("value");
-        String user = value.getString("name");
-        //String uuid = value.getString("id"); Maybe we can find a use for this later
-        String mess = arr.getString(1);
-        String formated = mess;
-        if(json.containsKey("color")){
-         String colour = json.getString("color");
-         formated = "§" + attributes.get(colour) + mess;
-        }
-        c.gui.addText(user + ": " + formated);
-        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {user, formated}));
-        getCommandText(mess, user);
-    }
-    
-    private void formatExtra(JSONObject json){
-        String formated = "";
-        JSONArray arr = json.getJSONArray("extra");
-        formated = formatColours(arr);
-        String username = getUsername(formated);
-        c.gui.addText(formated);
-        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {username, formated}));
-        getCommandText(formated, username);
-    }
-    
-    public JSONObject getHover(JSONArray arr){
-        JSONObject ob = null;
-        for(int i = 0; i < arr.size(); i++){
-           JSONObject obj = arr.getJSONObject(i);
-           if(obj.containsKey("hoverEvent")){
-               ob = obj.getJSONObject("hoverEvent");
-               break;
+    public String getUsername(String formated){
+        int delimiter = formated.indexOf(c.chatdelimiter);
+        String user = "";
+        String username = "";
+        if(delimiter > 0){
+           user = formated.substring(0, delimiter);
+           for(Entry<UUID, PlayerL> pl : c.plist.players.entrySet()){
+               if(isContain(user, pl.getValue().getName())){
+                  username = pl.getValue().getName();
+               }
            }
         }
-        return ob;
-    }
-    //Code to attempt to get the username
-    public String getUsername(String formated){
-        int delimiter = formated.indexOf(">"); //TODO replace with variable to make this interchangable
-        int space = formated.indexOf(" ");
-        if(delimiter != -1 && space != -1 && delimiter-space < 0){
-           space = 0;
-        }
-        String username;
-        if(delimiter != -1 && space != -1 && delimiter-space > -1){
-         username = formated.substring(space, delimiter);
-         username = ChatColor.stripColor(username.replaceAll("[:<>]", ""));
-        }else{
-         username = "Unknown";
-        }      
         return username;
     }
+    
+    //Credits to Jaskey from stackoverflow for this
+    private boolean isContain(String source, String subItem){
+        String pattern = "\\b"+subItem+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(source);
+        return m.find();
+   }
     
     //Code to get the command from the string then pass it onto the command handler
     public void getCommandText(String formated, String username){
