@@ -27,8 +27,6 @@ public class EntityRelativeMove21 extends Packet{
           e.sz += sz;
           e.setLocation(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D));
           c.ehandle.handleEvent(new Event("onEntityMove", new Object[] {eid,e.sx/32.0D, e.sy/32.0D, e.sz/32.0D}));
-       }else{
-          //c.gui.addText("§1Entity is null! (id: " + eid + ")");
        }
     }
 

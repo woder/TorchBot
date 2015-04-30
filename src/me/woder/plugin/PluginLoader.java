@@ -67,7 +67,7 @@ public class PluginLoader {
             context.evaluateString(scope, script, "script", 1, null);
             Function fct = (Function)scope.get("getName", scope);
             Object result = fct.call(context, scope, scope, null);      
-            c.gui.addText("§3Loading '" + result + "'...");
+            c.gui.addText(ChatColor.DARK_AQUA + "Loading '" + result + "'...");
             Function run = (Function)scope.get("run", scope);
             Object started = run.call(context, scope, scope, null);
             Function commandall = (Function)scope.get("getCommand", scope);

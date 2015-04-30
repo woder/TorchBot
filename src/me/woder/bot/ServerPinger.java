@@ -29,7 +29,7 @@ public class ServerPinger {
        this.c = c;
     }
     
-    @SuppressWarnings("unused")
+    @SuppressWarnings({ "unused", "deprecation" })
     public void pingServer(String server, int port){
         Socket clientSocket = c.clientSocket;
         TorchGUI gui = c.gui;
@@ -72,7 +72,7 @@ public class ServerPinger {
                    gui.favicon.setIcon(test);
                    gui.repaint();                
                 }
-                gui.addText("§5Game version: " + ver + "  " + text + " " + online + "/" + max);
+                gui.addText(ChatColor.DARK_PURPLE + "Game version: " + ver + "  " + text + " " + online + "/" + max);
             }
           out.close();
           in.close();
@@ -83,8 +83,8 @@ public class ServerPinger {
         } catch (IOException e) {
             e.printStackTrace();
             netlog.log(Level.SEVERE, "CONNECTION ERROR: " + e.getMessage());
-            gui.addText("§4CONNECTION ERROR: " + e.getMessage());
-            gui.addText("§4Check server info: " + server + " on " + port);
+            gui.addText(ChatColor.DARK_RED + "CONNECTION ERROR: " + e.getMessage());
+            gui.addText(ChatColor.DARK_RED + "Check server info: " + server + " on " + port);
             
         }
     }    

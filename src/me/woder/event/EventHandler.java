@@ -7,6 +7,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
+import me.woder.bot.ChatColor;
 import me.woder.bot.Client;
 import me.woder.plugin.Plugin;
 
@@ -32,6 +33,7 @@ public class EventHandler {
         this.c = c;
     }
     
+    @SuppressWarnings("deprecation")
     public void handleEvent(Event event){
         List<Plugin> pul = getPluginEvents(event);    
         Context context = Context.enter();
@@ -42,9 +44,9 @@ public class EventHandler {
                Function fct = (Function)scope.get(event.type, scope);
                fct.call(context, scope, scope, event.param);   
             } catch (SecurityException e) {
-                c.gui.addText("§3Warning: Security error encountered while trying to pass " + event.type + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+                c.gui.addText(ChatColor.DARK_AQUA + "Warning: Security error encountered while trying to pass " + event.type + " to " + pul.get(i).getName() + "\n" + e.getMessage());
             } catch (IllegalArgumentException e) {
-                c.gui.addText("§3Warning: Wrong amount of argument error encountered while trying to pass " + event.type + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+                c.gui.addText(ChatColor.DARK_AQUA + "Warning: Wrong amount of argument error encountered while trying to pass " + event.type + " to " + pul.get(i).getName() + "\n" + e.getMessage());
             }
          }
         }finally{
@@ -52,6 +54,7 @@ public class EventHandler {
         }
     }
     
+    @SuppressWarnings("deprecation")
     public void handleCommand(String name, String[] args, String username){
         List<Plugin> pul = getPluginCommands(name);
         Context context = Context.enter();
@@ -62,9 +65,9 @@ public class EventHandler {
                 Function fct = (Function)scope.get(name, scope);
                 fct.call(context, scope, scope, new Object[]{args, username});   
              } catch (SecurityException e) {
-                 c.gui.addText("§3Warning: Security error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+                 c.gui.addText(ChatColor.DARK_AQUA + "Warning: Security error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
              } catch (IllegalArgumentException e) {
-                 c.gui.addText("§3Warning: Wrong amount of argument error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
+                 c.gui.addText(ChatColor.DARK_AQUA + "Warning: Wrong amount of argument error encountered while trying to pass " + name + " to " + pul.get(i).getName() + "\n" + e.getMessage());
              }
          }
         }finally{

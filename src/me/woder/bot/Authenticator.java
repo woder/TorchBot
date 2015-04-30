@@ -53,7 +53,7 @@ public class Authenticator {
               }else{
             	 stream = hc.getErrorStream();
             	 JSONObject json = (JSONObject) JSONSerializer.toJSON(Client.toString(stream)); 
-            	 c.gui.addText("§4Authentication failed: " + json.getString("errorMessage"));
+            	 c.gui.addText(ChatColor.RED + "Authentication failed: " + json.getString("errorMessage"));
                  c.errlog.log(Level.WARNING, "AUTHENTICATION FAILED: " + json.getString("errorMessage"));
               }
               

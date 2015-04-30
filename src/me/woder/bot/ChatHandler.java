@@ -133,20 +133,6 @@ public class ChatHandler {
         return mess;
     }
 
-    /*
-     * public String formatMessage(String message){ String mess =
-     * "Something went wrong"; c.gui.addText(message); try{ JSON jsonr =
-     * JSONSerializer.toJSON(message); if(!jsonr.isArray()){ JSONObject json =
-     * (JSONObject) jsonr; if(json.containsKey("translate")){ String key =
-     * json.getString("translate"); if(key.equalsIgnoreCase("chat.type.text")){
-     * JSONArray arr = json.getJSONArray("with"); formatWith(json, arr); } }else
-     * if(json.containsKey("extra")){ formatExtra(json); } }else{ //TODO add
-     * method to parse this } }catch(JSONException ex){
-     * c.gui.addText("§4Invalid json received; string skipped");
-     * err.log(Level.WARNING, "MESSAGE: " + message +
-     * " IS NOT VALID JSON, SKIPPING STRING..."); } return mess; }
-     */
-
     // Code to attempt to get the username
 
     public String getUsername(String formated) {
@@ -196,9 +182,9 @@ public class ChatHandler {
                 JSONObject ob = arr.getJSONObject(i);
                 String key = ob.getString("color");
                 String theText = ob.getString("text");
-                formated = formated + "§" + attributes.get(key) + theText;
+                formated = formated + ChatColor.COLOR_CHAR + attributes.get(key) + theText;
             } else {
-                formated = formated + "§0" + arr.getString(i);
+                formated = formated + ChatColor.BLACK + arr.getString(i);
             }
         }
         return formated;
