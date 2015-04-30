@@ -1,23 +1,6 @@
 package me.woder.bot;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-
-import me.woder.json.UUIDResponse;
-import me.woder.network.Packet;
-import me.woder.playerlist.PlayerL;
-import me.woder.plugin.Plugin;
-import me.woder.world.Block;
-import me.woder.world.Location;
 
 public class CommandHandler {
     Client c;
@@ -30,7 +13,6 @@ public class CommandHandler {
     }
     
     public void processCommand(String command, String[] args, String username){
-        System.out.println("Com: " + command);
         if(core.commands.containsKey(command) || Arrays.asList(c.cmds).contains(command)){
             if (!c.perms.hasPermisssion(command, username)) {
                 c.chat.sendMessage("Sorry " + username + " you don't have permission to use that!");               
