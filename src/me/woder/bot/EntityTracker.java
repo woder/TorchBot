@@ -91,11 +91,11 @@ public class EntityTracker {
             String result = c.sendGetRequest("https://api.mojang.com/user/profiles/" + u.toString().replace("-", "") + "/names");
             Gson gson = new Gson();
             UUIDResponse[] response = gson.fromJson(result, UUIDResponse[].class);
-            String o = response[response.length-1].getName();
-            name = o;
-            names.put(u, o);
-                          
-            
+            if(response != null){ //this null check is super important because some servers send rubbish rather than player names
+              String o = response[response.length-1].getName();
+              name = o;
+              names.put(u, o);
+            }
         }
         return name;
     }
@@ -110,11 +110,12 @@ public class EntityTracker {
             String result = c.sendGetRequest("https://api.mojang.com/user/profiles/" + u.toString().replace("-", "") + "/names");
             Gson gson = new Gson();
             UUIDResponse[] response = gson.fromJson(result, UUIDResponse[].class);
-            for(int i = 0; i < response.length; i++){
+            if(response != null){ //this null check is super important because some servers send rubbish rather than player names
+             for(int i = 0; i < response.length; i++){
                 namee.add(response[i]);
                 namess.put(u, response[i]);
-            }                         
-            
+             }                         
+            }
         }
         List<UUIDResponse> list = new ArrayList<UUIDResponse>(namee);
         return list;
