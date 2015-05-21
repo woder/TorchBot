@@ -250,7 +250,7 @@ public class Client {
                 // mainloop/
                 net.readData();// Read data
                 gui.tick();
-                if (chunksloaded) {
+                if (chunksloaded && running) { //check that we are still running, that can be false
                     // Only do this if we have loaded chunks, *might* be null
                     // other wise
                     gui.pradar.dbot.updateText(username, location.getBlockX(),

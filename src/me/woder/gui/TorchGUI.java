@@ -335,6 +335,7 @@ public class TorchGUI extends JPanel{
     public void addTextJ(String text, ChatMessage mws){ //json version of the above method
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = String.valueOf(text) + "\n";
+        System.out.println("Text is: " + text);
      // mws.getText();
         addColour(mws);
     }
@@ -352,21 +353,26 @@ public class TorchGUI extends JPanel{
             }
             try{
                 int len = doc.getLength();
+                if(i == mws.getExtra().size()-1){
+                	theText+= "\n";
+                }
                 doc.insertString(len, theText, attribute);
             }catch (BadLocationException e){
                 e.printStackTrace();
             }
         }
+        chat.setCaretPosition(chat.getDocument().getLength());
     }
     
     private void addCom(String text){
-        AttributeSet attribute = attributes.get("0");
+         AttributeSet attribute = attributes.get("0");
          try{
              int len = doc.getLength();
              doc.insertString(len, text, attribute);
          }catch (BadLocationException e){
              e.printStackTrace();
-         }      
+         }
+         chat.setCaretPosition(chat.getDocument().getLength());
     }
     
     private void addSym(String text){
@@ -380,10 +386,11 @@ public class TorchGUI extends JPanel{
 
             try{
                 int len = doc.getLength();
-                doc.insertString(len, theText, attribute);
+                doc.insertString(len, theText, attribute);              
             }catch (BadLocationException e){
                 e.printStackTrace();
             }
         }
+        chat.setCaretPosition(chat.getDocument().getLength());
     }
 }
