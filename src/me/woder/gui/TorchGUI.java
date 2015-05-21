@@ -5,12 +5,12 @@ import java.awt.Dimension;
 import java.awt.Label;
 
 import javax.swing.JFrame;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import me.woder.bot.ChatColor;
 import me.woder.bot.Client;
 import me.woder.bot.ThreadMainLoop;
+import me.woder.json.ChatMessage;
+import me.woder.json.Node;
 
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
@@ -79,6 +81,23 @@ public class TorchGUI extends JPanel{
     public TorchGUI(Client c) {
         this.c = c;
         attributes = new HashMap<String, AttributeSet>();
+        attributes.put("black", black);
+        attributes.put("dark_blue", blue);
+        attributes.put("dark_green", green);
+        attributes.put("dark_aqua", dark_aqua);
+        attributes.put("dark_red", dark_red);
+        attributes.put("dark_purple", purple);
+        attributes.put("gold", orange);
+        attributes.put("gray", grey);
+        attributes.put("dark_gray", dark_grey);
+        attributes.put("blue", indigo);
+        attributes.put("green", bright_green);
+        attributes.put("aqua", aqua);
+        attributes.put("red", red);
+        attributes.put("light_purple", pink);
+        attributes.put("yellow", yellow);
+        attributes.put("white", black);
+        attributes.put("reset", reset);
         attributes.put("0", black);
         attributes.put("1", blue);
         attributes.put("2", green);
@@ -298,16 +317,45 @@ public class TorchGUI extends JPanel{
           news.setText(text);  
         }  
       },500,100);  
-    }  
+    }
     
+    @Deprecated
     public void addText(String text){
         Logger.getLogger("me.woder.chat").log(Level.FINE, text);
         text = String.valueOf(text) + "\n";
-        //Legacy code, color method seems to have changed :( #notwiththishackdoe
+     // mws.getText();
+        //This is ONLY FOR INTERNAL USE!!!! DO NOT USE THIS FOR THE CHAT COMING FROM MINECRAFT!!!
         if(text.contains(String.valueOf(ChatColor.COLOR_CHAR))){
           addSym(text);
         }else{
           addCom(text);
+        }
+    }
+    
+    public void addTextJ(String text, ChatMessage mws){ //json version of the above method
+        Logger.getLogger("me.woder.chat").log(Level.FINE, text);
+        text = String.valueOf(text) + "\n";
+     // mws.getText();
+        addColour(mws);
+    }
+    
+    private void addColour(ChatMessage mws){
+        for (int i = 0; i < mws.getExtra().size(); i++) {
+        	AttributeSet attribute = attributes.get("black");
+        	String theText = "Error in addColour method";
+            Object j = mws.getExtra().get(i);
+            if (j instanceof String) {
+                theText = (String) j;
+            } else {
+            	attribute = attributes.get(((Node) mws.getExtra().get(i)).getColor());
+            	theText = ((Node) mws.getExtra().get(i)).getText();
+            }
+            try{
+                int len = doc.getLength();
+                doc.insertString(len, theText, attribute);
+            }catch (BadLocationException e){
+                e.printStackTrace();
+            }
         }
     }
     

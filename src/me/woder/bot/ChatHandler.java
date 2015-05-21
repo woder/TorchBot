@@ -104,32 +104,25 @@ public class ChatHandler {
             username = with.getText();
             with.setText("<" + username + "> " + withs.get(1));
             formated = with.getText();
-        } else if (!mws.getExtra().isEmpty()) {
-            // String messag = "§" + attributes.get(mws.getColor()) +
+        } else if (!mws.getExtra().isEmpty()){
             // mws.getText();
-            String messag = "";
             String userb = "";
             for (int i = 0; i < mws.getExtra().size(); i++) {
                 Object j = mws.getExtra().get(i);
                 if (j instanceof String) {
-                    messag += j;
                     userb += j;
                 } else {
-                    messag += ChatColor.COLOR_CHAR
-                            + attributes.get(((Node) mws.getExtra().get(i))
-                                    .getColor())
-                            + ((Node) mws.getExtra().get(i)).getText();
                     userb += ((Node) mws.getExtra().get(i)).getText();
                 }
             }
+            formated = userb;
             username = getUsername(userb);
-            formated = messag;
         }
-
+        
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {
                 username, formated }));
         getCommandText(formated, username);
-        c.gui.addText(formated);
+        c.gui.addTextJ(message, mws);
         return mess;
     }
 
