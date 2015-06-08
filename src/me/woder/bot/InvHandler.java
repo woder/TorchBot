@@ -77,11 +77,21 @@ public class InvHandler {
     
     public Slot getItem(short id) {
     	for(Slot s: inventory) {
-    		if (s.getId()==id) {
+    		if(s.getId()==id){
     			return s;
     		}
     	}
     	return null;
+    }
+    
+    public Slot getSlot(int id){
+        for(Slot s: inventory){
+            if(s.getNum() == id){
+                c.gui.addText("S" + s.getId());
+                return s;
+            }
+        }
+        return null;
     }
     
     public int swapTo(short id) {

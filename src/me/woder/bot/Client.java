@@ -241,6 +241,7 @@ public class Client {
             boundbox = new AABB(0.6, 1.8);
             error = new ErrorManager(this);
             plist = new PlayerList(this);
+            BlockPartyPlayer pl = new BlockPartyPlayer(this);
             /*
              * irc = new IRCBridge(this); if(ircenable){ irc.start(); }
              */
@@ -259,6 +260,7 @@ public class Client {
                         move.applyGravity();// Apply gravity
                         lastGrav = System.currentTimeMillis();
                         move.tick();
+                        pl.gameLoop();
                     }
                     // fps.tick();
                     // System.out.println("FPS: " + fps.getFPS());
