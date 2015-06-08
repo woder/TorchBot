@@ -83,6 +83,7 @@ public class ChatHandler {
         String mess = "Something went wrong";
         String username = "Unknown";
         String formated = "";
+
         Gson gson = null;
         if (message.contains("\"with\":[")) {
             gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class,
@@ -90,26 +91,20 @@ public class ChatHandler {
         } else if (message.contains("\"extra\":[")) {
             gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class,
                     new ChatMessageDe()).create();
-        } else if (!message.contains("{")){
-            formated = message;
         } else {
             gson = new Gson();
         }
-        
-        if (message.length() < 5){
+        if (message.length() < 5)
             return "";
-        }
-        
-        if(gson != null){
-         ChatMessage mws = gson.fromJson(message, ChatMessage.class);
-         // ChatMessage mws = new Gson().fromJson(message, ChatMessage.class);
-         if (!mws.getWith().isEmpty()) {
+        ChatMessage mws = gson.fromJson(message, ChatMessage.class);
+        // ChatMessage mws = new Gson().fromJson(message, ChatMessage.class);
+        if (!mws.getWith().isEmpty()) {
             List<Object> withs = mws.getWith();
             ChatMessage with = ((With) withs.get(0)).getNonNull(mws);
             username = with.getText();
             with.setText("<" + username + "> " + withs.get(1));
             formated = with.getText();
-          } else if (!mws.getExtra().isEmpty()) {
+        } else if (!mws.getExtra().isEmpty()) {
             // String messag = "§" + attributes.get(mws.getColor()) +
             // mws.getText();
             String messag = "";
@@ -129,7 +124,6 @@ public class ChatHandler {
             }
             username = getUsername(userb);
             formated = messag;
-         }
         }
 
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {
