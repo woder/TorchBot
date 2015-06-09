@@ -87,7 +87,6 @@ public class InvHandler {
     public Slot getSlot(int id){
         for(Slot s: inventory){
             if(s.getNum() == id){
-                c.gui.addText("S" + s.getId());
                 return s;
             }
         }

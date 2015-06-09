@@ -74,7 +74,7 @@ public class MovementHandler {
              if(itr.hasNext()){
                Tile t = itr.next();
                Location loc = t.getLocation(start);
-               c.gui.addText("Position is: " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ());
+               //c.gui.addText("Position is: " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ());
                calcMovement(new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5));
              /* if(next != null){
                Location loc = next.getLocation(start);

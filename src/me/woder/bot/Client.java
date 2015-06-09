@@ -256,7 +256,7 @@ public class Client {
                     // other wise
                     gui.pradar.dbot.updateText(username, location.getBlockX(),
                             location.getBlockY(), location.getBlockZ());
-                    if (System.currentTimeMillis() - lastGrav >= 20) {
+                    if(System.currentTimeMillis() - lastGrav >= 20) {
                         move.applyGravity();// Apply gravity
                         lastGrav = System.currentTimeMillis();
                         move.tick();
