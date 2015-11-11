@@ -2,8 +2,10 @@ TorchBot
 ========
 
 
-TorchBot is a bot written for minecraft in the java launguage. It supports plugins written in JavaScript. See the Wiki for a basic plugin tutorial.
+TorchBot is a bot written for minecraft in the java launguage.
 ------------------------------------------------------------------------
+
+TorchBot supports basic plugins written in javascript. See the plugin tutorial section of the Wiki for some examples and a basic tutorial.
 
 Official Website: http://torchbot.net
 Forums: http://torchbot.net/forum
