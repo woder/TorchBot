@@ -11,7 +11,7 @@ Official Website: http://torchbot.net
 Forums: http://torchbot.net/forum
 Build Server: http://build.torchbot.net
 
-**Latest Build**: [Download](http://build.torchbot.net/job/Torchbot/lastSuccessfulBuild/TorchBot$TorchBot/artifact/TorchBot/TorchBot/1.0.1/TorchBot-1.0.1-jar-with-dependencies.jar "Download the latest build of TorchBot")
+**Latest Build**: [Download](http://build.torchbot.net/job/Torchbot/lastBuild/TorchBot$TorchBot/artifact/TorchBot/TorchBot/1.0.1/TorchBot-1.0.1-jar-with-dependencies.jar "Download the latest build of TorchBot")
 
 Credits:
 adamki11s for the implementation of pathfinding
