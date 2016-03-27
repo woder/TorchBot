@@ -15,7 +15,7 @@ public class KeepAlive00 extends Packet{
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int temp = Packet.readVarInt(buf);
         ByteArrayDataOutput buff = ByteStreams.newDataOutput();
-        writeVarInt(buff, 0);
+        writeVarInt(buff, 11);
         Packet.writeVarInt(buff, temp);
         c.net.sendPacket(buff, c.out);
     }

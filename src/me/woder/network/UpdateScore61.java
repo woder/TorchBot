@@ -15,8 +15,8 @@ public class UpdateScore61 extends Packet{
           getString(buf);
           byte mode = buf.readByte();
           System.out.println("Mode: " + mode);
-          if(mode == 0){
-            getString(buf);           
+          getString(buf);   
+          if(mode != 0){
             buf.readInt();
           }
      }

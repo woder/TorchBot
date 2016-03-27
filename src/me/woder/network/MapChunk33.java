@@ -23,7 +23,7 @@ public class MapChunk33 extends Packet{
           x = buf.readInt();
           z = buf.readInt();
           boolean isGroundUp = buf.readBoolean();
-          short a = buf.readShort();
+          int a = Packet.readVarInt(buf);
           int bitmask = a & 0xffff;
           datalength = Packet.readVarInt(buf);
           Chunk chunke = new Chunk(c, x, z, bitmask, true, isGroundUp); 

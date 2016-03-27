@@ -72,6 +72,13 @@ public class CoreCommands {
            };
        });
        
+       commands.put("getblock", new Command() {
+           @Override
+        public void runCommand(Client c, String command, String[] args, String username) { 
+               c.whandle.getWorld().getBlock(c.location.getBlockX(),c.location.getBlockY()-1,c.location.getBlockZ());
+           };
+       });
+       
        commands.put("whatis", new Command() {
            @Override
         public void runCommand(Client c, String command, String[] args, String username) { 
@@ -214,12 +221,12 @@ public class CoreCommands {
            };
        });
        
-       commands.put("removeuserperms", new Command() {
+       /*commands.put("removeuserperms", new Command() {
            @Override
         public void runCommand(Client c, String command, String[] args, String username) { 
                c.invhandle.swapSlots(Integer.parseInt(args[1]),Integer.parseInt(args[2]));
            };
-       });
+       });*/
        
        commands.put("help", new Command() {
            @Override

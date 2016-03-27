@@ -15,28 +15,24 @@ public class Player extends Entity{
     double x = 0;
     double y = 0;
     double z = 0;
-    public int sx, sy, sz;
     byte yaw, pitch;
     RComponent dot;
     double rx, ry, rz;
 
-    public Player(Client c, int eid, String name, UUID uuid2, int x, int y, int z, byte yaw, byte pitch, short current) {        
+    public Player(Client c, int eid, String name, UUID uuid2, double x2, double y2, double z2, byte yaw, byte pitch, short current) {        
         super(c);
         this.c = c;
         this.eid = eid;
         this.name = name;
         this.uuid = uuid2;
-        this.sx = x;
-        this.sy = y;
-        this.sz = z;
-        this.x = x/32.0D;
-        this.y = y/32.0D;
-        this.z = z/32.0D;
+        this.x = x2;
+        this.y = y2;
+        this.z = z2;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.rx = (x - c.location.getX()) + 131;
-        this.ry = y - c.location.getY();
-        this.rz = (z - c.location.getZ()) + 116;
+        this.rx = (x2 - c.location.getX()) + 131;
+        this.ry = y2 - c.location.getY();
+        this.rz = (z2 - c.location.getZ()) + 116;
         dot = new RComponent((int)rx, (int)rz, 10, 10, "<html>Player " + name + "<br>Location: " + this.x + ", " + this.y + ", " + this.z +  "</html>", 1, c.gui.pradar, name, 2);
         c.gui.pradar.playerDot(dot);
         this.equipement = new Slot[5];

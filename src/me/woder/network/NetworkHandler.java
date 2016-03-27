@@ -28,7 +28,85 @@ public class NetworkHandler {
         login.put(2, new LoginSuccess02(c));
         login.put(3, new SetCompression03(c));
         //Play packets
-        play.put(0, new KeepAlive00(c));
+        play.put(0, new SpawnObject14(c));
+        //play.put(1, new SpawnObject14(c)); //spawn experience orb
+        //play.put(2, new SpawnObject14(c)); //this is the global entity packet
+        play.put(3, new SpawnMob15(c));
+        //play.put(4, new SpawnObject14(c)); //spawn painting
+        play.put(5, new SpawnPlayer12(c));
+        play.put(6, new Animation11(c));
+        play.put(7, new Statistics55(c));
+        //play.put(8, new SpawnObject14(c)); //Block break animation
+        //play.put(9, new UpdateBlockEntity53(c)); //Update block entity
+        //play.put(10, new SpawnObject14(c)); //Block action
+        play.put(11, new BlockChange35(c));
+        //play.put(12, new SpawnObject14(c)); //Boss bar
+        //play.put(13, new SpawnObject14(c)); //Server difficulty
+        //play.put(14, new SpawnObject14(c)); //Tab complete
+        play.put(15, new ChatMessage02(c));
+        //play.put(16, new ChatMessage02(c)); //Multi Block Change
+        //play.put(17, new ChatMessage02(c)); //Confirm transaction
+        //play.put(18, new ChatMessage02(c)); //Close window
+        //play.put(19, new ChatMessage02(c)); //Open window
+        play.put(20, new WindowItems48(c));
+        //play.put(21, new WindowItems48(c)); //Window property
+        play.put(22, new SetSlot47(c));
+        //play.put(23, new WindowItems48(c)); //set cooldown
+        play.put(24, new PluginMessage63(c));
+        //play.put(25, new SoundEffect41(c)); //Named sound effect
+        play.put(26, new Disconnect64(c));
+        play.put(27, new EntityStatus26(c));
+        //play.put(28, new SoundEffect41(c)); //Explosion
+        //play.put(29, new SoundEffect41(c)); //Unload chunk
+        play.put(30, new ChangeGameState43(c));
+        play.put(31, new KeepAlive00(c));
+        play.put(32, new MapChunk33(c));
+        play.put(33, new Effect40(c));
+        //play.put(34, new Particle(c)); //Particle
+        play.put(35, new JoinGame01(c));
+        //play.put(36, new JoinGame01(c)); Map packet
+        play.put(37, new EntityRelativeMove21(c));
+        play.put(38, new EntityRelativeMoveLok23(c));
+        play.put(39, new EntityLook22(c));
+        //play.put(40, new EntityRelativeMoveLok23(c)); //Entity
+        //play.put(41, new EntityRelativeMoveLok23(c)); //Vehicle move
+        //play.put(42, new EntityLook22(c)); //Open sign editor
+        play.put(43, new PlayerAbilites57(c));
+        //play.put(44, new EntityLook22(c)); //combat event
+        play.put(45, new PlayerListItem56(c));
+        play.put(46, new PlayerPosLook08(c));
+        //play.put(47, new PlayerAbilites57(c)); //Use bed
+        play.put(48, new DestroyEntities19(c));
+        //play.put(49, new DestroyEntities19(c)); //Remove entity effect
+        //play.put(50, new DestroyEntities19(c)); //Resource pack
+        //play.put(51, new DestroyEntities19(c)); //Respawn
+        play.put(52, new EntityHeadLook25(c));
+        //play.put(53, new DestroyEntities19(c)); //World border
+        //play.put(54, new DestroyEntities19(c)); //Camera
+        play.put(55, new HeldItemChange09(c));
+        //play.put(56, new HeldItemChange09(c));  //Display scoreboard
+        play.put(57, new EntityMetaData28(c));
+        //play.put(58, new HeldItemChange09(c)); //Attach entity 
+        play.put(59, new EntityVelocity18(c));
+        play.put(60, new EntityEquipment04(c));
+        //play.put(61, new HeldItemChange09(c)); //Set experience
+        play.put(62, new HealthUpdate06(c));
+        //play.put(63, new EntityEquipment04(c)); //Scoreboard objective
+        //play.put(64, new EntityEquipment04(c)); //Set passengers
+        play.put(65, new TeamPacket62(c));
+        play.put(66, new UpdateScore61(c));
+        play.put(67, new SpawnPos05(c));
+        play.put(68, new TimeUpdate03(c));
+        //play.put(69, new TimeUpdate03(c)); //Title
+        play.put(70, new UpdateSign51(c));
+        //play.put(71, new SoundEffect41(c)); //Sound effect 
+        //play.put(72, new TimeUpdate03(c)); //Player list header & footer
+        //play.put(73, new UpdateSign51(c)); //Collect item
+        play.put(74, new EntityTeleport24(c));
+        play.put(75, new EntityProperties32(c));
+        //play.put(76, new UpdateSign51(c)); //Entity effects
+        
+        /*play.put(0, new KeepAlive00(c));
         play.put(1, new JoinGame01(c));
         play.put(2, new ChatMessage02(c));
         play.put(3, new TimeUpdate03(c));
@@ -68,7 +146,7 @@ public class NetworkHandler {
         play.put(62, new TeamPacket62(c));
         play.put(63, new PluginMessage63(c));
         play.put(64, new Disconnect64(c));
-        play.put(70, new SetCompression70(c));
+        play.put(70, new SetCompression70(c));*/
     }
     
     public void readData() throws IOException{

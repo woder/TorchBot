@@ -8,7 +8,7 @@ public class ErrorManager {
     }
     
     public void displayError(String error, String errorType, String cause){
-        c.gui.addText(errorType + ": " + error);
+        System.out.println(errorType + ": " + error);
     }
 
 }

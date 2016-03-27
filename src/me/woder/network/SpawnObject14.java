@@ -13,6 +13,7 @@ public class SpawnObject14 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         readVarInt(buf);
+        buf.readLong();
         buf.readByte();
         buf.readInt();
         buf.readInt();

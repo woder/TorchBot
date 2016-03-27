@@ -13,6 +13,7 @@ import java.util.List;
 
 import me.woder.bot.Client;
 import me.woder.network.ByteArrayDataInputWrapper;
+import me.woder.network.Packet;
 
 @SuppressWarnings("unused")
 public class Chunk {
@@ -63,7 +64,7 @@ public class Chunk {
         blocknum = nsection * 4096;
     }
     
-    public void fillChunk(){
+    /*public void fillChunk(){
        int offset = 0;
        int current = 0;
         
@@ -80,16 +81,16 @@ public class Chunk {
        }
        blockse = null;
         
-     }
+     }*/
     
      public int getBlockId(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz).getTypeId();
+        return 0;//part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz).getTypeId();
      }
 
      public Block getBlock(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
+        return null;//part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
      public void updateBlock(int Bx, int By, int Bz, int id, int meta) {
@@ -98,12 +99,61 @@ public class Chunk {
         // Even though chances of that exception throwing are tiny.
 
         Part part = GetSectionByNumber(By);    
-        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), id, meta);
+        //part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), id, meta);
 
      }
     
+     public void getData(ByteArrayDataInputWrapper buf){
+         c.chunksloaded = true;
+         int current = 0;
+         for(int i = 0; i < 16; i++) {
+             if ((pbitmap & (1 << i)) != 0) {
+                 Part mySection = parts.get(current);
+                 current+=1;
+              }
+         }
+     }
+     
+     public void getPart(ByteArrayDataInputWrapper buf, Part p){
+         try {
+             c.chunksloaded = true;
+             int bits = buf.readUnsignedByte(); //bits per block in the data array, if 0 the palette length and palette field are omitted and the global palette is used
+             
+             p.bitsPerEntry = bits;
+             p.entryMask = (1 << bits) - 1;
+             if(bits != 0){
+                 int palettelength = Packet.readVarInt(buf);
+                 int[] palette = new int[palettelength];
+                 for(int i = 0; i < palettelength; i++){
+                     palette[i] = Packet.readVarInt(buf);
+                     int id = (palette[i] >> 4) & 0x0F;
+                     int damage = palette[i] & 0x0F;
+                     System.out.println("Id " + i + " pal " + palette[i] + " is id:" + id + " damage:" + damage);                     
+                 }
+                 p.palette = palette;
+             }else{
+                 bits = 13;
+             }            
+             int datasize = Packet.readVarInt(buf);
+             long[] data = new long[datasize];
+             System.out.println("Data size is: " + datasize + " and our bits are: " + bits);
+             for(int i = 0; i < datasize; i++){
+                 data[i] = buf.readLong();
+                 for(int z = 0; z < Long.numberOfLeadingZeros((long)data[i]); z++) {
+                     System.out.print('0');
+                 }
+                 System.out.println(Long.toBinaryString((long)data[i]));
+             }
+             p.blocks = data;
+           } catch (IOException e) {
+             e.printStackTrace();
+           }
+     }
+     
+     
+     //Legacy 1.8 way of doing things, why do you change it AGAIN DAMN IT
    //Data looks like this now: Block data and Meta (unsigned short), Block light, sky light (if true), biome, (if true)
-     public void getData(ByteArrayDataInputWrapper buf) {
+     /*public void getData(ByteArrayDataInputWrapper buf) {
         // Loading chunks, network handler hands off the decompressed bytes
         // This function takes its portion, and returns what's left.
         //the size of this chunk
@@ -117,13 +167,13 @@ public class Chunk {
         //System.arraycopy(deCompressed, blocknum, blockmeta, 0, blocknum/2);
         /*for(int i = 0; i < blocks.length; i++){
             System.out.println("id: " + blocks[i]);
-        }*/
+        }
         //System.out.println(deCompressed.length);
         //System.out.println("Blocknum" + blocknum + " block num AND removeable: " + (blocknum + removeable));
 
         fillChunk(); // Populate all of our sections with the bytes we just aquired.
 
-     }
+     }*/
      
      public int[] readUnsignedShorts(ByteArrayDataInputWrapper buf){
          int[] ints = new int[blocknum];

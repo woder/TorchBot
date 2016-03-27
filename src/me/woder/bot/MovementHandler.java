@@ -154,6 +154,11 @@ public class MovementHandler {
         c.move.runPathing(l, loc, 100);
     }  
     
+    public void setLook(float yaw, float pitch){
+        c.yaw = yaw;
+        c.pitch = pitch;
+    }
+    
     public Block getSolidBlock(){
     	for(double i = c.location.getY(); i > 0; i-=0.1){
         	Block b = c.whandle.getWorld().getBlock((int)Math.floor(c.location.getX()), (int)Math.floor(i), (int)Math.floor(c.location.getZ()));
@@ -248,7 +253,7 @@ public class MovementHandler {
     public void move(double x, double y, double z) {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         try{
-         Packet.writeVarInt(buf, 6);
+         Packet.writeVarInt(buf, 13);
          buf.writeDouble(x);
          buf.writeDouble(y);
          buf.writeDouble(z);

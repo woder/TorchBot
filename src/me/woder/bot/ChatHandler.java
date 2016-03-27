@@ -60,7 +60,7 @@ public class ChatHandler {
     public void sendMessage(String message) {
         try {
             ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-            Packet.writeVarInt(buf, 1);
+            Packet.writeVarInt(buf, 2);
             Packet.writeString(buf, message);
             c.net.sendPacket(buf, c.out);
         } catch (IOException e) {
@@ -83,7 +83,6 @@ public class ChatHandler {
         String mess = "Something went wrong";
         String username = "Unknown";
         String formated = "";
-
         Gson gson = null;
         if (message.contains("\"with\":[")) {
             gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class,
@@ -129,6 +128,7 @@ public class ChatHandler {
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {
                 username, formated }));
         getCommandText(formated, username);
+        //c.gui.addTextJ(formated, mws);
         c.gui.addText(formated);
         return mess;
     }

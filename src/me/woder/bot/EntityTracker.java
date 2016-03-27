@@ -30,13 +30,13 @@ public class EntityTracker {
         entities = new ArrayList<Entity>();
     }
     
-    public void addEntity(int eid, World world, int x, int y, int z, int type, byte pitch, byte headpitch, byte yaw, int vx, int vy, int vz){
+    public void addEntity(int eid, World world, double x, double y, double z, int type, byte pitch, byte headpitch, byte yaw, int vx, int vy, int vz){
        if(findEntityId(eid) == null){
         entities.add(new Entity(c, eid, world, x, y, z, type, pitch, headpitch, yaw, vx, vy, vz));
        }
     }
     
-    public void addPlayer(int eid, World world, int x, int y, int z, byte pitch, byte yaw, short current, String name, UUID uuid){
+    public void addPlayer(int eid, World world, double x, double y, double z, byte pitch, byte yaw, short current, String name, UUID uuid){
        if(findEntityId(eid) == null){
         entities.add(new Player(c, eid, name, uuid, x, y, z, yaw, pitch, current));
        }

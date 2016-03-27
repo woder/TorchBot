@@ -22,12 +22,13 @@ public class JoinGame01 extends Packet{
         System.out.println("Level type is: " + getString(buf));
         ByteArrayDataOutput buff = ByteStreams.newDataOutput();
         try{
-         Packet.writeVarInt(buff, 21);
+         Packet.writeVarInt(buff, 4);
          Packet.writeString(buff, "en_GB");
          buff.writeByte(0);
-         buff.writeByte(0);
+         Packet.writeVarInt(buff, 0);
          buff.writeBoolean(true);
          buff.writeByte(0);
+         Packet.writeVarInt(buff, 1);
          c.net.sendPacket(buff, c.out);
         }catch(IOException e){
           e.printStackTrace();

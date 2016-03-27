@@ -126,6 +126,7 @@ public class TorchGUI extends JPanel{
         //frame.setBounds(100, 100, 944, 555);
         frame.setPreferredSize(new Dimension(944, 555));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         
         JScrollPane scrollPane = new JScrollPane();
         

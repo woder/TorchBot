@@ -110,7 +110,7 @@ public class Client {
     public int state = 2;
     public boolean running = true;
     private String password;
-    public int mcversion = 47;
+    public int mcversion = 107;
     public int threshold = 0;
     public String accesstoken;
     public String clienttoken;
@@ -241,7 +241,7 @@ public class Client {
             boundbox = new AABB(0.6, 1.8);
             error = new ErrorManager(this);
             plist = new PlayerList(this);
-            BlockPartyPlayer pl = new BlockPartyPlayer(this);
+            //BlockPartyPlayer pl = new BlockPartyPlayer(this);
             /*
              * irc = new IRCBridge(this); if(ircenable){ irc.start(); }
              */
@@ -260,7 +260,7 @@ public class Client {
                         move.applyGravity();// Apply gravity
                         lastGrav = System.currentTimeMillis();
                         move.tick();
-                        pl.gameLoop();
+                        //pl.gameLoop();
                     }
                     // fps.tick();
                     // System.out.println("FPS: " + fps.getFPS());
@@ -270,7 +270,8 @@ public class Client {
 
         } catch (IOException e) {
             stopBot();
-            error.displayError(e.getMessage(), "IOException", "Something");
+            e.printStackTrace();
+            //error.displayError(e.getMessage(), "IOException", "Something");
         }
     }
 
@@ -279,9 +280,11 @@ public class Client {
             try {
                 gui.addText(ChatColor.DARK_RED + "Disconnected from server.");
                 running = false;
+               if(out != null){
                 out.close();
                 in.close();
                 clientSocket.close();
+               }
                 this.state = 2;
                 threshold = 0;
                 chat = null;

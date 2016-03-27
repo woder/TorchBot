@@ -16,15 +16,16 @@ public class SpawnPlayer12 extends Packet{
         int eid = readVarInt(buf);
         UUID uuid = Packet.readUUID(buf);
         String playern = c.en.getNameUUID(uuid);
-        int x = buf.readInt();
-        int y = buf.readInt();
-        int z = buf.readInt();
+        System.out.println("Lol " + playern);
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
         byte yaw = buf.readByte();
         byte pitch = buf.readByte();
-        short currentitem = buf.readShort();
         //c.chat.sendMessage("New player " + uuid);
+        short currentitem = 0; //TODO currentitem IS NOT supported anymore!!! ALWAYS ZERO
         c.en.addPlayer(eid, c.whandle.getWorld(), x, y, z, pitch, yaw, currentitem, playern, uuid); //TODO fix the playername issue
-        c.proc.readWatchableObjects(buf);
+        //c.proc.readWatchableObjects(buf);
         c.ehandle.handleEvent(new Event("onSpawnPlayer", new Object[] {playern, uuid, x, y, z, yaw, pitch, currentitem}));
     }
 

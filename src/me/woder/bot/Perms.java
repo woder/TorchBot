@@ -108,7 +108,7 @@ public class Perms {
     
     private void addLine(String line){
         try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(usr, true)))) {
-            out.println(line);
+            out.println(line + "\n");
         }catch (IOException e) {
             e.printStackTrace();
         }

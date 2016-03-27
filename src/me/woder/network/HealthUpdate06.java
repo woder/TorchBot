@@ -27,8 +27,8 @@ public class HealthUpdate06 extends Packet{
            c.en.delAll();
            try {
                ByteArrayDataOutput bufs = ByteStreams.newDataOutput();
-               Packet.writeVarInt(bufs, 22);
-               bufs.writeByte(0);
+               Packet.writeVarInt(bufs, 3); //Send client status packet
+               Packet.writeVarInt(bufs, 0);
                c.net.sendPacket(bufs, c.out);
                c.chat.sendMessage("Respawned!");
            } catch (IOException e) {
