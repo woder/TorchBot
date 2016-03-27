@@ -24,9 +24,10 @@ public class MapChunk33 extends Packet{
           z = buf.readInt();
           boolean isGroundUp = buf.readBoolean();
           int a = Packet.readVarInt(buf);
+          System.out.println(Integer.toBinaryString(a));
           int bitmask = a & 0xffff;
           datalength = Packet.readVarInt(buf);
-          Chunk chunke = new Chunk(c, x, z, bitmask, true, isGroundUp); 
+          Chunk chunke = new Chunk(c, x, z, a, true, isGroundUp); 
             if (bitmask == 0) {
                 // Unload chunk, save ALL the ram!
                 Chunk thischunk = null;

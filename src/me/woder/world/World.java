@@ -162,6 +162,8 @@ public class World {
         }
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(x,y,z);
+       }else{
+        c.chat.sendMessage("It was nyll;");
        }
        if (thisblock!=null) {
        bim.addInfo(thisblock, false);
@@ -186,5 +188,9 @@ public class World {
         thisChunk.updateBlock(x, y, z, id, meta);
         c.chandle.impor.onBlockChange(new Event("onBlockChange", new Object[]{x,y,z,id,meta}), c);
       }
+    }
+
+    public int getDimension() { //TODO add proper handling for this
+        return 0;
     }    
 }

@@ -35,6 +35,29 @@ public class Part {
         return new Block(c.whandle.getWorld(), bx, by, bz, block, meta);        
     }*/
     
+    public void setBlock(int x, int y, int z, int id, int meta){
+        int loc = x + (z * 16) + (y * 256);
+        int index = 0;
+        for(int i = 0; i < palette.length; i++){
+            int block =(palette[i] >> 4) & 0x0F;
+            if(block == id){
+                index = i;
+            }
+        }
+        //blocks[loc] = id;
+        //this.c.chat.sendMessage("At this point meta is:" + meta);
+    }
+    
+    public Block getBlock(int x, int y, int z, int bx, int by, int bz){     
+        int loc = x + (z * 16) + (y * 256);
+        System.out.println("The y of this is: " + this.y + " and size: " + blocks.length);
+        int block =(palette[get(loc)] >> 4) & 0x0F;
+        int meta = (palette[get(loc)] & 0xf);
+        //int block = blocks[loc];
+        //c.chat.sendMessage("and at this point meta is:" + meta + "and block id is:" + block);
+        return new Block(c.whandle.getWorld(), bx, by, bz, block, meta);        
+    }
+    
     public int get(int pos){
         int startBit = pos * this.bitsPerEntry;
         int startLong = startBit / 64;
@@ -49,6 +72,22 @@ public class Part {
         {
             int endOffset = 64 - startOffset;
             return (int)((this.blocks[startLong] >>> startOffset | this.blocks[endLong] << endOffset) & this.entryMask);
+        }
+    }
+    
+    public void set(int index, int value) {
+        if(index < 0 || index > this.blocks.length - 1) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        int bitIndex = index * this.bitsPerEntry;
+        int startIndex = bitIndex / 64;
+        int endIndex = ((index + 1) * this.bitsPerEntry - 1) / 64;
+        int startBitSubIndex = bitIndex % 64;
+        this.blocks[startIndex] = this.blocks[startIndex] & ~(this.entryMask << startBitSubIndex) | ((long) value & this.entryMask) << startBitSubIndex;
+        if(startIndex != endIndex) {
+            int endBitSubIndex = 64 - startBitSubIndex;
+            this.blocks[endIndex] = this.blocks[endIndex] >>> endBitSubIndex << endBitSubIndex | ((long) value & this.entryMask) >> endBitSubIndex;
         }
     }
     

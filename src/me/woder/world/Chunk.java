@@ -85,12 +85,12 @@ public class Chunk {
     
      public int getBlockId(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        return 0;//part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz).getTypeId();
+        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz).getTypeId();
      }
 
      public Block getBlock(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        return null;//part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
+        return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
      public void updateBlock(int Bx, int By, int Bz, int id, int meta) {
@@ -105,13 +105,15 @@ public class Chunk {
     
      public void getData(ByteArrayDataInputWrapper buf){
          c.chunksloaded = true;
+         System.out.println("-------BEGIN CHUNK---------");
          int current = 0;
          for(int i = 0; i < 16; i++) {
              if ((pbitmap & (1 << i)) != 0) {
-                 Part mySection = parts.get(current);
+                 getPart(buf, parts.get(current));
                  current+=1;
               }
          }
+         System.out.println("-------END CHUNK---------");
      }
      
      public void getPart(ByteArrayDataInputWrapper buf, Part p){
@@ -124,6 +126,7 @@ public class Chunk {
              if(bits != 0){
                  int palettelength = Packet.readVarInt(buf);
                  int[] palette = new int[palettelength];
+                 
                  for(int i = 0; i < palettelength; i++){
                      palette[i] = Packet.readVarInt(buf);
                      int id = (palette[i] >> 4) & 0x0F;
@@ -140,11 +143,16 @@ public class Chunk {
              for(int i = 0; i < datasize; i++){
                  data[i] = buf.readLong();
                  for(int z = 0; z < Long.numberOfLeadingZeros((long)data[i]); z++) {
-                     System.out.print('0');
+                     //System.out.print('0');
                  }
-                 System.out.println(Long.toBinaryString((long)data[i]));
+                 //System.out.println(Long.toBinaryString((long)data[i]));
              }
              p.blocks = data;
+             buf.skipBytes(2048); //skip the stupid block light
+             if(c.whandle.getWorld().getDimension() == 0){
+                 buf.skipBytes(2048); //if in overworld skip sky light
+             }
+             System.out.println("Y: " + p.y + " " + p.blocks.length);
            } catch (IOException e) {
              e.printStackTrace();
            }

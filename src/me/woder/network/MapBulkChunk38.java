@@ -87,7 +87,7 @@ public class MapBulkChunk38 extends Packet{
           for(int i = 0; i < len; i++){
               x = buf.readInt();
               z = buf.readInt();
-              int bitmask = (buf.readShort() & 0xffff);
+              int bitmask = Packet.readVarInt(buf);
               chunks[i] = new Chunk(c, x, z, bitmask, skylight, true);
           }
           

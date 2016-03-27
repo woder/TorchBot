@@ -75,7 +75,12 @@ public class CoreCommands {
        commands.put("getblock", new Command() {
            @Override
         public void runCommand(Client c, String command, String[] args, String username) { 
-               c.whandle.getWorld().getBlock(c.location.getBlockX(),c.location.getBlockY()-1,c.location.getBlockZ());
+              Block b = c.whandle.getWorld().getBlock(c.location.getBlockX(),c.location.getBlockY()-1,c.location.getBlockZ());
+              if(b != null){
+                  c.chat.sendMessage("Block is: " + b.getBlockName());
+              }else{
+                  c.chat.sendMessage("It was null :(");
+              }
            };
        });
        
