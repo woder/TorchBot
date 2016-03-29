@@ -99,7 +99,7 @@ public class Chunk {
         // Even though chances of that exception throwing are tiny.
 
         Part part = GetSectionByNumber(By);    
-        //part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), id, meta);
+        part.setBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), id, meta);
 
      }
     
@@ -125,13 +125,13 @@ public class Chunk {
              p.entryMask = (1 << bits) - 1;
              if(bits != 0){
                  int palettelength = Packet.readVarInt(buf);
-                 int[] palette = new int[palettelength];
-                 
+                 //int[] palette = new int[palettelength];
+                 List<Integer> palette = new ArrayList<Integer>();
                  for(int i = 0; i < palettelength; i++){
-                     palette[i] = Packet.readVarInt(buf);
-                     int id = (palette[i] >> 4) & 0x0F;
-                     int damage = palette[i] & 0x0F;
-                     System.out.println("Id " + i + " pal " + palette[i] + " is id:" + id + " damage:" + damage);                     
+                     palette.add(Packet.readVarInt(buf));
+                     int id = (palette.get(i) >> 4) & 0x0F;
+                     int damage = palette.get(i) & 0x0F;
+                     System.out.println("Id " + i + " pal " + palette.get(i) + " is id:" + id + " damage:" + damage);                     
                  }
                  p.palette = palette;
              }else{
@@ -148,11 +148,12 @@ public class Chunk {
                  //System.out.println(Long.toBinaryString((long)data[i]));
              }
              p.blocks = data;
+             p.unpack();
              buf.skipBytes(2048); //skip the stupid block light
              if(c.whandle.getWorld().getDimension() == 0){
                  buf.skipBytes(2048); //if in overworld skip sky light
              }
-             System.out.println("Y: " + p.y + " " + p.blocks.length);
+             //System.out.println("Y: " + p.y + " " + p.blocks.length);
            } catch (IOException e) {
              e.printStackTrace();
            }
