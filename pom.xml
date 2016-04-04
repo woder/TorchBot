@@ -9,6 +9,14 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <defaultGoal>install</defaultGoal>
+    <resources>
+        <resource>
+            <directory>src</directory>
+            <excludes>
+                <exclude>**/*.java</exclude>
+            </excludes>
+        </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
