@@ -44,7 +44,7 @@ public class NetworkHandler {
         //play.put(13, new SpawnObject14(c)); //Server difficulty
         //play.put(14, new SpawnObject14(c)); //Tab complete
         play.put(15, new ChatMessage02(c));
-        //play.put(16, new ChatMessage02(c)); //Multi Block Change
+        play.put(16, new MultiBlockChange16(c)); //Multi Block Change
         //play.put(17, new ChatMessage02(c)); //Confirm transaction
         //play.put(18, new ChatMessage02(c)); //Close window
         //play.put(19, new ChatMessage02(c)); //Open window
@@ -98,13 +98,13 @@ public class NetworkHandler {
         play.put(67, new SpawnPos05(c));
         play.put(68, new TimeUpdate03(c));
         //play.put(69, new TimeUpdate03(c)); //Title
-        play.put(70, new UpdateSign51(c));
-        //play.put(71, new SoundEffect41(c)); //Sound effect 
-        //play.put(72, new TimeUpdate03(c)); //Player list header & footer
-        //play.put(73, new UpdateSign51(c)); //Collect item
-        play.put(74, new EntityTeleport24(c));
-        play.put(75, new EntityProperties32(c));
-        //play.put(76, new UpdateSign51(c)); //Entity effects
+        //play.put(70, new UpdateSign51(c)); No longer exists
+        //play.put(70, new SoundEffect41(c)); //Sound effect 
+        //play.put(71, new TimeUpdate03(c)); //Player list header & footer
+        //play.put(72, new UpdateSign51(c)); //Collect item
+        play.put(73, new EntityTeleport24(c));
+        play.put(74, new EntityProperties32(c));
+        //play.put(75, new UpdateSign51(c)); //Entity effects
         
         /*play.put(0, new KeepAlive00(c));
         play.put(1, new JoinGame01(c));

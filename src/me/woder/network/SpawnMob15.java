@@ -15,7 +15,7 @@ public class SpawnMob15 extends Packet{
         int eid = readVarInt(buf);
         //long uid = buf.readByte();
         Packet.readUUID(buf);
-        int type = buf.readByte() & 0xff;
+        int type = readVarInt(buf);//buf.readByte() & 0xff;
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();

@@ -16,7 +16,8 @@ public class SoundEffect41 extends Packet{
         buf.readInt();
         buf.readInt();
         buf.readFloat();
-        buf.readByte();
+        buf.readFloat();
+        //buf.readByte();
     }
 
 }

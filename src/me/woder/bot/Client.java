@@ -110,7 +110,7 @@ public class Client {
     public int state = 2;
     public boolean running = true;
     private String password;
-    public int mcversion = 107;
+    public int mcversion = 316;
     public int threshold = 0;
     public String accesstoken;
     public String clienttoken;
