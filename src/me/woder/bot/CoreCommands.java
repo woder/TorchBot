@@ -35,6 +35,7 @@ public class CoreCommands {
                      Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
                      System.out.println("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
                      Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
+                     System.out.println("Location is " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                      c.move.runPathing(l, loc, 100);
                    }else{
                      //c.chat.sendMessage(username + ": couldn't find a player by that name");

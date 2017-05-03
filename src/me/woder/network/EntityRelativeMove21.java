@@ -16,9 +16,9 @@ public class EntityRelativeMove21 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
        int eid = Packet.readVarInt(buf);
-       byte sx = buf.readByte();
-       byte sy = buf.readByte();
-       byte sz = buf.readByte();
+       int sx = buf.readShort()/ (128 * 32);
+       int sy = buf.readShort()/ (128 * 32);
+       int sz = buf.readShort()/ (128 * 32);
        boolean onground = buf.readBoolean();
        Entity e = c.en.findEntityId(eid);
        if(e != null){

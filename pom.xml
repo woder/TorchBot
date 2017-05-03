@@ -4,8 +4,7 @@
   <artifactId>TorchBot</artifactId>
   <version>1.0.1</version>
   <name>TorchBot</name>
-  <description>A bot for minecraft
-</description>
+  <description>A bot for minecraft</description>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <defaultGoal>install</defaultGoal>
