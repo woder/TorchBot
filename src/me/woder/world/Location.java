@@ -85,5 +85,10 @@ public class Location {
     public Block getBlock(){
         return world.getBlock((int)x, (int)y, (int)z);
     }
+    
+    @Override
+    public String toString(){
+    	return "[" + world.getDimension() + ": (" + x + ", " + y + ", " + z + ")]";
+    }
 
 }

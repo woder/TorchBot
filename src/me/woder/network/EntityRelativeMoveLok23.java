@@ -18,15 +18,12 @@ public class EntityRelativeMoveLok23 extends Packet{
        double dx = buf.readShort()/(double)(128*32);
        double dy = buf.readShort()/(double)(128*32);
        double dz = buf.readShort()/(double)(128*32);
-       System.out.println("Delta was: " + dx + " " + dy + " " + dz);
        byte yaw = buf.readByte();
        byte pitch = buf.readByte();
        boolean onground = buf.readBoolean();
        Entity e = c.en.findEntityId(eid);
-       System.out.println("EID ewas: " + eid);
        if(e != null){
-          System.out.println("FOUND EID was: " + eid);
-          //this location is the one we will translate, we don't really want to apply the translation to the existing location inside the entity object
+          //this location is the one we will translate, we don't really want to apply the translation to the existing location inside the entity object          
           Location l = new Location(c.whandle.getWorld(), e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ());
           //apply the translation
           l.translate(dx, dy, dz);

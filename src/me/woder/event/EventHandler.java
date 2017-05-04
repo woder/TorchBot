@@ -21,7 +21,7 @@ public class EventHandler {
      * onEntityEquipement int entityid, int slotnum, int itemid, int itemcount, int itemdamage
      * onEntityMove int eid, double x, double y, double z, boolean onGround
      * onEntityMoveLook int eid, double x, double y, double z, byte yaw, byte pitch, boolean onGround
-     * onEntityTeleport int eid, double x, double y, double z
+     * onEntityTeleport int eid, double x, double y, double z, boolean onground
      * onHealthUpdate float health, short food, float foodsat
      * onPlayerAbilities byte flags, float flyspeed, float walkspeed
      * onPlayerPosLook double x, double y, double z, byte yaw, byte pitch, boolean onground

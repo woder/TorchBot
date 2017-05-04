@@ -1,5 +1,6 @@
 package me.woder.bot;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import me.woder.gui.RComponent;
@@ -12,9 +13,9 @@ public class Player extends Entity{
     String name;
     UUID uuid;
     Slot[] equipement;
-    double x = 0;
-    double y = 0;
-    double z = 0;
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
     byte yaw, pitch;
     RComponent dot;
     double rx, ry, rz;
@@ -46,6 +47,8 @@ public class Player extends Entity{
     
     @Override
     public void setLocation(Location l){
+    	StackTraceElement[] cause = Thread.currentThread().getStackTrace();    	
+    	System.out.println(Arrays.toString(cause));
         this.x = l.getX();
         this.y = l.getY();
         this.z = l.getZ();

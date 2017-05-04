@@ -15,20 +15,17 @@ public class EntityTeleport24 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
         int eid = Packet.readVarInt(buf);
-        int dx = buf.readInt();
-        int dy = buf.readInt();
-        int dz = buf.readInt();
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
         byte yaw = buf.readByte();
         byte pitch = buf.readByte();  
         boolean onground = buf.readBoolean();
         Entity e = c.en.findEntityId(eid);
         //c.chat.sendMessage("Coords: " + dx + ", " + dy + ", " + dz);
         if(e != null){
-           e.sx = dx;
-           e.sy = dy;
-           e.sz = dz;
-           e.setLocationLook(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D), yaw, pitch);
-           c.ehandle.handleEvent(new Event("onEntityTeleport", new Object[] {eid,e.sx/32.0D, e.sy/32.0D, e.sz/32.0D}));
+           e.setLocationLook(new Location(c.whandle.getWorld(), x, y, z), yaw, pitch);
+           c.ehandle.handleEvent(new Event("onEntityTeleport", new Object[] {eid,x, y, z, onground}));
         }
     }
 

@@ -1,5 +1,7 @@
 package me.woder.bot;
 
+import java.util.Arrays;
+
 import me.woder.gui.RComponent;
 import me.woder.world.Location;
 import me.woder.world.World;
