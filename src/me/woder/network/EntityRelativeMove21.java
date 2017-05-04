@@ -16,17 +16,19 @@ public class EntityRelativeMove21 extends Packet{
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
        int eid = Packet.readVarInt(buf);
-       int sx = buf.readShort()/ (128 * 32);
-       int sy = buf.readShort()/ (128 * 32);
-       int sz = buf.readShort()/ (128 * 32);
+       double dx = buf.readShort()/(double)(128*32);
+       double dy = buf.readShort()/(double)(128*32);
+       double dz = buf.readShort()/(double)(128*32);
        boolean onground = buf.readBoolean();
        Entity e = c.en.findEntityId(eid);
        if(e != null){
-          e.sx += sx;
-          e.sy += sy;
-          e.sz += sz;
-          e.setLocation(new Location(c.whandle.getWorld(), e.sx/32.0D, e.sy/32.0D, e.sz/32.0D));
-          c.ehandle.handleEvent(new Event("onEntityMove", new Object[] {eid,e.sx/32.0D, e.sy/32.0D, e.sz/32.0D}));
+    	 //this location is the one we will translate, we don't really want to apply the translation to the existing location inside the entity object
+         Location l = new Location(c.whandle.getWorld(), e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ());
+         //apply the translation
+         l.translate(dx, dy, dz);
+         //set the location to our translated location
+         e.setLocation(l);
+         c.ehandle.handleEvent(new Event("onEntityMove", new Object[] {eid,l.getX(), l.getY(), l.getZ(), onground}));
        }
     }
 

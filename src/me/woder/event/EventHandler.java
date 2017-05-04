@@ -19,8 +19,8 @@ public class EventHandler {
      * onBlockChange int x, int y, int z, int bid, int meta
      * onChatMessage String username, String message (NOTE; this event will often return "Unknown" as user, in that case the message will contain the user AND string)
      * onEntityEquipement int entityid, int slotnum, int itemid, int itemcount, int itemdamage
-     * onEntityMove int eid, double x, double y, double z
-     * onEntityMoveLook int eid, double x, double y, double z, byte yaw, byte pitch
+     * onEntityMove int eid, double x, double y, double z, boolean onGround
+     * onEntityMoveLook int eid, double x, double y, double z, byte yaw, byte pitch, boolean onGround
      * onEntityTeleport int eid, double x, double y, double z
      * onHealthUpdate float health, short food, float foodsat
      * onPlayerAbilities byte flags, float flyspeed, float walkspeed

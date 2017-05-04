@@ -30,6 +30,18 @@ public class Location {
         else return false;
     }
     
+    /**
+     * Translates a location by the given delta x, y and z values
+     * @param dX delta X value
+     * @param dY delta Y value
+     * @param dZ delta Z value
+     */
+    public void translate(double dX, double dY, double dZ){
+    	this.x += dX;
+    	this.y += dY;
+    	this.z += dZ;
+    }
+    
     public void setX(double x){
         this.x = x;
     }
