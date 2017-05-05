@@ -36,7 +36,8 @@ public enum MobTypes {
     IRONGOLEM(99, "IronGolem", false),
     HORSE(100, "Horse", false),
     RABBIT(101, "Rabbit", false),
-    VILLAGER(120, "Villager", false);
+    VILLAGER(120, "Villager", false),
+    DEFAULT(99999, "Unknown", false);
     
     private final int type;
     private final String name;
@@ -66,7 +67,7 @@ public enum MobTypes {
                 return v;
             }
         }
-        return null;
+        return DEFAULT; //return dummy for when there is no value
     }
     
     public static MobTypes findByName(String name){
@@ -75,6 +76,6 @@ public enum MobTypes {
                 return v;
             }
         }
-        return null;
+        return DEFAULT;
     }
 }

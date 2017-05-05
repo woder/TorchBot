@@ -290,7 +290,7 @@ public class AStar {
 
     private boolean canBlockBeWalkedThrough(int id) {
         int d = 0;
-        return (id == d || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
+        return (id == d || id == 8 || id == 9 || id == 6 || id == 50 || id == 63 || id == 30 || id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40 || id == 55 || id == 66 || id == 75
                 || id == 76 || id == 78);
     }
 

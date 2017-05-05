@@ -95,6 +95,7 @@ public class ChatHandler {
         }
         if (message.length() < 5)
             return "";
+        c.gui.addText(message);
         ChatMessage mws = gson.fromJson(message, ChatMessage.class);
         // ChatMessage mws = new Gson().fromJson(message, ChatMessage.class);
         if (!mws.getWith().isEmpty()) {

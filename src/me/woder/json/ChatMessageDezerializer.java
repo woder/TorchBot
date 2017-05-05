@@ -17,7 +17,7 @@ public class ChatMessageDezerializer implements JsonDeserializer<ChatMessage> {
         JsonObject obj = json.getAsJsonObject();
         message.setTranslate(obj.get("translate").getAsString());
         JsonArray array = obj.getAsJsonArray("with");
-        message.getWith().add(context.deserialize(array.get(0), With.class));
+        /*message.getWith().add(context.deserialize(array.get(0), With.class));*/
         message.getWith().add(array.get(1).getAsString());
         return message;
     }
