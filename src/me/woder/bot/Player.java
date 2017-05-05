@@ -42,13 +42,11 @@ public class Player extends Entity{
     
     @Override
     public void setEquipement(int id, Slot slot){
-        this.equipement[id] = slot;
+        //this.equipement[id] = slot;
     }
     
     @Override
     public void setLocation(Location l){
-    	StackTraceElement[] cause = Thread.currentThread().getStackTrace();    	
-    	System.out.println(Arrays.toString(cause));
         this.x = l.getX();
         this.y = l.getY();
         this.z = l.getZ();

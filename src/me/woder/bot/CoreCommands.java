@@ -33,6 +33,7 @@ public class CoreCommands {
                    Player p = c.en.findPlayer(ChatColor.stripColor(args[1]));
                    if(p != null){
                      Location l = new Location(c.whandle.getWorld(),c.location.getX(), c.location.getY()-1, c.location.getZ());
+                     System.out.println("Start block is going to be: " + l);
                      System.out.println("Loc: " + p.getLocation().getX() + ", " + p.getLocation().getY() + ", " + p.getLocation().getZ());
                      Location loc = new Location(c.whandle.getWorld(), p.getLocation().getX(), p.getLocation().getY()-1, p.getLocation().getZ());
                      System.out.println("Location is " + loc.getX() + " " + loc.getY() + " " + loc.getZ());

@@ -90,6 +90,7 @@ public class Chunk {
 
      public Block getBlock(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
+        //c.chat.sendMessage("I think: c: " + part.y + " inside " + x + "," + z + " and within" + getXinSection(Bx) + "," + GetPositionInSection(By) + ", " + getZinSection(Bz));
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
@@ -105,7 +106,7 @@ public class Chunk {
     
      public void getData(ByteArrayDataInputWrapper buf){
          c.chunksloaded = true;
-         System.out.println("-------BEGIN CHUNK---------");
+         //System.out.println("-------BEGIN CHUNK---------");
          int current = 0;
          for(int i = 0; i < 16; i++) {
              if ((pbitmap & (1 << i)) != 0) {
@@ -113,38 +114,41 @@ public class Chunk {
                  current+=1;
               }
          }
-         System.out.println("-------END CHUNK---------");
+         //System.out.println("-------END CHUNK---------");
      }
      
      public void getPart(ByteArrayDataInputWrapper buf, Part p){
          try {
              c.chunksloaded = true;
              int bits = buf.readUnsignedByte(); //bits per block in the data array, if 0 the palette length and palette field are omitted and the global palette is used
-             
              p.bitsPerEntry = bits;
              p.entryMask = (1 << bits) - 1;
+             //this goes here I'm pretty sure
+             int palettelength = Packet.readVarInt(buf);
              if(bits != 0){
-                 int palettelength = Packet.readVarInt(buf);
+                 //int palettelength = Packet.readVarInt(buf);
                  //int[] palette = new int[palettelength];
                  List<Integer> palette = new ArrayList<Integer>();
                  for(int i = 0; i < palettelength; i++){
                      palette.add(Packet.readVarInt(buf));
-                     int id = (palette.get(i) >> 4) & 0x0F;
-                     int damage = palette.get(i) & 0x0F;
-                     System.out.println("Id " + i + " pal " + palette.get(i) + " is id:" + id + " damage:" + damage);                     
+                     /*int id = (palette.get(i) >> 4) & 0x0F;
+                     int damage = palette.get(i) & 0x0F;*/
+                     int id = (palette.get(i) & 0xfff0) >> 4;
+                     int damage = (palette.get(i) & 0xf);            
                  }
-                 p.palette = palette;
+                 //p.palette = palette;
+                 p.setPalette(palette);
              }else{
                  bits = 13;
              }            
              int datasize = Packet.readVarInt(buf);
              long[] data = new long[datasize];
-             System.out.println("Data size is: " + datasize + " and our bits are: " + bits);
+             //System.out.println("Data size is: " + datasize + " and our bits are: " + bits);
              for(int i = 0; i < datasize; i++){
                  data[i] = buf.readLong();
-                 for(int z = 0; z < Long.numberOfLeadingZeros((long)data[i]); z++) {
+                 /*for(int z = 0; z < Long.numberOfLeadingZeros((long)data[i]); z++) {
                      //System.out.print('0');
-                 }
+                 }*/
                  //System.out.println(Long.toBinaryString((long)data[i]));
              }
              p.blocks = data;

@@ -34,9 +34,12 @@ public class Part {
         int loc = x + (z * 16) + (y * 256);
         int block = ((blockse[loc] & 0xfff0) >> 4) & 0xffff;
         int meta = (blockse[loc] & 0xf) & 0xffff;
-        //int block = blocks[loc];
-        //c.chat.sendMessage("and at this point meta is:" + meta + "and block id is:" + block);
+        
         return new Block(c.whandle.getWorld(), bx, by, bz, block, meta);        
+    }
+    
+    public void setPalette(List<Integer> palette){
+        this.palette = palette;
     }
     
     /*public Block getBlock(int x, int y, int z, int bx, int by, int bz){     
@@ -55,8 +58,10 @@ public class Part {
         //loop over all blocks in this chunk
         for(int i = 0; i < blockse.length; i++){
             //first extract the index from the block array and use that to index the palette
-            int block =(palette.get(get(i)) >> 4) & 0x0F;
-            int meta = (palette.get(get(i)) & 0xf);
+            int indice = get(i);
+            int block =(palette.get(indice) & 0xfff0) >> 4;
+            int meta = (palette.get(indice) & 0xf);
+            //System.out.println("Indice is: " + indice + " maps to: " + block + " " + meta);
             int c = ((block << 4) & 0xfff0) | (meta & 0xf); //inject these extracted values into our new format
             blockse[i] = c; //set our block in the array to this value          
         }

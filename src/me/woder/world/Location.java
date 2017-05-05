@@ -83,7 +83,7 @@ public class Location {
     }
     
     public Block getBlock(){
-        return world.getBlock((int)x, (int)y, (int)z);
+        return world.getBlock((int)Math.floor(x), (int)Math.floor(y), (int)Math.floor(z));
     }
     
     @Override

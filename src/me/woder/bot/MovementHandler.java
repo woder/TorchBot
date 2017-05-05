@@ -3,6 +3,7 @@ package me.woder.bot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -75,6 +76,7 @@ public class MovementHandler {
                Tile t = itr.next();
                Location loc = t.getLocation(start);
                //c.gui.addText("Position is: " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ());
+               //c.chat.sendMessage("Trying to move to: " + loc);
                calcMovement(new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5));
              /* if(next != null){
                Location loc = next.getLocation(start);
@@ -120,7 +122,7 @@ public class MovementHandler {
              }
             }
         };
-        timer.scheduleAtFixedRate(task, 0, 150);
+        timer.scheduleAtFixedRate(task, 0,100);
     }
     
     /**
@@ -224,7 +226,7 @@ public class MovementHandler {
             //now check if the head is safe
             if(!l.getBlock().getRelative(0, 2, 0).getBoundBox().isSolid()){
                 //yay it seems clear, so now we can go there
-            	int steps = 10; //the amount of steps to take
+            	/*int steps = 3; //the amount of steps to take
             	double deltax = (l.getX() - c.location.getX())/steps;  
             	double deltay = (l.getY()+1 - c.location.getY());
             	double deltaz = (l.getZ() - c.location.getZ())/steps;
@@ -233,7 +235,7 @@ public class MovementHandler {
             		c.location.setY(c.location.getY() + deltay);
             		c.location.setZ(c.location.getZ() + deltaz);          		
             		tick();
-            	}
+            	}*/
             	c.location.setX(l.getX());
         		c.location.setY(l.getY()+1);// HAHAHAHAHAH WOW
         		c.location.setZ(l.getZ());
