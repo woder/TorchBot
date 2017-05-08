@@ -21,7 +21,7 @@ public class PRadar extends JPanel {
     public CopyOnWriteArrayList<RComponent> radardots = new CopyOnWriteArrayList<RComponent>();
     public RComponent dbot = new RComponent(126,111,10,10,"<html></html>", 0, this, "", 3);
     public Client c;
-    public double viewPort = 10;
+    public double viewPort = 20;
 
     public PRadar(Client c) {
         this.c = c;
@@ -34,7 +34,8 @@ public class PRadar extends JPanel {
             public void mouseMoved(MouseEvent e) {  
                 boolean tooltip = false;
                 for(RComponent d : radardots){
-                    if(d.isInside(e.getPoint())){
+                	//do NOT show the tooltip if we aren't painting the actual dot... duh
+                    if(d.isInside(e.getPoint()) && d.shouldPaint()){
                         setToolTipText(d.text); 
                         tooltip = true;
                     }
