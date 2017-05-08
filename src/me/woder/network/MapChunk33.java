@@ -24,7 +24,6 @@ public class MapChunk33 extends Packet{
           z = buf.readInt();
           boolean isGroundUp = buf.readBoolean();
           int a = Packet.readVarInt(buf);
-          System.out.println(Integer.toBinaryString(a));
           int bitmask = a & 0xffff;
           datalength = Packet.readVarInt(buf);
           Chunk chunke = new Chunk(c, x, z, a, true, isGroundUp); 
@@ -45,7 +44,6 @@ public class MapChunk33 extends Packet{
              }
                        
           chunke.getData(buf);
-          //c.chat.sendMessage("Added chunk: " + chunke.getX() + " " + chunke.getZ());
           c.whandle.getWorld().chunklist.add(chunke);//add it to the world :D
         
     }

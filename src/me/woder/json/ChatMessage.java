@@ -16,8 +16,8 @@ public class ChatMessage {
     private String strikethrough = "false";
     private String obfuscated = "false";
     private String color = "black";
-    private Clicked clickEvent;
-    private Hover hoverEvent;
+    private ClickEvent clickEvent;
+    private HoverEvent hoverEvent;
     private String insertion;
     
     public String getText() {
@@ -92,16 +92,16 @@ public class ChatMessage {
     public void setColor(String color) {
         this.color = color;
     }
-    public Clicked getClickEvent() {
+    public ClickEvent getClickEvent() {
         return clickEvent;
     }
-    public void setClickEvent(Clicked clickEvent) {
+    public void setClickEvent(ClickEvent clickEvent) {
         this.clickEvent = clickEvent;
     }
-    public Hover getHoverEvent() {
+    public HoverEvent getHoverEvent() {
         return hoverEvent;
     }
-    public void setHoverEvent(Hover hoverEvent) {
+    public void setHoverEvent(HoverEvent hoverEvent) {
         this.hoverEvent = hoverEvent;
     }
     public String getInsertion() {

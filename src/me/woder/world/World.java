@@ -86,7 +86,6 @@ public class World {
              c.net.sendPacket(buf, c.out);
              int slot = c.invhandle.currentSlot;
              int tool = c.invhandle.inventory.get(slot).getId();
-             //System.out.println("HEY got the id its "+tool);
              int breakTime = thisBlock.getBreakTime(tool);
              if(breakTime>=0) {
                  timer.schedule(new TimerTask(){
@@ -163,7 +162,6 @@ public class World {
        if(thisChunk != null){
         thisblock = thisChunk.getBlock(x,y,z);
        }else{
-        //c.chat.sendMessage("It was nyll;");
        }
        if (thisblock!=null) {
        bim.addInfo(thisblock, false);

@@ -43,13 +43,10 @@ public class Chunk {
         blocknum = 0;
         nsection = 0;
         ablocks = 0;
-        //System.out.println(Integer.toBinaryString(pbitmap));
         for (int i = 0; i < 16; i++) {
-            //System.out.println("Bit map = " + (pbitmap & (1 << i)));
             if ((pbitmap & (1 << i)) != 0) {
                 nsection++; // "parts of the chunk"
                 parts.add(new Part((byte)i, c));
-                //System.out.println("Added new part: " + i);
             }
         }
 
@@ -90,7 +87,6 @@ public class Chunk {
 
      public Block getBlock(int Bx, int By, int Bz) {
         Part part = GetSectionByNumber(By);
-        //c.chat.sendMessage("I think: c: " + part.y + " inside " + x + "," + z + " and within" + getXinSection(Bx) + "," + GetPositionInSection(By) + ", " + getZinSection(Bz));
         return part.getBlock(getXinSection(Bx), GetPositionInSection(By), getZinSection(Bz), Bx, By, Bz);    
      }
 
@@ -119,7 +115,6 @@ public class Chunk {
      
      public void getPart(ByteArrayDataInputWrapper buf, Part p){
          try {
-             c.chunksloaded = true;
              int bits = buf.readUnsignedByte(); //bits per block in the data array, if 0 the palette length and palette field are omitted and the global palette is used
              p.bitsPerEntry = bits;
              p.entryMask = (1 << bits) - 1;
@@ -136,20 +131,14 @@ public class Chunk {
                      int id = (palette.get(i) & 0xfff0) >> 4;
                      int damage = (palette.get(i) & 0xf);            
                  }
-                 //p.palette = palette;
                  p.setPalette(palette);
              }else{
                  bits = 13;
              }            
              int datasize = Packet.readVarInt(buf);
              long[] data = new long[datasize];
-             //System.out.println("Data size is: " + datasize + " and our bits are: " + bits);
              for(int i = 0; i < datasize; i++){
                  data[i] = buf.readLong();
-                 /*for(int z = 0; z < Long.numberOfLeadingZeros((long)data[i]); z++) {
-                     //System.out.print('0');
-                 }*/
-                 //System.out.println(Long.toBinaryString((long)data[i]));
              }
              p.blocks = data;
              p.unpack();
@@ -157,7 +146,6 @@ public class Chunk {
              if(c.whandle.getWorld().getDimension() == 0){
                  buf.skipBytes(2048); //if in overworld skip sky light
              }
-             //System.out.println("Y: " + p.y + " " + p.blocks.length);
            } catch (IOException e) {
              e.printStackTrace();
            }
