@@ -1,0 +1,75 @@
+-Please note! for the plugin to work properly you need to have the following in your code:
+-getName(){}
+-getCommand(){}
+-getListener(){}
+-
+-if you are missing anyone of these it WILL NOT work, remember though that you can always set it to be blank
+-(example below)
+-function getListener(){
+-return "";
+-}
+-
+-and that will allow it to work properly - this has been the cause of many errors so don't get caught with this!
+-(now on with the tutorial)
+-
+-Torchbot plugins work rather simply.
+-
+-First, you tell the bot what the name of your plugin is:
+-
+-	var name = "test";
+-
+-	function getName(){
+-		return name;
+-	}
+-
+-In this example we tell it to return the variable "name" which we set to "test" earlier.
+-This method is required for the plugin to function properly, forgetting to add it will cause the plugin not to function.
+-
+-Now lets look at the next part, the run method
+-
+-	function run(){ //run method, gets run  when the plugins are loaded or when they are reloaded with !reload
+-	c.gui.addText("§4woder's awesome test"); //write text to the text box on the GUI
+-	c.chat.sendMessage("test"); //write text to the chat
+-	return true; //return if we were successful starting or not
+-	}
+-
+-Lets look at how plugin commands work
+-
+-	function getCommand(){
+-	return "pick;a command to test,test;some command i guess";
+-	}
+-
+-When the bot loads your plugin in, it will run getCommand(), off of this method it will split the string up
+-to create a command database that will index the command to your plugin. It is delimited as followed:
+-Command names and descriptions are seperated by a semi colon (;), different commands are seperated with a comma
+-commandname;description,commandname;description
+-
+-After you register the commands, you need to add a method that the bot will call when the even is triggered
+-
+-	function pick(command){
+-	c.chat.sendMessage("test!");
+-	}
+-
+-The method used has the same name as the command registered
+-The next thing we will do is add listeners, this is done like so:
+-
+-	getListener(){
+-	return "onSignUpdate,onBlockChange";
+-	}
+-	
+-The listener you want to add is case sensitive and should be seperated by commas
+-Once you have registered the listeners using that previous method you need to add a method so that the bot 
+-can call it.
+-
+-	function onBlockChange(x,y,z,bid,meta){
+-	//c.chat.sendMessage("plugins can tell blocks?: " + x + "," + y + "," + z + " and is now block id: " + bid + " meta: " + meta);
+-	}
+-	
+-	function onSignUpdate(x,y,z,l1,l2,l3,l4){
+-	//c.chat.sendMessage("Sign at " + x + "," + y + "," + z + " now says: " + l1 + ";" + l2 + ";" + l3 + ";" + l4);
+-	}
+-
+-The method is simply the name of the listener.
+-
+-Keep in mind that almost anything you can do in javascript should work in these scripts, you can also use almost any reference within the "bot" class, check the
+-github to know what the internal methods are.
