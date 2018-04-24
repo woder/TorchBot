@@ -114,15 +114,31 @@ public class ChatHandler {
                     messag += j;
                     userb += j;
                 } else {
-                    messag += ChatColor.COLOR_CHAR
-                            + attributes.get(((Node) mws.getExtra().get(i))
-                                    .getColor())
-                            + ((Node) mws.getExtra().get(i)).getText();
+                    String color = ((Node) mws.getExtra().get(i)).getColor();
+                    if(color == null) {
+                        //there was no color attribute
+                        messag += ((Node) mws.getExtra().get(i)).getText();
+                    } else {
+                        //color attribute was present
+                        messag += ChatColor.COLOR_CHAR
+                                + attributes.get(color)
+                                + ((Node) mws.getExtra().get(i)).getText();
+                    }
                     userb += ((Node) mws.getExtra().get(i)).getText();
                 }
             }
             username = getUsername(userb);
             formated = messag;
+        } else {
+            if(mws.getText() != null) {
+                //there was text, it was just sent in a strange way
+                if(mws.getColor() != null) { //in case there is color
+                    formated = ChatColor.COLOR_CHAR + attributes.get(mws.getColor())
+                             + mws.getText();
+                } else {
+                    formated = mws.getText();
+                }
+            }
         }
 
         c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {
