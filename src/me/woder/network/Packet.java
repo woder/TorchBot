@@ -7,10 +7,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.woder.bot.Client;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import me.woder.bot.Client;
 
 public class Packet {
     Client c;
@@ -76,7 +76,7 @@ public class Packet {
         return s;
     }
     
-    //Only server pinger is allowed to use this, NOTHING ELSE (other stuff should use c.net.sendPacket
+    //Only server pinger is allowed to use this, NOTHING ELSE (other stuff should use c.net.sendPacket)
     @Deprecated
     public static void sendPacket(ByteArrayDataOutput buf, DataOutputStream out) throws IOException{
         ByteArrayDataOutput send1 = ByteStreams.newDataOutput();
@@ -105,6 +105,24 @@ public class Packet {
       }
    
       return i;
+    }
+    
+    public static int[] readVarIntt(ByteArrayDataInputWrapper ins) throws IOException{ //reads a varint from the stream, returning both the length and the value
+        int i = 0;
+        int j = 0;
+        int b = 0;
+        while (true){
+          int k = ins.readByte();
+          b += 1;
+          i |= (k & 0x7F) << j++ * 7;
+     
+          if (j > 5) throw new RuntimeException("VarInt too big");
+     
+          if ((k & 0x80) != 128) break;
+        }
+        
+        int[] result = {i,b};
+        return result;
     }
      
     public static void writeVarInt(ByteArrayDataOutput outs, int paramInt) throws IOException{ //writes a varint to the buffer

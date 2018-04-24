@@ -2,10 +2,10 @@ package me.woder.network;
 
 import java.io.IOException;
 
-import me.woder.bot.Client;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import me.woder.bot.Client;
 public class KeepAlive00 extends Packet{
     public KeepAlive00(Client c) {
         super(c);
@@ -13,10 +13,10 @@ public class KeepAlive00 extends Packet{
     
     @Override
     public void read(Client c, int len, ByteArrayDataInputWrapper buf) throws IOException{
-        int temp = Packet.readVarInt(buf);
+        long temp = buf.readLong();
         ByteArrayDataOutput buff = ByteStreams.newDataOutput();
         writeVarInt(buff, 11);
-        Packet.writeVarInt(buff, temp);
+        buff.writeLong(temp);
         c.net.sendPacket(buff, c.out);
     }
 

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
-
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,17 +86,15 @@ public class ChatHandler {
         if (message.contains("\"with\":[")) {
             gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class,
                     new ChatMessageDezerializer()).create();
-        	//gson = new Gson();
         } else if (message.contains("\"extra\":[")) {
             gson = new GsonBuilder().registerTypeAdapter(ChatMessage.class,
                     new ChatMessageDe()).create();
-            parseWithExtra(gson, message);
-            return mess;
         } else {
             gson = new Gson();
         }
         if (message.length() < 5)
             return "";
+        //c.gui.addText(message);
         ChatMessage mws = gson.fromJson(message, ChatMessage.class);
         // ChatMessage mws = new Gson().fromJson(message, ChatMessage.class);
         if (!mws.getWith().isEmpty()) {
@@ -134,34 +131,6 @@ public class ChatHandler {
         //c.gui.addTextJ(formated, mws);
         c.gui.addText(formated);
         return mess;
-    }
-    
-    public void parseWithExtra(Gson gson, String json){
-    	// String messag = "§" + attributes.get(mws.getColor()) +
-        // mws.getText();
-    	ChatMessage mws = gson.fromJson(json, ChatMessage.class);
-        String messag = "";
-        String userb = "";
-        for (int i = 0; i < mws.getExtra().size(); i++) {
-            Object j = mws.getExtra().get(i);
-            if (j instanceof String) {
-                messag += j;
-                userb += j;
-            } else {
-                messag += ChatColor.COLOR_CHAR
-                        + attributes.get(((Node) mws.getExtra().get(i))
-                                .getColor())
-                        + ((Node) mws.getExtra().get(i)).getText();
-                userb += ((Node) mws.getExtra().get(i)).getText();
-            }
-        }
-        String username = getUsername(userb);
-        String formated = messag;
-        c.ehandle.handleEvent(new Event("onChatMessage", new Object[] {
-                username, formated }));
-        getCommandText(formated, username);
-        //c.gui.addTextJ(formated, mws);
-        c.gui.addText(formated);
     }
 
     // Code to attempt to get the username

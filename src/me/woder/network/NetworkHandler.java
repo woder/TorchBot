@@ -48,6 +48,7 @@ public class NetworkHandler {
         //play.put(17, new ChatMessage02(c)); //Confirm transaction
         //play.put(18, new ChatMessage02(c)); //Close window
         //play.put(19, new ChatMessage02(c)); //Open window
+        play.put(19, new PlayerAbilites57(c));
         play.put(20, new WindowItems48(c));
         //play.put(21, new WindowItems48(c)); //Window property
         play.put(22, new SetSlot47(c));
@@ -65,88 +66,46 @@ public class NetworkHandler {
         //play.put(34, new Particle(c)); //Particle
         play.put(35, new JoinGame01(c));
         //play.put(36, new JoinGame01(c)); Map packet
-        play.put(37, new EntityRelativeMove21(c));
-        play.put(38, new EntityRelativeMoveLok23(c));
-        play.put(39, new EntityLook22(c));
+        play.put(38, new EntityRelativeMove21(c));
+        play.put(39, new EntityRelativeMoveLok23(c));
+        play.put(40, new EntityLook22(c));
         //play.put(40, new EntityRelativeMoveLok23(c)); //Entity
         //play.put(41, new EntityRelativeMoveLok23(c)); //Vehicle move
         //play.put(42, new EntityLook22(c)); //Open sign editor
-        play.put(43, new PlayerAbilites57(c));
         //play.put(44, new EntityLook22(c)); //combat event
-        play.put(45, new PlayerListItem56(c));
-        play.put(46, new PlayerPosLook08(c));
+        play.put(46, new PlayerListItem56(c));
+        play.put(47, new PlayerPosLook08(c));
         //play.put(47, new PlayerAbilites57(c)); //Use bed
-        play.put(48, new DestroyEntities19(c));
+        play.put(50, new DestroyEntities19(c));
         //play.put(49, new DestroyEntities19(c)); //Remove entity effect
         //play.put(50, new DestroyEntities19(c)); //Resource pack
         //play.put(51, new DestroyEntities19(c)); //Respawn
-        play.put(52, new EntityHeadLook25(c));
+        play.put(54, new EntityHeadLook25(c));
         //play.put(53, new DestroyEntities19(c)); //World border
         //play.put(54, new DestroyEntities19(c)); //Camera
-        play.put(55, new HeldItemChange09(c));
+        play.put(58, new HeldItemChange09(c));
         //play.put(56, new HeldItemChange09(c));  //Display scoreboard
-        play.put(57, new EntityMetaData28(c));
+        play.put(60, new EntityMetaData28(c));
         //play.put(58, new HeldItemChange09(c)); //Attach entity 
-        play.put(59, new EntityVelocity18(c));
-        play.put(60, new EntityEquipment04(c));
-        //play.put(61, new HeldItemChange09(c)); //Set experience
-        play.put(62, new HealthUpdate06(c));
+        play.put(62, new EntityVelocity18(c));
+        play.put(63, new EntityEquipment04(c));
+        play.put(64, new SetExperience(c)); //Set experience
+        play.put(65, new HealthUpdate06(c));
         //play.put(63, new EntityEquipment04(c)); //Scoreboard objective
         //play.put(64, new EntityEquipment04(c)); //Set passengers
-        play.put(65, new TeamPacket62(c));
-        play.put(66, new UpdateScore61(c));
-        play.put(67, new SpawnPos05(c));
-        play.put(68, new TimeUpdate03(c));
+        play.put(68, new TeamPacket62(c));
+        play.put(69, new UpdateScore61(c));
+        play.put(70, new SpawnPos05(c));
+        play.put(71, new TimeUpdate03(c));
         //play.put(69, new TimeUpdate03(c)); //Title
         //play.put(70, new UpdateSign51(c)); No longer exists
         //play.put(70, new SoundEffect41(c)); //Sound effect 
         //play.put(71, new TimeUpdate03(c)); //Player list header & footer
         //play.put(72, new UpdateSign51(c)); //Collect item
-        play.put(73, new EntityTeleport24(c));
-        play.put(74, new EntityProperties32(c));
+        play.put(76, new EntityTeleport24(c));
+        play.put(78, new EntityProperties32(c));
         //play.put(75, new UpdateSign51(c)); //Entity effects
         
-        /*play.put(0, new KeepAlive00(c));
-        play.put(1, new JoinGame01(c));
-        play.put(2, new ChatMessage02(c));
-        play.put(3, new TimeUpdate03(c));
-        play.put(4, new EntityEquipment04(c));
-        play.put(5, new SpawnPos05(c));
-        play.put(6, new HealthUpdate06(c));
-        play.put(8, new PlayerPosLook08(c));
-        play.put(9, new HeldItemChange09(c));
-        play.put(11, new Animation11(c));
-        play.put(12, new SpawnPlayer12(c));
-        play.put(14, new SpawnObject14(c));
-        play.put(15, new SpawnMob15(c));
-        play.put(18, new EntityVelocity18(c));
-        play.put(19, new DestroyEntities19(c));
-        play.put(21, new EntityRelativeMove21(c));
-        play.put(22, new EntityLook22(c));
-        play.put(23, new EntityRelativeMoveLok23(c));
-        play.put(24, new EntityTeleport24(c));
-        play.put(25, new EntityHeadLook25(c));
-        play.put(26, new EntityStatus26(c));
-        play.put(28, new EntityMetaData28(c));
-        play.put(32, new EntityProperties32(c));
-        play.put(33, new MapChunk33(c));
-        play.put(35, new BlockChange35(c));
-        play.put(38, new MapBulkChunk38(c));
-        play.put(40, new Effect40(c));
-        play.put(41, new SoundEffect41(c));
-        play.put(43, new ChangeGameState43(c));
-        play.put(47, new SetSlot47(c));
-        play.put(48, new WindowItems48(c));
-        play.put(51, new UpdateSign51(c));
-        play.put(53, new UpdateBlockEntity53(c));
-        play.put(55, new Statistics55(c));
-        play.put(56, new PlayerListItem56(c));
-        play.put(57, new PlayerAbilites57(c));
-        play.put(61, new UpdateScore61(c));
-        play.put(62, new TeamPacket62(c));
-        play.put(63, new PluginMessage63(c));
-        play.put(64, new Disconnect64(c));
-        play.put(70, new SetCompression70(c));*/
     }
     
     public void readData() throws IOException{
@@ -224,7 +183,7 @@ public class NetworkHandler {
             }
         }else if(c.state == 3){
             Packet p = play.get(type);
-            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type);}else{
+            if(p==null){System.out.println("NOTICE: we just threw out a packet; the id was: " + type); buf=null;}else{
                 p.read(c, len, buf);         
             }
         }else{

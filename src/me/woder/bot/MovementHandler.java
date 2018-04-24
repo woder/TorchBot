@@ -3,15 +3,8 @@ package me.woder.bot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import me.woder.network.Packet;
-import me.woder.world.Block;
-import me.woder.world.CollisionLibrary;
-import me.woder.world.Location;
-import me.woder.world.Vector;
 
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.AStar.InvalidPathException;
@@ -19,6 +12,12 @@ import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import me.woder.network.Packet;
+import me.woder.world.Block;
+import me.woder.world.CollisionLibrary;
+import me.woder.world.Location;
+import me.woder.world.Vector;
 
 
 public class MovementHandler {
@@ -255,7 +254,7 @@ public class MovementHandler {
     public void move(double x, double y, double z) {
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         try{
-         Packet.writeVarInt(buf, 13);
+         Packet.writeVarInt(buf, 14);
          buf.writeDouble(x);
          buf.writeDouble(y);
          buf.writeDouble(z);

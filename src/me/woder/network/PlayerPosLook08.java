@@ -7,7 +7,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.woder.bot.Client;
-import me.woder.bot.CryptManager;
 import me.woder.event.Event;
 import me.woder.world.Location;
 
